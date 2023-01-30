@@ -1,0 +1,39 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__searchContainer {
+    position: relative;
+  }
+  &___searchIcon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+  }
+  &__search {
+    margin-left: 2rem;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+  }
+  &__right,
+  &__left {
+    display: flex;
+    align-items: center;
+  }
+
+  &__right {
+    column-gap: 1rem;
+  }
+  &__rightHidden {
+    display: none;
+  }
+  &__profilePic {
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    background-color: antiquewhite;
+  }
+}
