@@ -1,0 +1,25 @@
+.login {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(244, 244, 244);
+
+  h3 {
+    margin: 0;
+  }
+
+  &__formSection {
+    width: 50%;
+    background-color: white;
+    border-radius: 5px;
+    margin-top: 5rem;
+    padding: 2rem 2rem;
+  }
+
+  &__registerLink {
+    color: rgb(24, 118, 210);
+    text-decoration: underline;
+  }
+}

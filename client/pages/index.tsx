@@ -1,10 +1,17 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import { Inter } from '@next/font/google';
-import styles from '../styles/Home.module.scss';
+import styles from '../styles/Login.module.scss';
+import Form from '../components/Form';
+import Link from 'next/link';
 
-const inter = Inter({ subsets: ['latin'] });
-
-export default function Home() {
-  return <></>;
+export default function Login() {
+  return (
+    <div className={styles.login}>
+      <div className={styles.login__formSection}>
+        <h3>Welcome to JackyBook, please sign in</h3>
+        <Form page={'login'} />
+        <Link href={'/Register'} className={styles.login__registerLink}>
+          Don't have an account? Sign up here
+        </Link>
+      </div>
+    </div>
+  );
 }
