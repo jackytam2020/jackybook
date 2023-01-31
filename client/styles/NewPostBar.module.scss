@@ -1,0 +1,39 @@
+.newPostBar {
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 1rem 1rem;
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid lightgray;
+  }
+  &__profilePic {
+    width: 50px;
+    height: 50px;
+    background-color: beige;
+    border-radius: 50%;
+  }
+
+  &__postInput {
+    border: none;
+    background-color: #f2f2f2;
+    padding-left: 1rem;
+    width: 100%;
+    border-radius: 20px;
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+  }
+  &__addMedia {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+}
