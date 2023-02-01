@@ -17,19 +17,31 @@ interface CommentProp {
   likes: number;
 }
 
-const Comment = ({ likes }: CommentProp) => {
+const Comment = ({
+  likes,
+  firstName,
+  lastName,
+  comment,
+  likesList,
+  datePosted,
+}: CommentProp) => {
   return (
     <div className={commentStyles.commentContainer}>
       <div className={commentStyles.commentContainer__profilePic}></div>
       <div className={commentStyles.commentContainer__right}>
         <div className={commentStyles.commentContainer__commentBox}>
-          <p className={commentStyles.commentContainer__user}>Jacky Tam</p>
-          <p className={commentStyles.commentContainer__comment}>
-            This is a comment
-          </p>
+          <p
+            className={commentStyles.commentContainer__user}
+          >{`${firstName} ${lastName}`}</p>
+          <p className={commentStyles.commentContainer__comment}>{comment}</p>
           {likes ? likeCounter(likes) : null}
         </div>
-        <p className={commentStyles.commentContainer__like}>Like</p>
+        <div className={commentStyles.commentContainer__likeDate}>
+          <p className={commentStyles.commentContainer__like}>Like</p>
+          <p className={commentStyles.commentContainer__datePosted}>
+            {datePosted}
+          </p>
+        </div>
       </div>
     </div>
   );

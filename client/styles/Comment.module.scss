@@ -17,14 +17,19 @@
   }
   &__user,
   &__comment,
-  &__like {
+  &__like,
+  &__datePosted {
     font-size: 0.875rem;
+  }
+  &__likeDate {
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
   }
   &__user {
     cursor: pointer;
   }
   &__like {
-    padding-top: 0.5rem;
     padding-left: 0.5rem;
     cursor: pointer;
   }

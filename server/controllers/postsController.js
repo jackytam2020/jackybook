@@ -5,7 +5,7 @@ import Comment from '../models/Comments.js';
 
 export const newPost = async (req, res) => {
   try {
-    const { userID, description } = req.body;
+    const { userID, description, picturePath } = req.body;
     const user = await User.findById(userID);
 
     const newPost = new Post({
@@ -14,6 +14,7 @@ export const newPost = async (req, res) => {
       lastName: user.lastName,
       location: user.location,
       description,
+      picturePath,
       likes: {},
     });
 
@@ -123,22 +124,23 @@ export const editPost = async (req, res) => {
 export const deletePost = async (req, res) => {
   try {
     const { postID } = req.params;
-    const { userID } = req.body;
+    // const { userID } = req.body;
     const post = await Post.findById(postID);
 
-    if (post.userID !== userID) {
-      return res.status(403).json({
-        message: 'unable to delete post, not original owner of post',
-      });
-    } else {
-      Post.deleteOne({ _id: postID }, function (err, result) {
-        if (err) {
-          res.status(400).json({ message: 'Post was not deleted' });
-        } else {
-          res.status(200).json({ message: 'Deleted post' });
-        }
-      });
-    }
+    // if (post.userID !== userID) {
+    //   return res.status(403).json({
+    //     message: 'unable to delete post, not original owner of post',
+    //   });
+    // } else {
+
+    // }
+    Post.deleteOne({ _id: postID }, function (err, result) {
+      if (err) {
+        res.status(400).json({ message: 'Post was not deleted' });
+      } else {
+        res.status(200).json({ message: 'Deleted post' });
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -177,9 +179,9 @@ export const grabPostComments = async (req, res) => {
     const { postID } = req.params;
 
     const comments = await Comment.find({ postID: postID });
-    if (!comments.length) {
-      return res.status(404).json({ message: 'no comments found' });
-    }
+    // if (!comments.length) {
+    //   return res.status(404).json({ message: 'no comments found' });
+    // }
     return res.status(200).json(comments);
   } catch (err) {
     res.status(500).json({ message: err.message });
