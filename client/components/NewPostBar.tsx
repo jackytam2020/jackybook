@@ -77,7 +77,11 @@ const NewPostBar: React.FC<NewPostBarProps> = ({ grabFeedPosts }) => {
   return (
     <div className={newPostStyles.newPostBar}>
       <div className={newPostStyles.newPostBar__top}>
-        <div className={newPostStyles.newPostBar__profilePic}></div>
+        <img
+          className={newPostStyles.newPostBar__profilePic}
+          src={`http://localhost:8080/assets/${user.picturePath}`}
+          alt={user.picturePath}
+        />
         <input
           className={newPostStyles.newPostBar__postInput}
           onChange={(e) => {
@@ -118,6 +122,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({ grabFeedPosts }) => {
           variant="contained"
           onClick={() => {
             submitPost();
+            // console.log(user.picturePath);
           }}
         >
           Post

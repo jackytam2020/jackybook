@@ -8,6 +8,7 @@
     height: 40px;
     background-color: beige;
     border-radius: 50%;
+    object-fit: cover;
   }
   &__commentBox {
     background-color: #f2f2f2;
@@ -32,6 +33,10 @@
   &__like {
     padding-left: 0.5rem;
     cursor: pointer;
+  }
+  &__liked {
+    @extend .commentContainer__like;
+    color: rgb(24, 118, 210);
   }
   &__like:hover {
     text-decoration: underline;

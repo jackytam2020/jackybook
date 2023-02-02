@@ -9,6 +9,8 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import axios from 'axios';
 
 import CommentSection from './CommentSection';
+import LikeModal from './LikeModal';
+import { string } from 'yup';
 
 interface PostProps {
   _id: string;
@@ -19,9 +21,11 @@ interface PostProps {
   picturePath: string;
   likes: object;
   comments: object;
-  deletePost: Promise<void>;
+  deletePost: (_id: string) => void;
+  pressLikeButton: (_id: string) => void;
   userID: string;
   loggedInUser: string;
+  userPicturePath: string;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -36,9 +40,13 @@ const Post: React.FC<PostProps> = ({
   deletePost,
   userID,
   loggedInUser,
+  pressLikeButton,
+  userPicturePath,
 }) => {
-  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-  const [commentsList, setCommentsList] = useState([]);
+  const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [commentsList, setCommentsList] = useState<[]>([]);
+  const [likedList, setLikedList] = useState<[]>([]);
 
   const grabComments = async () => {
     const { data } = await axios.get(
@@ -46,6 +54,13 @@ const Post: React.FC<PostProps> = ({
     );
 
     setCommentsList(data.reverse());
+  };
+
+  const grabPostLikedList = async () => {
+    const { data } = await axios.get(
+      `http://localhost:8080/posts/${_id}/likedList`
+    );
+    setLikedList(data);
   };
 
   useEffect(() => {
@@ -56,7 +71,11 @@ const Post: React.FC<PostProps> = ({
     <div className={postStyles.post}>
       <div className={postStyles.post__topButtons}>
         <div className={postStyles.post__topButtonsLeft}>
-          <div className={postStyles.post__profilePic}></div>
+          <img
+            className={postStyles.post__profilePic}
+            src={`http://localhost:8080/assets/${userPicturePath}`}
+            alt={userPicturePath}
+          />
           <div>
             <p
               className={postStyles.post__user}
@@ -85,15 +104,25 @@ const Post: React.FC<PostProps> = ({
           <img
             className={postStyles.post__image}
             src={`http://localhost:8080/assets/${picturePath}`}
-            alt=""
+            alt={picturePath}
           />
         </>
       )}
 
       <div className={postStyles.post__postStats}>
-        <p className={postStyles.post__likes}>{`${
-          Object.keys(likes).length
-        } Likes`}</p>
+        <p
+          className={postStyles.post__likes}
+          onClick={() => {
+            setIsModalOpen(true);
+          }}
+        >{`${Object.keys(likes).length} Likes`}</p>
+        <LikeModal
+          open={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          grabPostLikedList={grabPostLikedList}
+          type={'post'}
+          likedList={likedList}
+        />
         <p
           className={postStyles.post__comments}
           onClick={() => {
@@ -106,7 +135,21 @@ const Post: React.FC<PostProps> = ({
 
       <div className={postStyles.post__actions}>
         <div className={postStyles.post__actionButton}>
-          <ThumbUpOffAltOutlinedIcon></ThumbUpOffAltOutlinedIcon>
+          {Object.keys(likes).includes(loggedInUser) ? (
+            <ThumbUpAltIcon
+              color="primary"
+              onClick={() => {
+                pressLikeButton(_id);
+              }}
+            ></ThumbUpAltIcon>
+          ) : (
+            <ThumbUpOffAltOutlinedIcon
+              onClick={() => {
+                pressLikeButton(_id);
+              }}
+            ></ThumbUpOffAltOutlinedIcon>
+          )}
+
           <p>Like</p>
         </div>
         <div

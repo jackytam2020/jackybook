@@ -11,18 +11,30 @@ interface CommentSectionProps {
   isCommentsOpen: boolean;
   commentsList: [];
   postID: string;
+  grabComments: () => void;
 }
 
 interface UserState {
   user: User;
 }
 
-const CommentSection = ({
+export interface Comment {
+  _id: string;
+  likes: number;
+  likesList: string[];
+  firstName: string;
+  lastName: string;
+  comment: string;
+  datePosted: string;
+  userPicturePath: string;
+}
+
+const CommentSection: React.FC<CommentSectionProps> = ({
   isCommentsOpen,
   commentsList,
   postID,
   grabComments,
-}: CommentSectionProps) => {
+}) => {
   const [newCommentValue, setNewCommentValue] = useState('');
   const user = useSelector<UserState, User>((state) => state.user);
 
@@ -38,6 +50,17 @@ const CommentSection = ({
     console.log(response);
     grabComments();
   };
+
+  const pressLikeCommentButton = async (commentID: string) => {
+    const response = await axios.patch(
+      `http://localhost:8080/posts/${commentID}/likeComment`,
+      {
+        userID: user._id,
+      }
+    );
+    grabComments();
+    console.log(response);
+  };
   return (
     <div
       className={
@@ -47,7 +70,11 @@ const CommentSection = ({
       }
     >
       <div className={commentStyles.commentSection__newComment}>
-        <div className={commentStyles.commentSection__profilePic}></div>
+        <img
+          className={commentStyles.commentSection__profilePic}
+          src={`http://localhost:8080/assets/${user.picturePath}`}
+          alt={user.picturePath}
+        />
         <div className={commentStyles.commentSection__inputHolder}>
           <input
             className={commentStyles.commentSection__postInput}
@@ -70,15 +97,19 @@ const CommentSection = ({
 
       <section className={commentStyles.commentSection__commentList}>
         {commentsList &&
-          commentsList.map((comment) => (
+          commentsList.map((comment: Comment) => (
             <Comment
               key={comment._id}
+              commentID={comment._id}
               likes={Object.keys(comment.likes).length}
               firstName={comment.firstName}
               lastName={comment.lastName}
               comment={comment.comment}
               likesList={Object.keys(comment.likes)}
               datePosted={comment.datePosted}
+              userPicturePath={comment.userPicturePath}
+              loggedInUser={user._id}
+              pressLikeCommentButton={pressLikeCommentButton}
             />
           ))}
       </section>

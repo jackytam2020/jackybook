@@ -15,6 +15,7 @@ export const newPost = async (req, res) => {
       location: user.location,
       description,
       picturePath,
+      userPicturePath: user.picturePath,
       likes: {},
     });
 
@@ -30,6 +31,7 @@ export const grabFeedPosts = async (req, res) => {
   try {
     const userID = req.params.id;
     const user = await User.findById(userID);
+
     Post.find()
       .then((result) => {
         const filteredFeed = result.filter(
@@ -84,8 +86,8 @@ export const likePost = async (req, res) => {
 
 export const likedList = async (req, res) => {
   try {
-    const { id } = req.params;
-    const post = await Post.findById(id);
+    const { postID } = req.params;
+    const post = await Post.findById(postID);
 
     const likedUsers = [...post.likes.keys()];
 
@@ -152,6 +154,8 @@ export const addComment = async (req, res) => {
     const { userID, comment, datePosted } = req.body;
     const user = await User.findById(userID);
 
+    console.log(user);
+
     const newComment = new Comment({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -159,6 +163,7 @@ export const addComment = async (req, res) => {
       userID: userID,
       comment: comment,
       datePosted: datePosted,
+      userPicturePath: user.picturePath,
       likes: {},
     });
 

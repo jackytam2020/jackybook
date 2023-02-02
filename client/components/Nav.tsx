@@ -16,6 +16,12 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MessageIcon from '@mui/icons-material/Message';
+import { useSelector } from 'react-redux';
+import { User } from '../state';
+
+interface UserState {
+  user: User;
+}
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -59,6 +65,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Nav() {
+  const user = useSelector<UserState, User>((state) => state.user);
+
   return (
     <>
       <CssBaseline />
@@ -90,7 +98,12 @@ function Nav() {
                 <MessageIcon />
               </Badge>
             </IconButton>
-            <div className={navStyles.nav__profilePic}></div>
+
+            <img
+              className={navStyles.nav__profilePic}
+              src={`http://localhost:8080/assets/${user.picturePath}`}
+              alt={user.picturePath}
+            />
           </div>
         </Toolbar>
       </AppBar>
