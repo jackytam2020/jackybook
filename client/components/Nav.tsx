@@ -8,8 +8,7 @@ import {
   CssBaseline,
   Toolbar,
   InputBase,
-  iconClasses,
-  Box,
+  Button,
   IconButton,
   Badge,
 } from '@mui/material';
@@ -18,6 +17,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MessageIcon from '@mui/icons-material/Message';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
+import { useDispatch } from 'react-redux';
+import state, { setPosts, setLogout } from '../state/index';
 
 interface UserState {
   user: User;
@@ -66,6 +67,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 function Nav() {
   const user = useSelector<UserState, User>((state) => state.user);
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -74,37 +76,52 @@ function Nav() {
         <Toolbar className={navStyles.nav}>
           <div className={navStyles.nav__left}>
             <Typography variant="h5">JackyBook</Typography>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-                onChange={(e) => {
-                  console.log(e.target.value);
-                }}
-              />
-            </Search>
+            {user !== null && (
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search' }}
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                  }}
+                />
+              </Search>
+            )}
           </div>
-          <div className={navStyles.nav__right}>
-            <IconButton size="large" color="inherit">
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton size="large" color="inherit">
-              <Badge badgeContent={2} color="error">
-                <MessageIcon />
-              </Badge>
-            </IconButton>
+          {user !== null && (
+            <div className={navStyles.nav__right}>
+              <IconButton size="large" color="inherit">
+                <Badge badgeContent={17} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <IconButton size="large" color="inherit">
+                <Badge badgeContent={2} color="error">
+                  <MessageIcon />
+                </Badge>
+              </IconButton>
 
-            <img
-              className={navStyles.nav__profilePic}
-              src={`http://localhost:8080/assets/${user.picturePath}`}
-              alt={user.picturePath}
-            />
-          </div>
+              <img
+                className={navStyles.nav__profilePic}
+                src={`http://localhost:8080/assets/${user.picturePath}`}
+                alt={user.picturePath}
+              />
+              <Link href={'/'}>
+                <Button
+                  style={{ color: 'white', border: '1px solid white' }}
+                  variant="outlined"
+                  onClick={() => {
+                    dispatch(setLogout());
+                  }}
+                >
+                  Logout
+                </Button>
+              </Link>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
     </>

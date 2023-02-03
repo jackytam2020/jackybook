@@ -261,23 +261,15 @@ export const editComment = async (req, res) => {
 export const deleteComment = async (req, res) => {
   try {
     const { commentID } = req.params;
-    //only the owner of the comment can delete the comment
-    const { userID } = req.body;
     const comment = await Comment.findById(commentID);
 
-    if (comment.userID !== userID) {
-      return res.status(403).json({
-        message: 'unable to delete comment, not original owner of comment',
-      });
-    } else {
-      Comment.deleteOne({ _id: commentID }, function (err, result) {
-        if (err) {
-          res.status(400).json({ message: 'Comment was not deleted' });
-        } else {
-          res.status(200).json({ message: 'Deleted Comment' });
-        }
-      });
-    }
+    Comment.deleteOne({ _id: commentID }, function (err, result) {
+      if (err) {
+        res.status(400).json({ message: 'Comment was not deleted' });
+      } else {
+        res.status(200).json({ message: 'Deleted Comment' });
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -10,6 +10,7 @@ import axios from 'axios';
 
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
+import EditModal from './EditModal';
 import { string } from 'yup';
 
 interface PostProps {
@@ -26,6 +27,10 @@ interface PostProps {
   userID: string;
   loggedInUser: string;
   userPicturePath: string;
+  grabFeedPosts: () => void;
+  isEditDeleteOpen: boolean;
+  setIsEditDeleteOpen: (arg0: boolean) => void;
+  editDeleteMenuRef: React.RefObject<HTMLInputElement>;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -42,9 +47,14 @@ const Post: React.FC<PostProps> = ({
   loggedInUser,
   pressLikeButton,
   userPicturePath,
+  grabFeedPosts,
+  isEditDeleteOpen,
+  setIsEditDeleteOpen,
+  editDeleteMenuRef,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [commentsList, setCommentsList] = useState<[]>([]);
   const [likedList, setLikedList] = useState<[]>([]);
 
@@ -61,6 +71,16 @@ const Post: React.FC<PostProps> = ({
       `http://localhost:8080/posts/${_id}/likedList`
     );
     setLikedList(data);
+  };
+
+  const editPost = async (editedDesc: string) => {
+    const { data } = await axios.patch(
+      `http://localhost:8080/posts/${_id}/editPost`,
+      { newDescription: editedDesc }
+    );
+    setIsEditModalOpen(false);
+    grabFeedPosts();
+    console.log(data);
   };
 
   useEffect(() => {
@@ -87,7 +107,11 @@ const Post: React.FC<PostProps> = ({
           {/* only the owner of the post can delete or change the post */}
           {loggedInUser === userID ? (
             <>
-              <EditIcon />
+              <EditIcon
+                onClick={() => {
+                  setIsEditModalOpen(true);
+                }}
+              />
               <DeleteIcon
                 onClick={() => {
                   deletePost(_id);
@@ -95,6 +119,13 @@ const Post: React.FC<PostProps> = ({
               />
             </>
           ) : null}
+          <EditModal
+            open={isEditModalOpen}
+            setIsModalOpen={setIsEditModalOpen}
+            value={description}
+            type={'post'}
+            editPost={editPost}
+          />
         </div>
       </div>
 
@@ -168,6 +199,9 @@ const Post: React.FC<PostProps> = ({
         commentsList={commentsList}
         postID={_id}
         grabComments={grabComments}
+        isEditDeleteOpen={isEditDeleteOpen}
+        setIsEditDeleteOpen={setIsEditDeleteOpen}
+        editDeleteMenuRef={editDeleteMenuRef}
       />
     </div>
   );

@@ -76,22 +76,24 @@ const NewPostBar: React.FC<NewPostBarProps> = ({ grabFeedPosts }) => {
 
   return (
     <div className={newPostStyles.newPostBar}>
-      <div className={newPostStyles.newPostBar__top}>
-        <img
-          className={newPostStyles.newPostBar__profilePic}
-          src={`http://localhost:8080/assets/${user.picturePath}`}
-          alt={user.picturePath}
-        />
-        <input
-          className={newPostStyles.newPostBar__postInput}
-          onChange={(e) => {
-            setPost(e.target.value);
-          }}
-          type="text"
-          placeholder={`What's on your mind?`}
-          value={post}
-        ></input>
-      </div>
+      {user !== null && (
+        <div className={newPostStyles.newPostBar__top}>
+          <img
+            className={newPostStyles.newPostBar__profilePic}
+            src={`http://localhost:8080/assets/${user.picturePath}`}
+            alt={user.picturePath}
+          />
+          <input
+            className={newPostStyles.newPostBar__postInput}
+            onChange={(e) => {
+              setPost(e.target.value);
+            }}
+            type="text"
+            placeholder={`What's on your mind?`}
+            value={post}
+          ></input>
+        </div>
+      )}
       <div className={newPostStyles.newPostBar__bottom}>
         <div className={newPostStyles.newPostBar__addMedia}>
           <Dropzone

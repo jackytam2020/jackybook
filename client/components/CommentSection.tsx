@@ -12,6 +12,9 @@ interface CommentSectionProps {
   commentsList: [];
   postID: string;
   grabComments: () => void;
+  isEditDeleteOpen: boolean;
+  setIsEditDeleteOpen: (arg0: boolean) => void;
+  editDeleteMenuRef: React.RefObject<HTMLInputElement>;
 }
 
 interface UserState {
@@ -27,6 +30,7 @@ export interface Comment {
   comment: string;
   datePosted: string;
   userPicturePath: string;
+  userID: string;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({
@@ -34,11 +38,15 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   commentsList,
   postID,
   grabComments,
+  isEditDeleteOpen,
+  setIsEditDeleteOpen,
+  editDeleteMenuRef,
 }) => {
   const [newCommentValue, setNewCommentValue] = useState('');
   const user = useSelector<UserState, User>((state) => state.user);
 
   const postComment = async () => {
+    setNewCommentValue('');
     const response = await axios.post(
       `http://localhost:8080/posts/${postID}/addCommentToPost`,
       {
@@ -60,6 +68,28 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     );
     grabComments();
     console.log(response);
+  };
+
+  const editComment = async (
+    newComment: string,
+    commentID: string,
+    setIsEditModalOpen: Function
+  ) => {
+    const { data } = await axios.patch(
+      `http://localhost:8080/posts/${commentID}/editComment`,
+      { newComment: newComment }
+    );
+    setIsEditModalOpen(false);
+    grabComments();
+    console.log(data);
+  };
+
+  const deleteComment = async (commentID: string) => {
+    const { data } = await axios.delete(
+      `http://localhost:8080/posts/${commentID}/deleteComment`
+    );
+    grabComments();
+    console.log(data);
   };
   return (
     <div
@@ -110,6 +140,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               userPicturePath={comment.userPicturePath}
               loggedInUser={user._id}
               pressLikeCommentButton={pressLikeCommentButton}
+              userID={comment.userID}
+              isEditDeleteOpen={isEditDeleteOpen}
+              setIsEditDeleteOpen={setIsEditDeleteOpen}
+              editDeleteMenuRef={editDeleteMenuRef}
+              editComment={editComment}
+              deleteComment={deleteComment}
             />
           ))}
       </section>

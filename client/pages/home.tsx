@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import homeStyles from '../styles/Home.module.scss';
 import { useMediaQuery, Container, Box } from '@mui/material';
 import axios from 'axios';
@@ -57,7 +57,20 @@ const home = () => {
     grabFeedPosts();
   }, []);
 
-  console.log(posts);
+  const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
+  let editDeleteMenuRef = useRef<HTMLInputElement>();
+
+  //close edit delete comment menu by clicking anywhere on the homepage
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside, true);
+  }, []);
+
+  //close cart popout when clicked outside
+  const handleClickOutside = (e: MouseEvent) => {
+    if (!editDeleteMenuRef.current?.contains(e.target as HTMLElement)) {
+      setIsEditDeleteOpen(false);
+    }
+  };
 
   return (
     <div className={homeStyles.home}>
@@ -74,6 +87,10 @@ const home = () => {
                 deletePost={deletePost}
                 pressLikeButton={pressLikeButton}
                 loggedInUser={user._id}
+                grabFeedPosts={grabFeedPosts}
+                isEditDeleteOpen={isEditDeleteOpen}
+                setIsEditDeleteOpen={setIsEditDeleteOpen}
+                editDeleteMenuRef={editDeleteMenuRef}
               />
             ))}
         </section>
