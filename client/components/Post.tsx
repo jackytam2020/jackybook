@@ -7,11 +7,16 @@ import ThumbUpOffAltOutlinedIcon from '@mui/icons-material/ThumbUpOffAltOutlined
 import InsertCommentOutlinedIcon from '@mui/icons-material/InsertCommentOutlined';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { User } from '../state';
 
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
-import { string } from 'yup';
+
+interface UserState {
+  user: User;
+}
 
 interface PostProps {
   _id: string;
@@ -22,15 +27,16 @@ interface PostProps {
   picturePath: string;
   likes: object;
   comments: object;
-  deletePost: (_id: string) => void;
-  pressLikeButton: (_id: string) => void;
+  deletePost: (_id: string, grabFeedPosts: () => void) => void;
+  pressLikeButton: (_id: string, grabFeedPosts: () => void, user: User) => void;
   userID: string;
   loggedInUser: string;
   userPicturePath: string;
-  grabFeedPosts: () => void;
+  grabFeedPosts?: () => void;
   isEditDeleteOpen: boolean;
   setIsEditDeleteOpen: (arg0: boolean) => void;
   editDeleteMenuRef: React.RefObject<HTMLInputElement>;
+  grabProfileFeedPosts?: () => void;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -51,12 +57,15 @@ const Post: React.FC<PostProps> = ({
   isEditDeleteOpen,
   setIsEditDeleteOpen,
   editDeleteMenuRef,
+  grabProfileFeedPosts,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [commentsList, setCommentsList] = useState<[]>([]);
   const [likedList, setLikedList] = useState<[]>([]);
+
+  const user = useSelector<UserState, User>((state) => state.user);
 
   const grabComments = async () => {
     const { data } = await axios.get(
@@ -79,7 +88,12 @@ const Post: React.FC<PostProps> = ({
       { newDescription: editedDesc }
     );
     setIsEditModalOpen(false);
-    grabFeedPosts();
+
+    if (grabFeedPosts) {
+      grabFeedPosts();
+    } else if (grabProfileFeedPosts) {
+      grabProfileFeedPosts();
+    }
     console.log(data);
   };
 
@@ -114,7 +128,11 @@ const Post: React.FC<PostProps> = ({
               />
               <DeleteIcon
                 onClick={() => {
-                  deletePost(_id);
+                  if (grabFeedPosts) {
+                    deletePost(_id, grabFeedPosts);
+                  } else if (grabProfileFeedPosts) {
+                    deletePost(_id, grabProfileFeedPosts);
+                  }
                 }}
               />
             </>
@@ -170,13 +188,21 @@ const Post: React.FC<PostProps> = ({
             <ThumbUpAltIcon
               color="primary"
               onClick={() => {
-                pressLikeButton(_id);
+                if (grabProfileFeedPosts) {
+                  pressLikeButton(_id, grabProfileFeedPosts, user);
+                } else if (grabFeedPosts) {
+                  pressLikeButton(_id, grabFeedPosts, user);
+                }
               }}
             ></ThumbUpAltIcon>
           ) : (
             <ThumbUpOffAltOutlinedIcon
               onClick={() => {
-                pressLikeButton(_id);
+                if (grabProfileFeedPosts) {
+                  pressLikeButton(_id, grabProfileFeedPosts, user);
+                } else if (grabFeedPosts) {
+                  pressLikeButton(_id, grabFeedPosts, user);
+                }
               }}
             ></ThumbUpOffAltOutlinedIcon>
           )}

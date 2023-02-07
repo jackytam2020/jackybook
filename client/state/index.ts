@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface FriendsPayload {
   friends: [];
+  friendRequests: [];
 }
 
 export interface User {
@@ -11,6 +12,7 @@ export interface User {
   password: string;
   picturePath: string;
   friends: Array<FriendsPayload>;
+  friendRequests: Array<FriendsPayload>;
   location: string;
   occupation: string;
   profileViews: number;

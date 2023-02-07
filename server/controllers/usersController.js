@@ -2,10 +2,8 @@ import express from 'express';
 import User from '../models/Users.js';
 import FriendRequest from '../models/FriendRequests.js';
 
-export const grabProfile = (req, res) => {
-  if (!req.params.id) {
-    return res.status(400).json({ message: 'Missing User ID' });
-  } else {
+export const grabProfile = async (req, res) => {
+  try {
     User.find({ _id: req.params.id })
       .then((result) => {
         res.status(200).json(result);
@@ -13,17 +11,23 @@ export const grabProfile = (req, res) => {
       .catch((err) => {
         res.status(404).json(err);
       });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
 export const grabUserFriends = (req, res) => {
-  if (!req.params.id) {
-    return res.status(400).json({ message: 'Missing User ID' });
-  } else {
+  try {
     User.find({ _id: req.params.id }, 'friends', function (err, result) {
       if (err) res.status(404).json(err);
-      res.status(200).json(result);
+      const friendsArr = result[0].friends;
+
+      User.find({ _id: { $in: friendsArr } }, function (err, result) {
+        res.status(200).json(result);
+      });
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
