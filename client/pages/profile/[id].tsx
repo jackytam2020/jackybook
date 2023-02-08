@@ -6,15 +6,19 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User, PostsArray } from '../../state';
 import { useDispatch } from 'react-redux';
-import { setPosts } from '../../state';
+import { setPosts, setFriendRequests } from '../../state';
 
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import { Button } from '@mui/material';
 
 import NewPostBar from '../../components/NewPostBar';
 import Post from '../../components/Post';
+import FriendStatus from '../../components/FriendStatus';
+import FriendRequestRow from '../../components/FriendRequestRow';
+import FriendsListRow from '../../components/FriendsListRow';
 
 //functions
 import { pressLikeButton, deletePost } from '../home';
@@ -27,55 +31,33 @@ interface PostState {
   posts: PostsArray;
 }
 
-interface FriendsRowProps {
+export interface FriendRequestProps {
   _id: string;
+  userID: string;
+  targetID: string;
+  picturePath: string;
   firstName: string;
   lastName: string;
-  picturePath: string;
 }
 
-//components
-export const RequestsRow = () => {
-  const user = useSelector<UserState, User>((state) => state.user);
-  return (
-    <div className={ProfileStyles.profile__requestRow}>
-      <div className={ProfileStyles.profile__requestUser}>
-        <img
-          src={`http://localhost:8080/assets/${user.picturePath}`}
-          className={ProfileStyles.profile__requestPic}
-          alt={user.picturePath}
-        />
-        <p
-          className={ProfileStyles.profile__requestName}
-        >{`${user.firstName} ${user.lastName}`}</p>
-      </div>
-      <div className={ProfileStyles.profile__requestActions}>
-        <CheckOutlinedIcon></CheckOutlinedIcon>
-        <CancelOutlinedIcon></CancelOutlinedIcon>
-      </div>
-    </div>
+//exportable functions
+export const sendFriendRequest = async (
+  user: User,
+  targetUser: User,
+  dispatch: Function
+) => {
+  const { data } = await axios.post(
+    `http://localhost:8080/users/${user._id}/sendFriendRequest/${targetUser._id}`,
+    {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      picturePath: user.picturePath,
+    }
   );
-};
-
-export const FriendsRow: React.FC<FriendsRowProps> = ({
-  _id,
-  firstName,
-  lastName,
-  picturePath,
-}) => {
-  return (
-    <Link href={`/profile/${_id}`}>
-      <div className={ProfileStyles.profile__friendsRow}>
-        <img
-          src={`http://localhost:8080/assets/${picturePath}`}
-          className={ProfileStyles.profile__friendsPic}
-          alt={picturePath}
-        />
-        <p
-          className={ProfileStyles.profile__friendsName}
-        >{`${firstName} ${lastName}`}</p>
-      </div>
-    </Link>
+  dispatch(
+    setFriendRequests({
+      requests: data.targetID,
+    })
   );
 };
 
@@ -87,7 +69,11 @@ const Profile = () => {
 
   const [profileData, setProfileData] = useState<User>();
   const [friendsList, setFriendsList] = useState<User[]>([]);
+  const [friendRequests, setFriendRequests] = useState<FriendRequestProps[]>(
+    []
+  );
 
+  //the current page's profile
   const grabProfileData = async () => {
     const { data } = await axios.get(
       `http://localhost:8080/users/profile/${router.query.id}`
@@ -101,7 +87,6 @@ const Profile = () => {
       `http://localhost:8080/users/friends/${router.query.id}`
     );
     setFriendsList(data);
-    console.log(data);
   };
 
   const grabProfileFeedPosts = async () => {
@@ -115,15 +100,27 @@ const Profile = () => {
     );
   };
 
+  const grabFriendRequests = async () => {
+    const { data } = await axios.get(
+      `http://localhost:8080/users/${user._id}/grabAllFriendRequests`
+    );
+    console.log(data);
+    setFriendRequests(data);
+  };
+
   useEffect(() => {
     grabProfileData();
     grabFriendsList();
     grabProfileFeedPosts();
   }, [router.query.id]);
 
+  useEffect(() => {
+    grabFriendRequests();
+  }, []);
+
   return (
     <div className={ProfileStyles.profile}>
-      {profileData && (
+      {profileData && user && (
         <div className={ProfileStyles.profile__profileContainer}>
           <section className={ProfileStyles.profile__left}>
             <div className={ProfileStyles.profile__userSection}>
@@ -156,6 +153,13 @@ const Profile = () => {
                   >{`${profileData.occupation}`}</p>
                 </div>
               </div>
+              {profileData._id !== user._id && (
+                <FriendStatus
+                  profileData={profileData}
+                  friendRequests={friendRequests}
+                  sendFriendRequest={sendFriendRequest}
+                />
+              )}
             </div>
 
             <div className={ProfileStyles.profile__friendsList}>
@@ -163,7 +167,7 @@ const Profile = () => {
 
               <div className={ProfileStyles.profile__friendsListContainer}>
                 {friendsList.map((friend) => (
-                  <FriendsRow key={friend._id} {...friend} />
+                  <FriendsListRow key={friend._id} {...friend} />
                 ))}
               </div>
             </div>
@@ -193,14 +197,16 @@ const Profile = () => {
           </main>
 
           {user._id === profileData._id &&
-            (profileData.friendRequests.length > 0 ? (
+            (friendRequests.length > 0 ? (
               <section className={ProfileStyles.profile__friendRequests}>
                 <h3>Friend Requests</h3>
-                {
-                  <div className={ProfileStyles.profile__requestList}>
-                    <RequestsRow />
-                  </div>
-                }
+
+                <div className={ProfileStyles.profile__requestList}>
+                  {Array.isArray(friendRequests) &&
+                    friendRequests.map((request) => (
+                      <FriendRequestRow key={request._id} {...request} />
+                    ))}
+                </div>
               </section>
             ) : (
               <section className={ProfileStyles.profile__friendRequestsEmpty}>

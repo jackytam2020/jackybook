@@ -62,29 +62,7 @@
     border-radius: 10px;
     padding: 1rem;
   }
-  &__requestRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-  }
-  &__requestUser {
-    display: flex;
-    align-items: center;
-    column-gap: 1rem;
-  }
-  &__requestPic,
-  &__friendsPic {
-    width: 30px;
-    height: 30px;
-    object-fit: cover;
-    border-radius: 50%;
-  }
-  &__requestActions {
-    display: flex;
-    column-gap: 1rem;
-    cursor: pointer;
-  }
+
   &__friendsList {
     background-color: white;
     margin-top: 1rem;
@@ -96,15 +74,6 @@
     display: flex;
     flex-direction: column;
     row-gap: 1rem;
-  }
-  &__friendsRow {
-    display: flex;
-    align-items: center;
-    column-gap: 1rem;
-    cursor: pointer;
-  }
-  &__friendsName:hover {
-    text-decoration: underline;
   }
   &__postsSection {
     padding-top: 2rem;

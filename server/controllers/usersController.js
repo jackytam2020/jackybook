@@ -33,7 +33,7 @@ export const grabUserFriends = (req, res) => {
 
 export const sendFriendRequest = async (req, res) => {
   try {
-    const { firstName, lastName } = req.body;
+    const { firstName, lastName, picturePath } = req.body;
     const userID = req.params.id;
     const targetID = req.params.friendID;
 
@@ -50,10 +50,11 @@ export const sendFriendRequest = async (req, res) => {
       lastName,
       userID,
       targetID,
+      picturePath,
     });
 
     const savedRequest = await newRequest.save();
-    res.status(201).json(newRequest);
+    res.status(201).json(savedRequest);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -75,6 +75,8 @@ const home = () => {
     }
   };
 
+  console.log(user);
+
   return (
     <div className={homeStyles.home}>
       <main className={homeStyles.home__container}>
