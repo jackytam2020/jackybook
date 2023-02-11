@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.get('/:id/grabFeedPosts', grabFeedPosts);
 router.get('/:id/grabPostsFromProfile', grabPostsFromProfile);
-router.get('/:id/likedList', likedList);
+router.get('/:postID/likedList', likedList);
 router.get('/:postID/grabPostComments', grabPostComments);
 router.get('/:commentID/likedCommentList', likedCommentList);
 router.post('/:postID/addCommentToPost', addComment);

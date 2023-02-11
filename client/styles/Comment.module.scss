@@ -1,0 +1,97 @@
+.commentContainer {
+  display: flex;
+  column-gap: 1rem;
+  margin-top: 1rem;
+
+  &__profilePic {
+    width: 40px;
+    height: 40px;
+    background-color: beige;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  &__rightRow {
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+  }
+  &__commentBox {
+    background-color: #f2f2f2;
+    position: relative;
+    border-radius: 10px;
+    padding: 0.5rem;
+  }
+  &__MoreOptions {
+    display: block;
+    cursor: pointer;
+    position: relative;
+  }
+  &__MoreOptionsHidden {
+    display: none;
+  }
+  &__editDeleteMenu {
+    position: absolute;
+    border-radius: 5px;
+    width: 200px;
+    background-color: #f2f2f2;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+  }
+  &__editDeleteMenuHidden {
+    display: none;
+  }
+  &__editButton,
+  &__deleteButton {
+    padding-left: 0.5rem;
+  }
+  &__editButton:hover,
+  &__deleteButton:hover {
+    width: 100%;
+    background-color: lightgray;
+    padding-left: 0.5rem;
+    border-radius: 4px;
+  }
+  &__user,
+  &__comment,
+  &__like,
+  &__datePosted {
+    font-size: 0.875rem;
+  }
+  &__likeDate {
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
+  }
+  &__user {
+    cursor: pointer;
+  }
+  &__like {
+    padding-left: 0.5rem;
+    cursor: pointer;
+  }
+  &__liked {
+    @extend .commentContainer__like;
+    color: rgb(24, 118, 210);
+  }
+  &__like:hover {
+    text-decoration: underline;
+  }
+  &__likeCounter {
+    position: absolute;
+    right: 5px;
+    display: flex;
+    align-items: center;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    padding-right: 0.2rem;
+
+    p {
+      padding-top: 3px;
+      padding-left: 0.2rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+  }
+}

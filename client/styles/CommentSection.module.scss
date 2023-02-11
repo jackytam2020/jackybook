@@ -1,0 +1,42 @@
+.commentSection {
+  width: 100%;
+  border-top: 1px solid lightgray;
+  margin-top: 1rem;
+
+  &__profilePic {
+    width: 40px;
+    height: 40px;
+    background-color: beige;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  &__newComment {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 1rem;
+    margin-top: 1rem;
+  }
+  &__inputHolder {
+    width: 100%;
+    height: 40px;
+    position: relative;
+  }
+  &__postInput {
+    border: none;
+    background-color: #f2f2f2;
+    padding-left: 1rem;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+  }
+  &__sendIcon {
+    position: absolute;
+    right: 10px;
+    top: 25%;
+    cursor: pointer;
+  }
+}
+
+.commentSectionClosed {
+  display: none;
+}

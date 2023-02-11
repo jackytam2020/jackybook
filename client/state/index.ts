@@ -4,7 +4,7 @@ interface FriendsPayload {
   friends: [];
 }
 
-interface User {
+export interface User {
   firstName: string;
   lastName: string;
   email: string;
@@ -15,17 +15,31 @@ interface User {
   occupation: string;
   profileViews: number;
   impressions: number;
+  _id: string;
 }
 
 interface Post {
-  _id: string;
+  comments: string[];
+  createdAt: string;
+  description: string;
+  firstName: string;
+  lastName: string;
+  likes: { [key: string]: boolean };
+  location: string;
+  picturePath: string;
+  updatedAt: string;
+  userID: string;
+}
+
+export interface PostsArray {
+  posts: Post[];
 }
 
 type InitialState = {
   mode: string;
   user: User | null;
   token: String | null;
-  posts: Post[];
+  posts: PostsArray[];
 };
 const initialState: InitialState = {
   mode: 'light',
@@ -48,6 +62,7 @@ export const authSlice = createSlice({
     setLogout: (state) => {
       state.user = null;
       state.token = null;
+      state.posts = [];
     },
     setFriends: (state, action: PayloadAction<FriendsPayload>) => {
       if (state.user) {
@@ -59,16 +74,16 @@ export const authSlice = createSlice({
     setPosts: (state, action) => {
       state.posts = action.payload.posts;
     },
-    setPost: (state, action) => {
-      const updatedPosts = state.posts.map((post: Post) => {
-        if (post._id === action.payload.post._id) return action.payload;
-        return post;
-      });
-      state.posts = updatedPosts;
-    },
+    // setPost: (state, action) => {
+    //   const updatedPosts = state.posts.map((post: Post) => {
+    //     if (post._id === action.payload.post._id) return action.payload;
+    //     return post;
+    //   });
+    //   state.posts = updatedPosts;
+    // },
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } =
+export const { setMode, setLogin, setLogout, setFriends, setPosts } =
   authSlice.actions;
 export default authSlice.reducer;
