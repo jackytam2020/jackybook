@@ -4,20 +4,22 @@ import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 import friendRequestRowStyles from '../styles/friendRequestRow.module.scss';
+import { FriendRequestProps } from '../pages/profile/[id]';
 
-interface FriendRequestRowProps {
-  userID: string;
-  picturePath: string;
-  firstName: string;
-  lastName: string;
-}
+import {
+  acceptFriendRequest,
+  removeFriendRequest,
+} from '../pages/profile/[id]';
+import { useDispatch } from 'react-redux';
 
-const FriendRequestRow: React.FC<FriendRequestRowProps> = ({
+const FriendRequestRow: React.FC<FriendRequestProps> = ({
   userID,
+  targetID,
   picturePath,
   firstName,
   lastName,
 }) => {
+  const dispatch = useDispatch();
   return (
     <div className={friendRequestRowStyles.requestRow}>
       <Link href={`/profile/${userID}`}>
@@ -34,8 +36,16 @@ const FriendRequestRow: React.FC<FriendRequestRowProps> = ({
         </div>
       </Link>
       <div className={friendRequestRowStyles.requestRow__requestActions}>
-        <CheckOutlinedIcon></CheckOutlinedIcon>
-        <CancelOutlinedIcon></CancelOutlinedIcon>
+        <CheckOutlinedIcon
+          onClick={() => {
+            acceptFriendRequest(userID, targetID, dispatch);
+          }}
+        ></CheckOutlinedIcon>
+        <CancelOutlinedIcon
+          onClick={() => {
+            removeFriendRequest(targetID, userID, dispatch);
+          }}
+        ></CancelOutlinedIcon>
       </div>
     </div>
   );

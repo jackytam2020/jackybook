@@ -61,16 +61,30 @@ export const authSlice = createSlice({
       state.token = null;
       state.posts = [];
     },
-    // setFriends: (state, action: PayloadAction<FriendsPayload>) => {
-    //   if (state.user) {
-    //     state.user.friends = action.payload.friends;
-    //   } else {
-    //     console.error('user friends does not exist');
-    //   }
-    // },
+    setNewFriend: (state, action) => {
+      if (state.user) {
+        state.user.friends.push(action.payload.newFriend);
+      } else {
+        console.error('user friends does not exist');
+      }
+    },
     setFriendRequests: (state, action) => {
       if (state.user) {
         state.user.friendRequests.push(action.payload.requests);
+      }
+    },
+    setRemoveFriendRequest: (state, action) => {
+      if (state.user) {
+        state.user.friendRequests = state.user.friendRequests.filter(
+          (request) => !request.includes(action.payload.userID)
+        );
+      }
+    },
+    setRemoveFriend: (state, action) => {
+      if (state.user) {
+        state.user.friends = state.user.friends.filter(
+          (request) => !request.includes(action.payload.friendID)
+        );
       }
     },
     setPosts: (state, action) => {
@@ -86,6 +100,14 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setLogout, setPosts, setFriendRequests } =
-  authSlice.actions;
+export const {
+  setMode,
+  setLogin,
+  setLogout,
+  setPosts,
+  setFriendRequests,
+  setNewFriend,
+  setRemoveFriendRequest,
+  setRemoveFriend,
+} = authSlice.actions;
 export default authSlice.reducer;

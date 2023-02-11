@@ -9,6 +9,7 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
+import Link from 'next/link';
 
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
@@ -104,19 +105,21 @@ const Post: React.FC<PostProps> = ({
   return (
     <div className={postStyles.post}>
       <div className={postStyles.post__topButtons}>
-        <div className={postStyles.post__topButtonsLeft}>
-          <img
-            className={postStyles.post__profilePic}
-            src={`http://localhost:8080/assets/${userPicturePath}`}
-            alt={userPicturePath}
-          />
-          <div>
-            <p
-              className={postStyles.post__user}
-            >{`${firstName} ${lastName}`}</p>
-            <p className={postStyles.post__date}>{createdAt}</p>
+        <Link href={`/profile/${userID}`}>
+          <div className={postStyles.post__topButtonsLeft}>
+            <img
+              className={postStyles.post__profilePic}
+              src={`http://localhost:8080/assets/${userPicturePath}`}
+              alt={userPicturePath}
+            />
+            <div>
+              <p
+                className={postStyles.post__user}
+              >{`${firstName} ${lastName}`}</p>
+              <p className={postStyles.post__date}>{createdAt}</p>
+            </div>
           </div>
-        </div>
+        </Link>
         <div className={postStyles.post__topButtonsRight}>
           {/* only the owner of the post can delete or change the post */}
           {loggedInUser === userID ? (

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import ProfileStyles from '../../styles/Profile.module.scss';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User, PostsArray } from '../../state';
 import { useDispatch } from 'react-redux';
-import { setPosts, setFriendRequests } from '../../state';
+import {
+  setPosts,
+  setFriendRequests,
+  setNewFriend,
+  setRemoveFriendRequest,
+  setRemoveFriend,
+} from '../../state';
 
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
-import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import { Button } from '@mui/material';
 
 import NewPostBar from '../../components/NewPostBar';
 import Post from '../../components/Post';
@@ -61,6 +63,65 @@ export const sendFriendRequest = async (
   );
 };
 
+export const acceptFriendRequest = async (
+  userID: string,
+  targetID: string,
+  dispatch: Function
+) => {
+  const { data } = await axios.patch(
+    `http://localhost:8080/users/${targetID}/addFriend/${userID}`
+  );
+
+  dispatch(
+    setNewFriend({
+      newFriend: userID,
+    })
+  );
+
+  removeFriendRequest(targetID, userID, dispatch);
+};
+
+export const removeFriendRequest = async (
+  userID: string,
+  requestSenderID: string,
+  dispatch?: Function
+) => {
+  const response = await axios.delete(
+    `http://localhost:8080/users/${userID}/removeFriendRequest/${requestSenderID}`
+  );
+
+  if (dispatch) {
+    dispatch(
+      setRemoveFriendRequest({
+        userID: userID,
+      })
+    );
+  }
+
+  console.log(response);
+};
+
+export const removeFriend = async (
+  userID: string,
+  friendID: string,
+  grabFriendsList: () => void,
+  grabProfileData: () => void,
+  dispatch: Function
+) => {
+  const { data } = await axios.patch(
+    `http://localhost:8080/users/${userID}/deleteFriend/${friendID}`
+  );
+
+  dispatch(
+    setRemoveFriend({
+      friendID: friendID,
+    })
+  );
+  grabProfileData();
+  grabFriendsList();
+  console.log(data);
+};
+
 const Profile = () => {
   const user = useSelector<UserState, User>((state) => state.user);
   const posts = useSelector<PostState, PostsArray>((state) => state.posts);
@@ -79,7 +140,7 @@ const Profile = () => {
       `http://localhost:8080/users/profile/${router.query.id}`
     );
     setProfileData(data[0]);
-    // console.log(data);
+    console.log(data);
   };
 
   const grabFriendsList = async () => {
@@ -115,8 +176,13 @@ const Profile = () => {
   }, [router.query.id]);
 
   useEffect(() => {
-    grabFriendRequests();
-  }, []);
+    if (user) {
+      console.log(user);
+      grabFriendRequests();
+      grabProfileData();
+      grabFriendsList();
+    }
+  }, [user]);
 
   return (
     <div className={ProfileStyles.profile}>
@@ -157,7 +223,8 @@ const Profile = () => {
                 <FriendStatus
                   profileData={profileData}
                   friendRequests={friendRequests}
-                  sendFriendRequest={sendFriendRequest}
+                  grabFriendsList={grabFriendsList}
+                  grabProfileData={grabProfileData}
                 />
               )}
             </div>

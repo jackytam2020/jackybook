@@ -4,6 +4,7 @@ import { Modal, Box, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
+import Link from 'next/link';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -42,14 +43,16 @@ const LikedUser: React.FC<LikedUserProps> = ({
   const [isClicked, setIsClicked] = useState<boolean>(false);
   return (
     <div className={likeModalStyles.likeModal__likedUser}>
-      <div className={likeModalStyles.likeModal__user}>
-        <img
-          className={likeModalStyles.likeModal__profilePic}
-          src={`http://localhost:8080/assets/${picturePath}`}
-          alt={picturePath}
-        />
-        <p>{`${firstName} ${lastName}`}</p>
-      </div>
+      <Link href={`/profile/${likeID}`}>
+        <div className={likeModalStyles.likeModal__user}>
+          <img
+            className={likeModalStyles.likeModal__profilePic}
+            src={`http://localhost:8080/assets/${picturePath}`}
+            alt={picturePath}
+          />
+          <p>{`${firstName} ${lastName}`}</p>
+        </div>
+      </Link>
       {friends.includes(loggedInUser) || likeID === loggedInUser ? null : (
         <Button
           variant="contained"
