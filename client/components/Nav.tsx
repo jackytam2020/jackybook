@@ -75,7 +75,9 @@ function Nav() {
       <AppBar position="relative">
         <Toolbar className={navStyles.nav}>
           <div className={navStyles.nav__left}>
-            <Typography variant="h5">JackyBook</Typography>
+            <Link href={`/home`}>
+              <Typography variant="h5">JackyBook</Typography>
+            </Link>
             {user !== null && (
               <Search>
                 <SearchIconWrapper>
@@ -104,11 +106,13 @@ function Nav() {
                 </Badge>
               </IconButton>
 
-              <img
-                className={navStyles.nav__profilePic}
-                src={`http://localhost:8080/assets/${user.picturePath}`}
-                alt={user.picturePath}
-              />
+              <Link href={`/profile/${user._id}`}>
+                <img
+                  className={navStyles.nav__profilePic}
+                  src={`http://localhost:8080/assets/${user.picturePath}`}
+                  alt={user.picturePath}
+                />
+              </Link>
               <Link href={'/'}>
                 <Button
                   style={{ color: 'white', border: '1px solid white' }}

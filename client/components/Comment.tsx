@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import commentStyles from '../styles/Comment.module.scss';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import Link from 'next/link';
 
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
@@ -93,17 +94,21 @@ const Comment = ({
         if (isEditDeleteOpen === false) setShowMoreIcon(false);
       }}
     >
-      <img
-        className={commentStyles.commentContainer__profilePic}
-        src={`http://localhost:8080/assets/${userPicturePath}`}
-        alt={userPicturePath}
-      />
+      <Link href={`/profile/${userID}`}>
+        <img
+          className={commentStyles.commentContainer__profilePic}
+          src={`http://localhost:8080/assets/${userPicturePath}`}
+          alt={userPicturePath}
+        />
+      </Link>
       <div className={commentStyles.commentContainer__right}>
         <div className={commentStyles.commentContainer__rightRow}>
           <div className={commentStyles.commentContainer__commentBox}>
-            <p
-              className={commentStyles.commentContainer__user}
-            >{`${firstName} ${lastName}`}</p>
+            <Link href={`/profile/${userID}`}>
+              <p
+                className={commentStyles.commentContainer__user}
+              >{`${firstName} ${lastName}`}</p>
+            </Link>
             <p className={commentStyles.commentContainer__comment}>{comment}</p>
             {likes ? (
               <LikeCounter

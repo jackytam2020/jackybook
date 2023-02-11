@@ -1,11 +1,10 @@
 import express from 'express';
 import User from '../models/Users.js';
 import FriendRequest from '../models/FriendRequests.js';
+import axios from 'axios';
 
-export const grabProfile = (req, res) => {
-  if (!req.params.id) {
-    return res.status(400).json({ message: 'Missing User ID' });
-  } else {
+export const grabProfile = async (req, res) => {
+  try {
     User.find({ _id: req.params.id })
       .then((result) => {
         res.status(200).json(result);
@@ -13,23 +12,29 @@ export const grabProfile = (req, res) => {
       .catch((err) => {
         res.status(404).json(err);
       });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
 export const grabUserFriends = (req, res) => {
-  if (!req.params.id) {
-    return res.status(400).json({ message: 'Missing User ID' });
-  } else {
+  try {
     User.find({ _id: req.params.id }, 'friends', function (err, result) {
       if (err) res.status(404).json(err);
-      res.status(200).json(result);
+      const friendsArr = result[0].friends;
+
+      User.find({ _id: { $in: friendsArr } }, function (err, result) {
+        res.status(200).json(result);
+      });
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
 export const sendFriendRequest = async (req, res) => {
   try {
-    const { firstName, lastName } = req.body;
+    const { firstName, lastName, picturePath } = req.body;
     const userID = req.params.id;
     const targetID = req.params.friendID;
 
@@ -46,10 +51,11 @@ export const sendFriendRequest = async (req, res) => {
       lastName,
       userID,
       targetID,
+      picturePath,
     });
 
     const savedRequest = await newRequest.save();
-    res.status(201).json(newRequest);
+    res.status(201).json(savedRequest);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -62,15 +68,18 @@ export const removeFriendRequest = async (req, res) => {
 
     const requestUser = await User.findById(requestSender);
 
-    if (requestUser.friendRequests.includes(userID)) {
-      requestUser.friendRequests = requestUser.friendRequests.filter(
-        (id) => userID !== id
-      );
-      FriendRequest.deleteOne({ userID: requestSender }).then((result) => {
-        res.status(200).json({ message: 'deleted friend request' });
-      });
-      await requestUser.save();
-    }
+    await User.updateOne(
+      { _id: requestSender },
+      {
+        $pull: { friendRequests: userID },
+      }
+    );
+
+    await FriendRequest.deleteOne({ userID: requestSender });
+    res.status(200).json({
+      message:
+        'Deleted friend request and updated the friendRequests array in the User collection',
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -95,21 +104,17 @@ export const grabAllFriendRequests = async (req, res) => {
 
 export const addNewFriend = async (req, res) => {
   try {
-    if (!req.params.id || !req.params.friendID) {
-      return res.status(400).json({ message: 'Missing User or Friend ID' });
-    } else {
-      const user = await User.findById(req.params.id);
-      const friend = await User.findById(req.params.friendID);
+    const user = await User.findById(req.params.id);
+    const friend = await User.findById(req.params.friendID);
 
-      if (!user.friends.includes(req.params.friendID)) {
-        user.friends.push(req.params.friendID);
-        friend.friends.push(req.params.id);
-        res.status(200).json({ message: 'friend added' });
-        await user.save();
-        await friend.save();
-      } else {
-        res.status(400).json({ message: 'friend is already added' });
-      }
+    if (!user.friends.includes(req.params.friendID)) {
+      user.friends.push(req.params.friendID);
+      friend.friends.push(req.params.id);
+      res.status(200).json({ message: 'friend added' });
+      await user.save();
+      await friend.save();
+    } else {
+      res.status(400).json({ message: 'friend is already added' });
     }
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -118,22 +123,18 @@ export const addNewFriend = async (req, res) => {
 
 export const deleteFriend = async (req, res) => {
   try {
-    if (!req.params.id || !req.params.friendID) {
-      return res.status(400).json({ message: 'Missing User or Friend ID' });
+    const user = await User.findById(req.params.id);
+    const friend = await User.findById(req.params.friendID);
+
+    if (user.friends.includes(req.params.friendID)) {
+      user.friends = user.friends.filter((id) => req.params.friendID !== id);
+      friend.friends = friend.friends.filter((id) => req.params.id !== id);
+
+      res.status(200).json({ message: 'deleted friend' });
+      await user.save();
+      await friend.save();
     } else {
-      const user = await User.findById(req.params.id);
-      const friend = await User.findById(req.params.friendID);
-
-      if (user.friends.includes(req.params.friendID)) {
-        user.friends = user.friends.filter((id) => req.params.friendID !== id);
-        friend.friends = friend.friends.filter((id) => req.params.id !== id);
-
-        res.status(200).json({ message: 'deleted friend' });
-        await user.save();
-        await friend.save();
-      } else {
-        res.status(400).json({ message: 'not on your friend list' });
-      }
+      res.status(400).json({ message: 'not on your friend list' });
     }
   } catch (err) {
     res.status(404).json({ message: err.message });

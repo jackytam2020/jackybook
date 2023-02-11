@@ -1,0 +1,27 @@
+.requestRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+
+  &__requestUser {
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+  }
+  &__requestPic {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  &__requestName:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  &__requestActions {
+    display: flex;
+    column-gap: 1rem;
+    cursor: pointer;
+  }
+}

@@ -1,16 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface FriendsPayload {
-  friends: [];
-}
-
 export interface User {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   picturePath: string;
-  friends: Array<FriendsPayload>;
+  friends: string[];
+  friendRequests: string[];
   location: string;
   occupation: string;
   profileViews: number;
@@ -64,11 +61,30 @@ export const authSlice = createSlice({
       state.token = null;
       state.posts = [];
     },
-    setFriends: (state, action: PayloadAction<FriendsPayload>) => {
+    setNewFriend: (state, action) => {
       if (state.user) {
-        state.user.friends = action.payload.friends;
+        state.user.friends.push(action.payload.newFriend);
       } else {
         console.error('user friends does not exist');
+      }
+    },
+    setFriendRequests: (state, action) => {
+      if (state.user) {
+        state.user.friendRequests.push(action.payload.requests);
+      }
+    },
+    setRemoveFriendRequest: (state, action) => {
+      if (state.user) {
+        state.user.friendRequests = state.user.friendRequests.filter(
+          (request) => !request.includes(action.payload.userID)
+        );
+      }
+    },
+    setRemoveFriend: (state, action) => {
+      if (state.user) {
+        state.user.friends = state.user.friends.filter(
+          (request) => !request.includes(action.payload.friendID)
+        );
       }
     },
     setPosts: (state, action) => {
@@ -84,6 +100,14 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts } =
-  authSlice.actions;
+export const {
+  setMode,
+  setLogin,
+  setLogout,
+  setPosts,
+  setFriendRequests,
+  setNewFriend,
+  setRemoveFriendRequest,
+  setRemoveFriend,
+} = authSlice.actions;
 export default authSlice.reducer;

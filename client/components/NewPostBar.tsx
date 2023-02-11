@@ -28,10 +28,14 @@ interface TokenState {
 }
 
 interface NewPostBarProps {
-  grabFeedPosts: () => Promise<void>;
+  grabFeedPosts?: () => void;
+  grabProfileFeedPosts?: () => void;
 }
 
-const NewPostBar: React.FC<NewPostBarProps> = ({ grabFeedPosts }) => {
+const NewPostBar: React.FC<NewPostBarProps> = ({
+  grabFeedPosts,
+  grabProfileFeedPosts,
+}) => {
   const [mediaFile, setMediaFile] = useState<MediaFile>({
     path: '',
     lastModified: 0,
@@ -70,7 +74,11 @@ const NewPostBar: React.FC<NewPostBarProps> = ({ grabFeedPosts }) => {
       webkitRelativePath: '',
     });
 
-    grabFeedPosts();
+    if (grabFeedPosts) {
+      grabFeedPosts();
+    } else if (grabProfileFeedPosts) {
+      grabProfileFeedPosts();
+    }
     console.log(response);
   };
 

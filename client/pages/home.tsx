@@ -10,7 +10,6 @@ import { PostsArray } from '../state';
 
 import NewPostBar from '../components/NewPostBar';
 import Post from '../components/Post';
-import { ObjectBindingPattern } from 'typescript';
 
 interface UserState {
   user: User;
@@ -19,6 +18,27 @@ interface UserState {
 interface PostState {
   posts: PostsArray;
 }
+
+export const pressLikeButton = async (
+  postID: string,
+  grabFeedPosts: () => void,
+  user: User
+) => {
+  const response = await axios.patch(
+    `http://localhost:8080/posts/${postID}/likePost`,
+    { userID: user._id }
+  );
+  grabFeedPosts();
+  console.log(response);
+};
+
+export const deletePost = async (postID: string, grabFeedPosts: () => void) => {
+  const response = await axios.delete(
+    `http://localhost:8080/posts/${postID}/deletePost`
+  );
+  console.log(response);
+  grabFeedPosts();
+};
 
 const home = () => {
   const user = useSelector<UserState, User>((state) => state.user);
@@ -34,23 +54,6 @@ const home = () => {
         posts: data.reverse(),
       })
     );
-  };
-
-  const pressLikeButton = async (postID: string) => {
-    const response = await axios.patch(
-      `http://localhost:8080/posts/${postID}/likePost`,
-      { userID: user._id }
-    );
-    grabFeedPosts();
-    console.log(response);
-  };
-
-  const deletePost = async (postID: string) => {
-    const response = await axios.delete(
-      `http://localhost:8080/posts/${postID}/deletePost`
-    );
-    console.log(response);
-    grabFeedPosts();
   };
 
   useEffect(() => {
@@ -71,6 +74,8 @@ const home = () => {
       setIsEditDeleteOpen(false);
     }
   };
+
+  console.log(user);
 
   return (
     <div className={homeStyles.home}>

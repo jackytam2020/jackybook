@@ -24,6 +24,10 @@ const FriendRequestSchema = new mongoose.Schema(
       min: 2,
       max: 50,
     },
+    picturePath: {
+      type: String,
+      default: '',
+    },
   },
   { timestamps: true }
 );
