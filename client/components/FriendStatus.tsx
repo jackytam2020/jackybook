@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { User, PostsArray } from '../state';
 import { useDispatch } from 'react-redux';
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 
 import { FriendRequestProps } from '../pages/profile/[id]';
 
@@ -19,15 +19,11 @@ interface UserState {
 interface FriendStatusProps {
   profileData: User;
   friendRequests: FriendRequestProps[];
-  grabFriendsList: () => void;
-  grabProfileData: () => void;
 }
 
 const FriendStatus: React.FC<FriendStatusProps> = ({
   profileData,
   friendRequests,
-  grabFriendsList,
-  grabProfileData,
 }) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const dispatch = useDispatch();
@@ -37,13 +33,7 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
         <Button
           variant="outlined"
           onClick={() => {
-            removeFriend(
-              user._id,
-              profileData._id,
-              grabFriendsList,
-              grabProfileData,
-              dispatch
-            );
+            removeFriend(user._id, profileData._id, dispatch);
           }}
         >
           Remove Friend

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import postStyles from '../styles/Post.module.scss';
-import { Typography, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpOffAltOutlinedIcon from '@mui/icons-material/ThumbUpOffAltOutlined';

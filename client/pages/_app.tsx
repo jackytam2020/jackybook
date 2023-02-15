@@ -15,11 +15,10 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { PersistGate } from 'redux-persist/integration/react';
-import { useSelector } from 'react-redux';
-
+import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 
-const persistConfig = { key: 'root', storage, version: 1 };
+const persistConfig = { timeout: 100, key: 'root', storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
   reducer: persistedReducer,
@@ -31,11 +30,18 @@ const store = configureStore({
     }),
 });
 
+// const store = configureStore({ reducer: authReducer });
+
 export default function App({ Component, pageProps }: AppProps) {
   // const mode = useSelector((state) => state.mode);
+  const router = useRouter();
+
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistStore(store)}>
+      <PersistGate
+        loading={<div>loading...</div>}
+        persistor={persistStore(store)}
+      >
         <Layout>
           <Component {...pageProps} />
         </Layout>
