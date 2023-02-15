@@ -1,23 +1,20 @@
 import React, { useState, FormEvent } from 'react';
-import formStyles from '../styles/form.module.scss';
-import {
-  TextField,
-  Box,
-  Button,
-  useMediaQuery,
-  Typography,
-} from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Typography from '@mui/material/Typography';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import axios from 'axios';
 import Dropzone from 'react-dropzone';
 import { useDispatch } from 'react-redux';
-import state, { setLogin } from '../state/index';
+import { setLogin } from '../state/index';
 import { useRouter } from 'next/navigation';
 
 interface Picture {
-  path: string;
+  path?: string;
   lastModified: number;
-  lastModifiedDate: Date;
+  lastModifiedDate?: Date;
   name: string;
   size: number;
   type: string;
@@ -41,6 +38,10 @@ interface LoginValues {
 
 interface Props {
   page: string;
+}
+
+interface File {
+  append: Function;
 }
 
 const Form: React.FC<Props> = ({ page }) => {
@@ -72,7 +73,7 @@ const Form: React.FC<Props> = ({ page }) => {
   const router = useRouter();
 
   const registerUser = async () => {
-    const formData = new FormData();
+    const formData: File = new FormData();
 
     formData.append('firstName', registerValues.firstName);
     formData.append('lastName', registerValues.lastName);

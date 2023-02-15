@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import newPostStyles from '../styles/NewPostBar.module.scss';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { Typography, Button } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Dropzone from 'react-dropzone';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -10,9 +11,9 @@ import axios from 'axios';
 import { User } from '../state';
 
 interface MediaFile {
-  path: string;
+  path?: string;
   lastModified: number;
-  lastModifiedDate: Date;
+  lastModifiedDate?: Date;
   name: string;
   size: number;
   type: string;
@@ -29,12 +30,16 @@ interface TokenState {
 
 interface NewPostBarProps {
   grabFeedPosts?: () => void;
-  grabProfileFeedPosts?: () => void;
+  // grabProfileFeedPosts?: () => void;
+}
+
+interface File {
+  append: Function;
 }
 
 const NewPostBar: React.FC<NewPostBarProps> = ({
   grabFeedPosts,
-  grabProfileFeedPosts,
+  // grabProfileFeedPosts,
 }) => {
   const [mediaFile, setMediaFile] = useState<MediaFile>({
     path: '',
@@ -51,7 +56,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
   const token = useSelector<TokenState, string>((state) => state.token);
 
   const submitPost = async () => {
-    const formData = new FormData();
+    const formData: File = new FormData();
     formData.append('userID', user._id);
     formData.append('description', post);
     formData.append('picturePath', mediaFile.name);
@@ -76,9 +81,10 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
 
     if (grabFeedPosts) {
       grabFeedPosts();
-    } else if (grabProfileFeedPosts) {
-      grabProfileFeedPosts();
     }
+    // else if (grabProfileFeedPosts) {
+    //   grabProfileFeedPosts();
+    // }
     console.log(response);
   };
 
@@ -88,8 +94,8 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
         <div className={newPostStyles.newPostBar__top}>
           <img
             className={newPostStyles.newPostBar__profilePic}
-            src={`http://localhost:8080/assets/${user.picturePath}`}
-            alt={user.picturePath}
+            src={`http://localhost:8080/assets/${user && user.picturePath}`}
+            alt={user && user.picturePath}
           />
           <input
             className={newPostStyles.newPostBar__postInput}
@@ -132,7 +138,6 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
           variant="contained"
           onClick={() => {
             submitPost();
-            // console.log(user.picturePath);
           }}
         >
           Post

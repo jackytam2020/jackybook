@@ -38,6 +38,27 @@ type InitialState = {
   token: String | null;
   posts: PostsArray[];
 };
+
+const defaultInitialState: InitialState = {
+  mode: 'light',
+  user: null,
+  token: null,
+  posts: [],
+};
+
+let userState, tokenState, postState;
+
+if (typeof window !== 'undefined') {
+  const userStateString = localStorage.getItem('user');
+  userState = userStateString !== null ? JSON.parse(userStateString) : null;
+
+  const tokenStateString = localStorage.getItem('token');
+  tokenState = tokenStateString !== null ? JSON.parse(tokenStateString) : null;
+
+  const postStateString = localStorage.getItem('posts');
+  postState = postStateString !== null ? JSON.parse(postStateString) : null;
+}
+
 const initialState: InitialState = {
   mode: 'light',
   user: null,
@@ -55,6 +76,9 @@ export const authSlice = createSlice({
     setLogin: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
+
+      // localStorage.setItem('user', JSON.stringify(state.user));
+      // localStorage.setItem('token', JSON.stringify(state.token));
     },
     setLogout: (state) => {
       state.user = null;
@@ -89,6 +113,7 @@ export const authSlice = createSlice({
     },
     setPosts: (state, action) => {
       state.posts = action.payload.posts;
+      // localStorage.setItem('posts', JSON.stringify(state.posts));
     },
     // setPost: (state, action) => {
     //   const updatedPosts = state.posts.map((post: Post) => {

@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import homeStyles from '../styles/Home.module.scss';
-import { useMediaQuery, Container, Box } from '@mui/material';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { useDispatch } from 'react-redux';
-import state, { setPosts } from '../state/index';
+import { setPosts } from '../state/index';
 import { PostsArray } from '../state';
 
 import NewPostBar from '../components/NewPostBar';
@@ -74,8 +73,6 @@ const home = () => {
       setIsEditDeleteOpen(false);
     }
   };
-
-  console.log(user);
 
   return (
     <div className={homeStyles.home}>

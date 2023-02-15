@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, Box, Button } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
 import CloseIcon from '@mui/icons-material/Close';
 import editModalStyles from '../styles/EditModal.module.scss';
 
