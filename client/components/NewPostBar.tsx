@@ -30,7 +30,7 @@ interface TokenState {
 
 interface NewPostBarProps {
   grabFeedPosts?: () => void;
-  // grabProfileFeedPosts?: () => void;
+  grabProfileFeedPosts?: () => void;
 }
 
 interface File {
@@ -39,7 +39,7 @@ interface File {
 
 const NewPostBar: React.FC<NewPostBarProps> = ({
   grabFeedPosts,
-  // grabProfileFeedPosts,
+  grabProfileFeedPosts,
 }) => {
   const [mediaFile, setMediaFile] = useState<MediaFile>({
     path: '',
@@ -81,10 +81,9 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
 
     if (grabFeedPosts) {
       grabFeedPosts();
+    } else if (grabProfileFeedPosts) {
+      grabProfileFeedPosts();
     }
-    // else if (grabProfileFeedPosts) {
-    //   grabProfileFeedPosts();
-    // }
     console.log(response);
   };
 

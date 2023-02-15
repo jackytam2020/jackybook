@@ -12,6 +12,7 @@ import {
   setRemoveFriendRequest,
   setRemoveFriend,
 } from '../../state';
+import { GetServerSidePropsContext } from 'next';
 
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
@@ -31,6 +32,12 @@ interface UserState {
 
 interface PostState {
   posts: PostsArray;
+}
+
+interface ProfileProps {
+  serverProfileData: User;
+  serverFriendsData: User[];
+  serverPostData: PostsArray;
 }
 
 export interface FriendRequestProps {
@@ -117,85 +124,77 @@ export const removeFriend = async (
       friendID: friendID,
     })
   );
-  // grabProfileData();
-  // grabFriendsList();
   console.log(data);
 };
 
-const Profile = ({ profileData, friendsList, postData }) => {
+const Profile: React.FC<ProfileProps> = ({
+  serverProfileData,
+  serverFriendsData,
+  serverPostData,
+}) => {
   const dispatch = useDispatch();
   const router = useRouter();
-
-  // useEffect(() => {
-  //   if (!router.isReady) return;
-
-  //   // codes using router.query
-  //   grabProfileData();
-  //   grabFriendsList();
-  //   grabProfileFeedPosts();
-  // }, [router.isReady, router.asPath]);
 
   useEffect(() => {
     dispatch(
       setPosts({
-        posts: postData,
+        posts: serverPostData,
       })
     );
     grabFriendRequests();
-  }, []);
+    grabProfileData();
+    grabFriendsList();
+  }, [router.asPath]);
 
   const user = useSelector<UserState, User>((state) => state.user);
   const posts = useSelector<PostState, PostsArray>((state) => state.posts);
 
-  // const [profileData, setProfileData] = useState<User>();
-  // const [friendsList, setFriendsList] = useState<User[]>([]);
+  const [profileData, setProfileData] = useState<User>(serverProfileData);
+  const [friendsList, setFriendsList] = useState<User[]>(serverFriendsData);
   const [friendRequests, setFriendRequests] = useState<FriendRequestProps[]>(
     []
   );
 
-  //the current page's profile
-  // const grabProfileData = async () => {
-  //   const { data } = await axios.get(
-  //     `http://localhost:8080/users/profile/${router.query.id}`
-  //   );
-  //   setProfileData(data[0]);
-  //   console.log(data);
-  // };
+  //the current page's profile - client side http requests
+  const grabProfileData = async () => {
+    const { data } = await axios.get(
+      `http://localhost:8080/users/profile/${router.query.id}`
+    );
+    setProfileData(data[0]);
+  };
 
-  // const grabFriendsList = async () => {
-  //   const { data } = await axios.get(
-  //     `http://localhost:8080/users/friends/${router.query.id}`
-  //   );
-  //   setFriendsList(data);
-  // };
+  const grabFriendsList = async () => {
+    const { data } = await axios.get(
+      `http://localhost:8080/users/friends/${router.query.id}`
+    );
+    setFriendsList(data);
+  };
 
-  // const grabProfileFeedPosts = async () => {
-  //   const { data } = await axios.get(
-  //     `http://localhost:8080/posts/${router.query.id}/grabPostsFromProfile`
-  //   );
-  //   dispatch(
-  //     setPosts({
-  //       posts: data.reverse(),
-  //     })
-  //   );
-  // };
+  const grabProfileFeedPosts = async () => {
+    const { data } = await axios.get(
+      `http://localhost:8080/posts/${router.query.id}/grabPostsFromProfile`
+    );
+    dispatch(
+      setPosts({
+        posts: data,
+      })
+    );
+  };
 
   const grabFriendRequests = async () => {
     const { data } = await axios.get(
       `http://localhost:8080/users/${user._id}/grabAllFriendRequests`
     );
-    console.log(data);
     setFriendRequests(data);
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     console.log(user);
-  //     grabFriendRequests();
-  //     grabProfileData();
-  //     grabFriendsList();
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    if (user) {
+      grabFriendRequests();
+      grabProfileData();
+      grabFriendsList();
+    }
+  }, [user]);
 
   return (
     <div className={ProfileStyles.profile}>
@@ -236,8 +235,6 @@ const Profile = ({ profileData, friendsList, postData }) => {
                 <FriendStatus
                   profileData={profileData}
                   friendRequests={friendRequests}
-                  // grabFriendsList={grabFriendsList}
-                  // grabProfileData={grabProfileData}
                 />
               )}
             </div>
@@ -256,23 +253,26 @@ const Profile = ({ profileData, friendsList, postData }) => {
           <main className={ProfileStyles.profile__feed}>
             {user._id === profileData._id && (
               <div style={{ marginBottom: '2rem' }}>
-                <NewPostBar />
+                <NewPostBar grabProfileFeedPosts={grabProfileFeedPosts} />
               </div>
             )}
 
             <h2 className={ProfileStyles.profile__feedHeader}>Posts</h2>
             <section className={ProfileStyles.profile__postsSection}>
               {Array.isArray(posts) &&
-                posts.map((post) => (
-                  <Post
-                    key={post._id}
-                    {...post}
-                    loggedInUser={user._id}
-                    pressLikeButton={pressLikeButton}
-                    // grabProfileFeedPosts={grabProfileFeedPosts}
-                    deletePost={deletePost}
-                  />
-                ))}
+                posts
+                  .slice()
+                  .reverse()
+                  .map((post) => (
+                    <Post
+                      key={post._id}
+                      {...post}
+                      loggedInUser={user._id}
+                      pressLikeButton={pressLikeButton}
+                      grabProfileFeedPosts={grabProfileFeedPosts}
+                      deletePost={deletePost}
+                    />
+                  ))}
             </section>
           </main>
 
@@ -300,22 +300,27 @@ const Profile = ({ profileData, friendsList, postData }) => {
   );
 };
 
-export const getServerSideProps = async (context) => {
-  const [profileData, postData, friendsList] = await Promise.all([
-    axios.get(`http://localhost:8080/users/profile/${context.params.id}`),
-    axios.get(
-      `http://localhost:8080/posts/${context.params.id}/grabPostsFromProfile`
-    ),
-    axios.get(`http://localhost:8080/users/friends/${context.params.id}`),
-  ]);
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  if (context.params) {
+    const [serverProfileData, serverPostData, serverFriendsData] =
+      await Promise.all([
+        axios.get(`http://localhost:8080/users/profile/${context.params.id}`),
+        axios.get(
+          `http://localhost:8080/posts/${context.params.id}/grabPostsFromProfile`
+        ),
+        axios.get(`http://localhost:8080/users/friends/${context.params.id}`),
+      ]);
 
-  return {
-    props: {
-      profileData: profileData.data[0],
-      postData: postData.data,
-      friendsList: friendsList.data,
-    },
-  };
+    return {
+      props: {
+        serverProfileData: serverProfileData.data[0],
+        serverPostData: serverPostData.data,
+        serverFriendsData: serverFriendsData.data,
+      },
+    };
+  }
 };
 
 export default Profile;

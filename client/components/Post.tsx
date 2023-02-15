@@ -36,7 +36,7 @@ interface PostProps {
   isEditDeleteOpen: boolean;
   setIsEditDeleteOpen: (arg0: boolean) => void;
   editDeleteMenuRef: React.RefObject<HTMLInputElement>;
-  // grabProfileFeedPosts?: () => void;
+  grabProfileFeedPosts?: () => void;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -57,7 +57,7 @@ const Post: React.FC<PostProps> = ({
   isEditDeleteOpen,
   setIsEditDeleteOpen,
   editDeleteMenuRef,
-  // grabProfileFeedPosts,
+  grabProfileFeedPosts,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -91,10 +91,9 @@ const Post: React.FC<PostProps> = ({
 
     if (grabFeedPosts) {
       grabFeedPosts();
+    } else if (grabProfileFeedPosts) {
+      grabProfileFeedPosts();
     }
-    // else if (grabProfileFeedPosts) {
-    //   grabProfileFeedPosts();
-    // }
     console.log(data);
   };
 
