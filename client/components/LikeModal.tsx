@@ -45,9 +45,17 @@ const LikedUser: React.FC<LikedUserProps> = ({
   loggedInUser,
   likedUserID,
 }) => {
-  const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [buttonStatus, setButtonStatus] = useState<string>('Add Friend');
   const user = useSelector<UserState, User>((state) => state.user);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user.friendRequests.includes(likedUserID)) {
+      setButtonStatus('Cancel Request');
+    } else {
+      setButtonStatus('Add Friend');
+    }
+  }, [user.friendRequests]);
   return (
     <div className={likeModalStyles.likeModal__likedUser}>
       <Link href={`/profile/${likedUserID}`}>
@@ -64,19 +72,14 @@ const LikedUser: React.FC<LikedUserProps> = ({
         <Button
           variant="contained"
           onClick={() => {
-            if (user.friendRequests.includes(likedUserID)) {
-              //run delete friend request function
-              removeFriendRequest(likedUserID, user._id, dispatch);
-            } else {
+            if (buttonStatus === 'Add Friend') {
               sendFriendRequest(user, likedUserID, dispatch);
+            } else if (buttonStatus === 'Cancel Request') {
+              removeFriendRequest(likedUserID, user._id, dispatch);
             }
-            console.log(user.friendRequests);
-            console.log(likedUserID);
           }}
         >
-          {user.friendRequests.includes(likedUserID)
-            ? 'Cancel Request'
-            : 'Add Friend'}
+          {buttonStatus}
         </Button>
       )}
     </div>

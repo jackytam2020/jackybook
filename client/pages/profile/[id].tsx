@@ -111,7 +111,7 @@ export const removeFriendRequest = async (
 export const removeFriend = async (
   userID: string,
   friendID: string,
-  // grabFriendsList: () => void,
+  grabFriendsList: () => void,
   // grabProfileData: () => void,
   dispatch: Function
 ) => {
@@ -124,6 +124,7 @@ export const removeFriend = async (
       friendID: friendID,
     })
   );
+  grabFriendsList();
   console.log(data);
 };
 
@@ -234,7 +235,7 @@ const Profile: React.FC<ProfileProps> = ({
               {profileData._id !== user._id && (
                 <FriendStatus
                   profileData={profileData}
-                  friendRequests={friendRequests}
+                  grabFriendsList={grabFriendsList}
                 />
               )}
             </div>

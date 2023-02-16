@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { User, PostsArray } from '../state';
 import { useDispatch } from 'react-redux';
@@ -18,50 +18,42 @@ interface UserState {
 
 interface FriendStatusProps {
   profileData: User;
-  friendRequests: FriendRequestProps[];
+  grabFriendsList: () => void;
 }
 
 const FriendStatus: React.FC<FriendStatusProps> = ({
   profileData,
-  friendRequests,
+  grabFriendsList,
 }) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const dispatch = useDispatch();
+  const [buttonStatus, setButtonStatus] = useState<string>('Add Friend');
+
+  useEffect(() => {
+    if (user.friends.includes(profileData._id)) {
+      setButtonStatus('Remove Friend');
+    } else if (user.friendRequests.includes(profileData._id)) {
+      setButtonStatus('Cancel Request');
+    } else if (!user.friendRequests.includes(profileData._id)) {
+      setButtonStatus('Add Friend');
+    }
+  }, [user.friendRequests, profileData._id, user.friends]);
   return (
     <div style={{ marginTop: '1rem' }}>
-      {profileData.friends.includes(user._id) && (
-        <Button
-          variant="outlined"
-          onClick={() => {
-            removeFriend(user._id, profileData._id, dispatch);
-          }}
-        >
-          Remove Friend
-        </Button>
-      )}
-      {friendRequests.some((request) =>
-        request.userID.includes(profileData._id)
-      ) ? (
-        <Button variant="contained">Accept Friend Request</Button>
-      ) : (
-        !profileData.friends.includes(user._id) && (
-          <Button
-            variant="contained"
-            onClick={() => {
-              if (user.friendRequests.includes(profileData._id)) {
-                //run delete friend request function
-                removeFriendRequest(profileData._id, user._id, dispatch);
-              } else {
-                sendFriendRequest(user, profileData._id, dispatch);
-              }
-            }}
-          >
-            {user.friendRequests.includes(profileData._id)
-              ? 'Cancel Request'
-              : 'Send Friend Request'}
-          </Button>
-        )
-      )}
+      <Button
+        variant={buttonStatus === 'Remove Friend' ? 'outlined' : 'contained'}
+        onClick={() => {
+          if (buttonStatus === 'Remove Friend') {
+            removeFriend(user._id, profileData._id, grabFriendsList, dispatch);
+          } else if (buttonStatus === 'Add Friend') {
+            sendFriendRequest(user, profileData._id, dispatch);
+          } else if (buttonStatus === 'Cancel Request') {
+            removeFriendRequest(profileData._id, user._id, dispatch);
+          }
+        }}
+      >
+        {buttonStatus}
+      </Button>
     </div>
   );
 };
