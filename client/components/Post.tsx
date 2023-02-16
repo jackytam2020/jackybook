@@ -33,9 +33,9 @@ interface PostProps {
   loggedInUser: string;
   userPicturePath: string;
   grabFeedPosts?: () => void;
-  isEditDeleteOpen: boolean;
-  setIsEditDeleteOpen: (arg0: boolean) => void;
-  editDeleteMenuRef: React.RefObject<HTMLInputElement>;
+  // isEditDeleteOpen: boolean;
+  // setIsEditDeleteOpen: (arg0: boolean) => void;
+  // editDeleteMenuRef: React.RefObject<HTMLInputElement>;
   grabProfileFeedPosts?: () => void;
 }
 
@@ -54,9 +54,9 @@ const Post: React.FC<PostProps> = ({
   pressLikeButton,
   userPicturePath,
   grabFeedPosts,
-  isEditDeleteOpen,
-  setIsEditDeleteOpen,
-  editDeleteMenuRef,
+  // isEditDeleteOpen,
+  // setIsEditDeleteOpen,
+  // editDeleteMenuRef,
   grabProfileFeedPosts,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
@@ -227,9 +227,11 @@ const Post: React.FC<PostProps> = ({
         commentsList={commentsList}
         postID={_id}
         grabComments={grabComments}
-        isEditDeleteOpen={isEditDeleteOpen}
-        setIsEditDeleteOpen={setIsEditDeleteOpen}
-        editDeleteMenuRef={editDeleteMenuRef}
+        // isEditDeleteOpen={isEditDeleteOpen}
+        // setIsEditDeleteOpen={setIsEditDeleteOpen}
+        // editDeleteMenuRef={editDeleteMenuRef}
+        grabFeedPosts={grabFeedPosts}
+        grabProfileFeedPosts={grabProfileFeedPosts}
       />
     </div>
   );

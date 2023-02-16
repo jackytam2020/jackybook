@@ -52,11 +52,11 @@ export interface FriendRequestProps {
 //exportable functions
 export const sendFriendRequest = async (
   user: User,
-  targetUser: User,
+  targetUserID: string,
   dispatch: Function
 ) => {
   const { data } = await axios.post(
-    `http://localhost:8080/users/${user._id}/sendFriendRequest/${targetUser._id}`,
+    `http://localhost:8080/users/${user._id}/sendFriendRequest/${targetUserID}`,
     {
       firstName: user.firstName,
       lastName: user.lastName,

@@ -2,6 +2,7 @@ import express from 'express';
 import Post from '../models/Posts.js';
 import User from '../models/Users.js';
 import Comment from '../models/Comments.js';
+import { ObjectId } from 'mongodb';
 
 export const newPost = async (req, res) => {
   try {
@@ -154,7 +155,7 @@ export const addComment = async (req, res) => {
     const { userID, comment, datePosted } = req.body;
     const user = await User.findById(userID);
 
-    console.log(user);
+    const post = await Post.findById(postID);
 
     const newComment = new Comment({
       firstName: user.firstName,
@@ -168,11 +169,12 @@ export const addComment = async (req, res) => {
     });
 
     const savedNewComment = await newComment.save();
-
     //add newly generated comment's id to comments array in post collection
-    await Post.findByIdAndUpdate(postID, {
-      $push: { comments: savedNewComment._id },
-    });
+    post.comments.push(savedNewComment._id);
+    await post.save();
+    // await Post.findByIdAndUpdate(postID, {
+    //   $push: { comments: savedNewComment._id },
+    // });
     res.status(201).json(savedNewComment);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -260,16 +262,16 @@ export const editComment = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
   try {
-    const { commentID } = req.params;
+    const { postID, commentID } = req.params;
     const comment = await Comment.findById(commentID);
 
-    Comment.deleteOne({ _id: commentID }, function (err, result) {
-      if (err) {
-        res.status(400).json({ message: 'Comment was not deleted' });
-      } else {
-        res.status(200).json({ message: 'Deleted Comment' });
-      }
-    });
+    await Post.updateOne(
+      { _id: postID },
+      { $pull: { comments: ObjectId(commentID) } }
+    );
+
+    await Comment.deleteOne({ _id: commentID });
+    res.status(200).json({ message: 'Deleted Comment' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
