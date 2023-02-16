@@ -7,6 +7,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { sendFriendRequest } from '../pages/profile/[id]';
+import { removeFriendRequest } from '../pages/profile/[id]';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -31,7 +34,7 @@ interface LikedUserProps {
   lastName: string;
   friends: string[];
   loggedInUser: string;
-  likeID: string;
+  likedUserID: string;
 }
 
 const LikedUser: React.FC<LikedUserProps> = ({
@@ -40,12 +43,14 @@ const LikedUser: React.FC<LikedUserProps> = ({
   lastName,
   friends,
   loggedInUser,
-  likeID,
+  likedUserID,
 }) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
+  const user = useSelector<UserState, User>((state) => state.user);
+  const dispatch = useDispatch();
   return (
     <div className={likeModalStyles.likeModal__likedUser}>
-      <Link href={`/profile/${likeID}`}>
+      <Link href={`/profile/${likedUserID}`}>
         <div className={likeModalStyles.likeModal__user}>
           <img
             className={likeModalStyles.likeModal__profilePic}
@@ -55,14 +60,23 @@ const LikedUser: React.FC<LikedUserProps> = ({
           <p>{`${firstName} ${lastName}`}</p>
         </div>
       </Link>
-      {friends.includes(loggedInUser) || likeID === loggedInUser ? null : (
+      {friends.includes(loggedInUser) || likedUserID === loggedInUser ? null : (
         <Button
           variant="contained"
           onClick={() => {
-            setIsClicked(!isClicked);
+            if (user.friendRequests.includes(likedUserID)) {
+              //run delete friend request function
+              removeFriendRequest(likedUserID, user._id, dispatch);
+            } else {
+              sendFriendRequest(user, likedUserID, dispatch);
+            }
+            console.log(user.friendRequests);
+            console.log(likedUserID);
           }}
         >
-          {isClicked === true ? 'Cancel Request' : 'Add Friend'}
+          {user.friendRequests.includes(likedUserID)
+            ? 'Cancel Request'
+            : 'Add Friend'}
         </Button>
       )}
     </div>
@@ -113,7 +127,7 @@ const LikeModal: React.FC<LikeModalProps> = ({
                 <LikedUser
                   key={likedUser._id}
                   {...likedUser}
-                  likeID={likedUser._id}
+                  likedUserID={likedUser._id}
                   loggedInUser={user._id}
                 />
               ))}

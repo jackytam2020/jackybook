@@ -53,26 +53,34 @@ const home = () => {
         posts: data.reverse(),
       })
     );
+
+    console.log(data);
   };
 
   useEffect(() => {
     grabFeedPosts();
   }, []);
 
-  const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
-  let editDeleteMenuRef = useRef<HTMLInputElement>();
+  // const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
+  // let editDeleteMenuRef = useRef<HTMLInputElement>(null);
 
-  //close edit delete comment menu by clicking anywhere on the homepage
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside, true);
-  }, []);
+  // //close edit delete comment menu by clicking anywhere on the homepage
+  // useEffect(() => {
+  //   const handleDocumentClick = (event: MouseEvent) => {
+  //     if (
+  //       editDeleteMenuRef.current &&
+  //       !editDeleteMenuRef.current.contains(event.target as Node)
+  //     ) {
+  //       setIsEditDeleteOpen(false);
+  //     }
+  //   };
 
-  //close cart popout when clicked outside
-  const handleClickOutside = (e: MouseEvent) => {
-    if (!editDeleteMenuRef.current?.contains(e.target as HTMLElement)) {
-      setIsEditDeleteOpen(false);
-    }
-  };
+  //   document.addEventListener('mousedown', handleDocumentClick);
+
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleDocumentClick);
+  //   };
+  // }, [editDeleteMenuRef]);
 
   return (
     <div className={homeStyles.home}>
@@ -90,9 +98,9 @@ const home = () => {
                 pressLikeButton={pressLikeButton}
                 loggedInUser={user._id}
                 grabFeedPosts={grabFeedPosts}
-                isEditDeleteOpen={isEditDeleteOpen}
-                setIsEditDeleteOpen={setIsEditDeleteOpen}
-                editDeleteMenuRef={editDeleteMenuRef}
+                // isEditDeleteOpen={isEditDeleteOpen}
+                // setIsEditDeleteOpen={setIsEditDeleteOpen}
+                // editDeleteMenuRef={editDeleteMenuRef}
               />
             ))}
         </section>

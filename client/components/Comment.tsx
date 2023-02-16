@@ -36,9 +36,9 @@ interface CommentProp {
   loggedInUser: string;
   userPicturePath: string;
   userID: string;
-  isEditDeleteOpen: boolean;
-  setIsEditDeleteOpen: (arg0: boolean) => void;
-  editDeleteMenuRef: React.RefObject<HTMLInputElement>;
+  // isEditDeleteOpen: boolean;
+  // setIsEditDeleteOpen: (arg0: boolean) => void;
+  // editDeleteMenuRef: React.RefObject<HTMLInputElement>;
   editComment: (
     commentID: string,
     editValue: string,
@@ -59,9 +59,9 @@ const Comment = ({
   loggedInUser,
   userPicturePath,
   userID,
-  isEditDeleteOpen,
-  setIsEditDeleteOpen,
-  editDeleteMenuRef,
+  // isEditDeleteOpen,
+  // setIsEditDeleteOpen,
+  // editDeleteMenuRef,
   editComment,
   deleteComment,
 }: CommentProp) => {
@@ -69,6 +69,7 @@ const Comment = ({
   const [likedList, setLikedList] = useState<[]>([]);
   const [showMoreIcon, setShowMoreIcon] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
 
   const grabCommentLikedList = async () => {
     const { data } = await axios.get(
@@ -146,7 +147,9 @@ const Comment = ({
                     ? commentStyles.commentContainer__editDeleteMenu
                     : commentStyles.commentContainer__editDeleteMenuHidden
                 }
-                ref={editDeleteMenuRef}
+                onMouseLeave={() => {
+                  setIsEditDeleteOpen(false);
+                }}
               >
                 <p
                   className={commentStyles.commentContainer__editButton}
@@ -160,6 +163,7 @@ const Comment = ({
                   className={commentStyles.commentContainer__deleteButton}
                   onClick={() => {
                     deleteComment(commentID);
+                    setIsEditDeleteOpen(false);
                   }}
                 >
                   Delete

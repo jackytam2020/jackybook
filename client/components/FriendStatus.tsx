@@ -52,7 +52,7 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
                 //run delete friend request function
                 removeFriendRequest(profileData._id, user._id, dispatch);
               } else {
-                sendFriendRequest(user, profileData, dispatch);
+                sendFriendRequest(user, profileData._id, dispatch);
               }
             }}
           >

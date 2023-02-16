@@ -12,9 +12,11 @@ interface CommentSectionProps {
   commentsList: [];
   postID: string;
   grabComments: () => void;
-  isEditDeleteOpen: boolean;
-  setIsEditDeleteOpen: (arg0: boolean) => void;
-  editDeleteMenuRef: React.RefObject<HTMLInputElement>;
+  grabFeedPosts?: () => void;
+  grabProfileFeedPosts?: () => void;
+  // isEditDeleteOpen: boolean;
+  // setIsEditDeleteOpen: (arg0: boolean) => void;
+  // editDeleteMenuRef: React.RefObject<HTMLInputElement>;
 }
 
 interface UserState {
@@ -38,9 +40,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   commentsList,
   postID,
   grabComments,
-  isEditDeleteOpen,
-  setIsEditDeleteOpen,
-  editDeleteMenuRef,
+  // isEditDeleteOpen,
+  // setIsEditDeleteOpen,
+  // editDeleteMenuRef,
+  grabFeedPosts,
+  grabProfileFeedPosts,
 }) => {
   const [newCommentValue, setNewCommentValue] = useState('');
   const user = useSelector<UserState, User>((state) => state.user);
@@ -57,6 +61,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     );
     console.log(response);
     grabComments();
+
+    if (grabFeedPosts) {
+      grabFeedPosts();
+    } else if (grabProfileFeedPosts) {
+      grabProfileFeedPosts();
+    }
   };
 
   const pressLikeCommentButton = async (commentID: string) => {
@@ -86,9 +96,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
   const deleteComment = async (commentID: string) => {
     const { data } = await axios.delete(
-      `http://localhost:8080/posts/${commentID}/deleteComment`
+      `http://localhost:8080/posts/${postID}/deleteComment/${commentID}`
     );
     grabComments();
+    if (grabFeedPosts) {
+      grabFeedPosts();
+    } else if (grabProfileFeedPosts) {
+      grabProfileFeedPosts();
+    }
     console.log(data);
   };
   return (
@@ -141,9 +156,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               loggedInUser={user._id}
               pressLikeCommentButton={pressLikeCommentButton}
               userID={comment.userID}
-              isEditDeleteOpen={isEditDeleteOpen}
-              setIsEditDeleteOpen={setIsEditDeleteOpen}
-              editDeleteMenuRef={editDeleteMenuRef}
+              // isEditDeleteOpen={isEditDeleteOpen}
+              // setIsEditDeleteOpen={setIsEditDeleteOpen}
+              // editDeleteMenuRef={editDeleteMenuRef}
               editComment={editComment}
               deleteComment={deleteComment}
             />
