@@ -1,0 +1,23 @@
+.home {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(244, 244, 244);
+  position: relative;
+  padding-bottom: 5rem;
+
+  &__container {
+    margin-top: 2rem;
+    width: 35%;
+    position: relative;
+  }
+
+  &__postsSection {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+  }
+}

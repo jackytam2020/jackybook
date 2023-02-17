@@ -17,6 +17,7 @@ const CommentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  userPicturePath: String,
   likes: {
     type: Map,
     of: Boolean,

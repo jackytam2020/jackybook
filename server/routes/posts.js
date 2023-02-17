@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.get('/:id/grabFeedPosts', grabFeedPosts);
 router.get('/:id/grabPostsFromProfile', grabPostsFromProfile);
-router.get('/:id/likedList', likedList);
+router.get('/:postID/likedList', likedList);
 router.get('/:postID/grabPostComments', grabPostComments);
 router.get('/:commentID/likedCommentList', likedCommentList);
 router.post('/:postID/addCommentToPost', addComment);
@@ -26,5 +26,5 @@ router.patch('/:postID/likePost', likePost);
 router.patch('/:postID/editPost', editPost);
 router.patch('/:commentID/editComment', editComment);
 router.delete('/:postID/deletePost', deletePost);
-router.delete('/:commentID/deleteComment', deleteComment);
+router.delete('/:postID/deleteComment/:commentID', deleteComment);
 export default router;
