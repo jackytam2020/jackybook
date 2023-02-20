@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import navStyles from '../styles/Nav.module.scss';
 import Link from 'next/link';
 import { styled, alpha } from '@mui/material/styles';
@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { useDispatch } from 'react-redux';
 import state, { setPosts, setLogout } from '../state/index';
+import axios from 'axios';
 
 interface UserState {
   user: User;
@@ -65,9 +66,41 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Nav() {
+function Nav({ socket }) {
   const user = useSelector<UserState, User>((state) => state.user);
   const dispatch = useDispatch();
+  const [notifications, setNotifications] = useState<[]>([]);
+
+  //get request to get all notifications
+  const getNotifications = async () => {
+    const { data } = await axios.get(
+      `http://localhost:8080/notifications/${user._id}/grabNotifications/`
+    );
+    setNotifications(data);
+  };
+
+  //delete request to delete all notifications when pressing mark all as read
+  // const deleteNotifications = () => {
+  //   setNotifications(data)
+  // }
+
+  //call function to get notifications on component mount
+  useEffect(() => {
+    console.log('first function');
+    if (user) {
+      getNotifications();
+    }
+  }, [user]);
+
+  //get real time updated notifications / socket array should be empty at first
+  useEffect(() => {
+    console.log('second function');
+    socket.on('getNotification', (data) => {
+      setNotifications((prev) => [...prev, data]);
+    });
+  }, [socket]);
+
+  console.log(notifications);
 
   return (
     <>
@@ -96,7 +129,7 @@ function Nav() {
           {user !== null && (
             <div className={navStyles.nav__right}>
               <IconButton size="large" color="inherit">
-                <Badge badgeContent={17} color="error">
+                <Badge badgeContent={notifications.length} color="error">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
@@ -119,6 +152,7 @@ function Nav() {
                   variant="outlined"
                   onClick={() => {
                     dispatch(setLogout());
+                    setNotifications([]);
                   }}
                 >
                   Logout

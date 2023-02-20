@@ -5,10 +5,10 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const Layout: React.FunctionComponent<LayoutProps> = ({ children }) => {
+const Layout: React.FunctionComponent<LayoutProps> = ({ children, socket }) => {
   return (
     <div>
-      <Nav />
+      <Nav socket={socket} />
       <div>
         <main>{children}</main>
       </div>

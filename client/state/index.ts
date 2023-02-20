@@ -80,6 +80,9 @@ export const authSlice = createSlice({
       // localStorage.setItem('user', JSON.stringify(state.user));
       // localStorage.setItem('token', JSON.stringify(state.token));
     },
+    setUser: (state, action) => {
+      state.user = action.payload.user;
+    },
     setLogout: (state) => {
       state.user = null;
       state.token = null;
@@ -134,5 +137,6 @@ export const {
   setNewFriend,
   setRemoveFriendRequest,
   setRemoveFriend,
+  setUser,
 } = authSlice.actions;
 export default authSlice.reducer;

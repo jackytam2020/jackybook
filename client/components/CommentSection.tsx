@@ -6,17 +6,16 @@ import { useSelector } from 'react-redux';
 import { User } from '../state';
 
 import Comment from './Comment';
+import { handleNotifications } from '../pages/_app';
 
 interface CommentSectionProps {
   isCommentsOpen: boolean;
   commentsList: [];
   postID: string;
+  userID: string;
   grabComments: () => void;
   grabFeedPosts?: () => void;
   grabProfileFeedPosts?: () => void;
-  // isEditDeleteOpen: boolean;
-  // setIsEditDeleteOpen: (arg0: boolean) => void;
-  // editDeleteMenuRef: React.RefObject<HTMLInputElement>;
 }
 
 interface UserState {
@@ -39,12 +38,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   isCommentsOpen,
   commentsList,
   postID,
+  userID,
   grabComments,
-  // isEditDeleteOpen,
-  // setIsEditDeleteOpen,
-  // editDeleteMenuRef,
   grabFeedPosts,
   grabProfileFeedPosts,
+  socket,
 }) => {
   const [newCommentValue, setNewCommentValue] = useState('');
   const user = useSelector<UserState, User>((state) => state.user);
@@ -61,6 +59,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     );
     console.log(response);
     grabComments();
+    handleNotifications(
+      socket,
+      user,
+      userID,
+      'comment',
+      postID,
+      newCommentValue
+    );
 
     if (grabFeedPosts) {
       grabFeedPosts();
@@ -156,11 +162,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               loggedInUser={user._id}
               pressLikeCommentButton={pressLikeCommentButton}
               userID={comment.userID}
-              // isEditDeleteOpen={isEditDeleteOpen}
-              // setIsEditDeleteOpen={setIsEditDeleteOpen}
-              // editDeleteMenuRef={editDeleteMenuRef}
               editComment={editComment}
               deleteComment={deleteComment}
+              socket={socket}
+              postID={postID}
             />
           ))}
       </section>

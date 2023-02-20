@@ -24,6 +24,7 @@ interface FriendStatusProps {
 const FriendStatus: React.FC<FriendStatusProps> = ({
   profileData,
   grabFriendsList,
+  socket,
 }) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
           if (buttonStatus === 'Remove Friend') {
             removeFriend(user._id, profileData._id, grabFriendsList, dispatch);
           } else if (buttonStatus === 'Add Friend') {
-            sendFriendRequest(user, profileData._id, dispatch);
+            sendFriendRequest(user, profileData._id, dispatch, socket);
           } else if (buttonStatus === 'Cancel Request') {
             removeFriendRequest(profileData._id, user._id, dispatch);
           }

@@ -13,6 +13,7 @@ import Link from 'next/link';
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
+import { handleNotifications } from '../pages/_app';
 
 interface UserState {
   user: User;
@@ -58,6 +59,7 @@ const Post: React.FC<PostProps> = ({
   // setIsEditDeleteOpen,
   // editDeleteMenuRef,
   grabProfileFeedPosts,
+  socket,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -205,6 +207,7 @@ const Post: React.FC<PostProps> = ({
                 } else if (grabFeedPosts) {
                   pressLikeButton(_id, grabFeedPosts, user);
                 }
+                handleNotifications(socket, user, userID, 'like', _id);
               }}
             ></ThumbUpOffAltOutlinedIcon>
           )}
@@ -226,12 +229,11 @@ const Post: React.FC<PostProps> = ({
         isCommentsOpen={isCommentsOpen}
         commentsList={commentsList}
         postID={_id}
+        userID={userID}
         grabComments={grabComments}
-        // isEditDeleteOpen={isEditDeleteOpen}
-        // setIsEditDeleteOpen={setIsEditDeleteOpen}
-        // editDeleteMenuRef={editDeleteMenuRef}
         grabFeedPosts={grabFeedPosts}
         grabProfileFeedPosts={grabProfileFeedPosts}
+        socket={socket}
       />
     </div>
   );

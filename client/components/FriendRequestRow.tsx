@@ -18,6 +18,8 @@ const FriendRequestRow: React.FC<FriendRequestProps> = ({
   picturePath,
   firstName,
   lastName,
+  socket,
+  user,
 }) => {
   const dispatch = useDispatch();
   return (
@@ -38,7 +40,7 @@ const FriendRequestRow: React.FC<FriendRequestProps> = ({
       <div className={friendRequestRowStyles.requestRow__requestActions}>
         <CheckOutlinedIcon
           onClick={() => {
-            acceptFriendRequest(userID, targetID, dispatch);
+            acceptFriendRequest(userID, targetID, dispatch, socket, user);
           }}
         ></CheckOutlinedIcon>
         <CancelOutlinedIcon

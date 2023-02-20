@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import homeStyles from '../styles/Home.module.scss';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -39,7 +39,7 @@ export const deletePost = async (postID: string, grabFeedPosts: () => void) => {
   grabFeedPosts();
 };
 
-const home = () => {
+const home = ({ socket }) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const posts = useSelector<PostState, PostsArray>((state) => state.posts);
   const dispatch = useDispatch();
@@ -53,34 +53,17 @@ const home = () => {
         posts: data.reverse(),
       })
     );
-
-    console.log(data);
   };
 
   useEffect(() => {
     grabFeedPosts();
   }, []);
 
-  // const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
-  // let editDeleteMenuRef = useRef<HTMLInputElement>(null);
-
-  // //close edit delete comment menu by clicking anywhere on the homepage
-  // useEffect(() => {
-  //   const handleDocumentClick = (event: MouseEvent) => {
-  //     if (
-  //       editDeleteMenuRef.current &&
-  //       !editDeleteMenuRef.current.contains(event.target as Node)
-  //     ) {
-  //       setIsEditDeleteOpen(false);
-  //     }
-  //   };
-
-  //   document.addEventListener('mousedown', handleDocumentClick);
-
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleDocumentClick);
-  //   };
-  // }, [editDeleteMenuRef]);
+  useEffect(() => {
+    if (user) {
+      socket?.emit('newUser', user._id, user.firstName, user.picturePath);
+    }
+  }, [socket, user]);
 
   return (
     <div className={homeStyles.home}>
@@ -98,6 +81,7 @@ const home = () => {
                 pressLikeButton={pressLikeButton}
                 loggedInUser={user._id}
                 grabFeedPosts={grabFeedPosts}
+                socket={socket}
                 // isEditDeleteOpen={isEditDeleteOpen}
                 // setIsEditDeleteOpen={setIsEditDeleteOpen}
                 // editDeleteMenuRef={editDeleteMenuRef}
