@@ -41,6 +41,7 @@ interface ProfileProps {
   serverProfileData: User;
   serverFriendsData: User[];
   serverPostData: PostsArray;
+  socket: Socket;
 }
 
 export interface FriendRequestProps {
@@ -50,6 +51,8 @@ export interface FriendRequestProps {
   picturePath: string;
   firstName: string;
   lastName: string;
+  socket: Socket;
+  user: User;
 }
 
 //exportable functions

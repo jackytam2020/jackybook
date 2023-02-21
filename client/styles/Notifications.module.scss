@@ -1,0 +1,28 @@
+.notificationDisplay {
+  width: 400px;
+  min-height: 200px;
+  // height: 500px;
+  background-color: white;
+  position: absolute;
+  z-index: 3;
+  right: 20px;
+  top: -10px;
+  border-radius: 5px;
+  padding: 1rem;
+
+  &__notificationList {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    row-gap: 1rem;
+  }
+  &__headers {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  &__markRead {
+    color: rgb(25, 118, 210);
+    cursor: pointer;
+  }
+}

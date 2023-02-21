@@ -76,12 +76,10 @@ mongoose
 
     let onlineUsers = [];
 
-    const addNewUser = (userID, username, picturePath, socketID) => {
+    const addNewUser = (userID, socketID) => {
       !onlineUsers.some((user) => user.userID === userID) &&
         onlineUsers.push({
           userID,
-          username,
-          picturePath,
           socketID,
         });
       console.log('the array', onlineUsers);
@@ -95,11 +93,11 @@ mongoose
       return onlineUsers.find((user) => user.userID === userID);
     };
     io.on('connection', (socket) => {
-      console.log('a user connected');
+      console.log(`a user connected ${socket.id}`);
 
       // handle socket events here
-      socket.on('newUser', (userID, username, picturePath) => {
-        addNewUser(userID, username, picturePath, socket.id);
+      socket.on('newUser', (userID) => {
+        addNewUser(userID, socket.id);
         console.log('new user');
       });
 
@@ -108,24 +106,32 @@ mongoose
         ({
           senderName,
           senderID,
-          userPicture,
-          receiverName,
+          senderPicturePath,
+          comment,
           receiverID,
           postID,
           type,
+          createdAt,
         }) => {
           const receiver = getUser(receiverID);
           if (receiver) {
             io.to(receiver.socketID).emit('getNotification', {
               senderName,
               senderID,
-              userPicture,
+              senderPicturePath,
+              comment,
               postID,
               type,
+              createdAt,
             });
           }
         }
       );
+
+      socket.on('logout', () => {
+        removeUser(socket.id);
+        console.log('a user logged out');
+      });
 
       socket.on('disconnect', () => {
         removeUser(socket.id);

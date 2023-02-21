@@ -39,3 +39,15 @@ export const grabNotifications = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const deleteNotifications = async (req, res) => {
+  try {
+    const userID = req.params.id;
+    await Notification.deleteMany({ receiverID: userID });
+    Notification.find({ receiverID: userID }).then((result) => {
+      res.status(200).json(result);
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

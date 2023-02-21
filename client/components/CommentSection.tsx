@@ -4,6 +4,7 @@ import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
+import { Socket } from 'socket.io-client';
 
 import Comment from './Comment';
 import { handleNotifications } from '../pages/_app';
@@ -16,6 +17,7 @@ interface CommentSectionProps {
   grabComments: () => void;
   grabFeedPosts?: () => void;
   grabProfileFeedPosts?: () => void;
+  socket: Socket;
 }
 
 interface UserState {

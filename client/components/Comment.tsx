@@ -8,9 +8,9 @@ import LikeModal from './LikeModal';
 import EditModal from './EditModal';
 import axios from 'axios';
 import { handleNotifications } from '../pages/_app';
-import { SocketProp } from '../pages/_app';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
+import { Socket } from 'socket.io-client';
 
 interface LikeCounterProps {
   likes: number;
@@ -47,7 +47,7 @@ interface CommentProp {
     setIsModalOpen: Function
   ) => void;
   deleteComment: (commentID: string) => void;
-  socket: SocketProp;
+  socket: Socket;
 }
 
 interface UserState {

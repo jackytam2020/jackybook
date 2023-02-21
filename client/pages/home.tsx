@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import homeStyles from '../styles/Home.module.scss';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { useDispatch } from 'react-redux';
-import { setPosts } from '../state/index';
+import { setPosts, setSocket } from '../state/index';
 import { PostsArray } from '../state';
+import { io, Socket } from 'socket.io-client';
 
 import NewPostBar from '../components/NewPostBar';
 import Post from '../components/Post';
@@ -16,6 +17,10 @@ interface UserState {
 
 interface PostState {
   posts: PostsArray;
+}
+
+interface HomeProp {
+  socket: Socket;
 }
 
 export const pressLikeButton = async (
@@ -39,7 +44,7 @@ export const deletePost = async (postID: string, grabFeedPosts: () => void) => {
   grabFeedPosts();
 };
 
-const home = ({ socket }) => {
+const home: React.FC<HomeProp> = ({ socket }) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const posts = useSelector<PostState, PostsArray>((state) => state.posts);
   const dispatch = useDispatch();
@@ -59,11 +64,17 @@ const home = ({ socket }) => {
     grabFeedPosts();
   }, []);
 
+  const isConnected = useRef(true);
+
   useEffect(() => {
-    if (user) {
-      socket?.emit('newUser', user._id, user.firstName, user.picturePath);
+    if (isConnected.current) {
+      isConnected.current = false;
+      if (user) {
+        socket?.emit('newUser', user._id);
+      }
     }
   }, [socket, user]);
+  console.log(socket);
 
   return (
     <div className={homeStyles.home}>
@@ -82,9 +93,6 @@ const home = ({ socket }) => {
                 loggedInUser={user._id}
                 grabFeedPosts={grabFeedPosts}
                 socket={socket}
-                // isEditDeleteOpen={isEditDeleteOpen}
-                // setIsEditDeleteOpen={setIsEditDeleteOpen}
-                // editDeleteMenuRef={editDeleteMenuRef}
               />
             ))}
         </section>

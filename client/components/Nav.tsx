@@ -14,16 +14,34 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MessageIcon from '@mui/icons-material/Message';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { useDispatch } from 'react-redux';
-import state, { setPosts, setLogout } from '../state/index';
+import { setLogout } from '../state/index';
 import axios from 'axios';
+import { Socket } from 'socket.io-client';
+import { NotificationProp } from './Layout';
+import { emit } from 'process';
 
 interface UserState {
   user: User;
 }
+
+interface NavProp {
+  socket: Socket;
+  notifications: NotificationProp;
+}
+
+// interface NotificationProp {
+//   createdAt: Date;
+//   postID: string;
+//   receiverID: string;
+//   senderID: string;
+//   senderName: string;
+//   senderPicturePath: string;
+//   type: string;
+//   _id: string;
+// }
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -66,31 +84,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Nav({ socket }) {
+const Nav: React.FC<NavProp> = ({
+  socket,
+  notifications,
+  setNotifications,
+}) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const dispatch = useDispatch();
-  const [notifications, setNotifications] = useState<[]>([]);
-
-  //get request to get all notifications
-  const getNotifications = async () => {
-    const { data } = await axios.get(
-      `http://localhost:8080/notifications/${user._id}/grabNotifications/`
-    );
-    setNotifications(data);
-  };
-
-  //delete request to delete all notifications when pressing mark all as read
-  // const deleteNotifications = () => {
-  //   setNotifications(data)
-  // }
-
-  //call function to get notifications on component mount
-  useEffect(() => {
-    console.log('first function');
-    if (user) {
-      getNotifications();
-    }
-  }, [user]);
 
   //get real time updated notifications / socket array should be empty at first
   useEffect(() => {
@@ -133,11 +133,6 @@ function Nav({ socket }) {
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
-              <IconButton size="large" color="inherit">
-                <Badge badgeContent={2} color="error">
-                  <MessageIcon />
-                </Badge>
-              </IconButton>
 
               <Link href={`/profile/${user._id}`}>
                 <img
@@ -152,6 +147,7 @@ function Nav({ socket }) {
                   variant="outlined"
                   onClick={() => {
                     dispatch(setLogout());
+                    socket.emit('logout');
                     setNotifications([]);
                   }}
                 >
@@ -164,6 +160,6 @@ function Nav({ socket }) {
       </AppBar>
     </>
   );
-}
+};
 
 export default Nav;

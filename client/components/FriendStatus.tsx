@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 import { User, PostsArray } from '../state';
 import { useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
-
-import { FriendRequestProps } from '../pages/profile/[id]';
+import { Socket } from 'socket.io-client';
 
 import {
   sendFriendRequest,
@@ -19,6 +18,7 @@ interface UserState {
 interface FriendStatusProps {
   profileData: User;
   grabFriendsList: () => void;
+  socket: Socket;
 }
 
 const FriendStatus: React.FC<FriendStatusProps> = ({

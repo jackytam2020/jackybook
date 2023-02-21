@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import Link from 'next/link';
+import { Socket } from 'socket.io-client';
 
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
@@ -34,10 +35,8 @@ interface PostProps {
   loggedInUser: string;
   userPicturePath: string;
   grabFeedPosts?: () => void;
-  // isEditDeleteOpen: boolean;
-  // setIsEditDeleteOpen: (arg0: boolean) => void;
-  // editDeleteMenuRef: React.RefObject<HTMLInputElement>;
   grabProfileFeedPosts?: () => void;
+  socket: Socket;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -55,9 +54,6 @@ const Post: React.FC<PostProps> = ({
   pressLikeButton,
   userPicturePath,
   grabFeedPosts,
-  // isEditDeleteOpen,
-  // setIsEditDeleteOpen,
-  // editDeleteMenuRef,
   grabProfileFeedPosts,
   socket,
 }) => {

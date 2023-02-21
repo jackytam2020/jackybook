@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import '../styles/globals.scss';
 import type { AppProps } from 'next/app';
 import authReducer from '../state';
@@ -42,59 +42,65 @@ const store = configureStore({
 
 // const store = configureStore({ reducer: authReducer });
 
-export interface SocketProp {
-  socket: Socket;
-}
-
 export const handleNotifications = async (
-  socket: SocketProp,
+  socket: Socket,
   user: User,
   receiverID: String,
   type: string,
   postID?: string,
   comment?: string
 ) => {
-  socket.emit('sendNotification', {
-    senderName: user.firstName,
-    senderID: user._id,
-    userPicture: user.picturePath,
-    postID: postID,
-    receiverID: receiverID,
-    type: type,
-  });
-
-  //add notification to database
-  const response = await axios.post(
-    `http://localhost:8080/notifications/${user._id}/sendNotification/${receiverID}`,
-    {
-      type: type,
+  //add notification to database unless if user is sending events to themselves
+  if (user._id !== receiverID) {
+    socket.emit('sendNotification', {
+      senderName: user.firstName,
+      senderID: user._id,
       senderPicturePath: user.picturePath,
       comment: comment,
-      senderName: user.firstName,
       postID: postID,
-    }
-  );
+      receiverID: receiverID,
+      type: type,
+      createdAt: new Date(),
+    });
+
+    await axios.post(
+      `http://localhost:8080/notifications/${user._id}/sendNotification/${receiverID}`,
+      {
+        type: type,
+        senderPicturePath: user.picturePath,
+        comment: comment,
+        senderName: user.firstName,
+        postID: postID,
+      }
+    );
+  }
 };
 
 export default function App({ Component, pageProps }: AppProps) {
-  // const [socket, setSocket] = useState();
+  // const [socket, setSocket] = useState<Socket | null>(null);
+
+  // const isConnected = useRef(true);
+  // useEffect(() => {
+  //   if (isConnected.current) {
+  //     isConnected.current = false;
+  //     setSocket(io('http://localhost:8080'));
+  //   }
+  // }, []);
 
   const socket = io('http://localhost:8080');
 
-  useEffect(() => {
-    console.log(socket);
-    // setSocket(newSocket);
-  }, []);
   return (
     <Provider store={store}>
-      <PersistGate
-        loading={<div>loading...</div>}
-        persistor={persistStore(store)}
-      >
-        <Layout socket={socket}>
-          <Component {...pageProps} socket={socket} />
-        </Layout>
-      </PersistGate>
+      {socket && (
+        <PersistGate
+          loading={<div>loading...</div>}
+          persistor={persistStore(store)}
+        >
+          <Layout socket={socket}>
+            <Component {...pageProps} socket={socket} />
+          </Layout>
+        </PersistGate>
+      )}
     </Provider>
   );
 }

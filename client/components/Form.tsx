@@ -10,6 +10,7 @@ import Dropzone from 'react-dropzone';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../state/index';
 import { useRouter } from 'next/navigation';
+import { Socket } from 'socket.io-client';
 
 interface Picture {
   path?: string;
@@ -44,7 +45,7 @@ interface File {
   append: Function;
 }
 
-const Form: React.FC<Props> = ({ page }) => {
+const Form: React.FC<Props> = ({ page, socket }) => {
   const [registerValues, setRegisterValues] = useState<RegisterValues>({
     email: '',
     password: '',
@@ -94,21 +95,21 @@ const Form: React.FC<Props> = ({ page }) => {
   };
 
   const loginUser = async () => {
-    const response = await axios.post('http://localhost:8080/auth/login', {
+    const { data } = await axios.post('http://localhost:8080/auth/login', {
       email: loginValues.email,
       password: loginValues.password,
     });
 
-    if (response) {
+    if (data) {
       dispatch(
         setLogin({
-          user: response.data.user,
-          token: response.data.token,
+          user: data.user,
+          token: data.token,
         })
       );
+      // socket.emit('newUser', data.user._id);
+      router.push('/home');
     }
-
-    router.push('/home');
   };
 
   const handleSubmit = (e: React.SyntheticEvent) => {
@@ -120,6 +121,8 @@ const Form: React.FC<Props> = ({ page }) => {
       loginUser();
     }
   };
+
+  console.log(socket);
 
   return (
     <>
