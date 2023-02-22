@@ -130,7 +130,7 @@ mongoose
 
       socket.on('logout', () => {
         removeUser(socket.id);
-        console.log('a user logged out');
+        console.log('a user logged out', onlineUsers);
       });
 
       socket.on('disconnect', () => {

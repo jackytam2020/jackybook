@@ -124,8 +124,8 @@ export const removeFriend = async (
   userID: string,
   friendID: string,
   grabFriendsList: () => void,
-  // grabProfileData: () => void,
-  dispatch: Function
+  dispatch: Function,
+  grabProfileData: () => void
 ) => {
   const { data } = await axios.patch(
     `http://localhost:8080/users/${userID}/deleteFriend/${friendID}`
@@ -136,8 +136,24 @@ export const removeFriend = async (
       friendID: friendID,
     })
   );
+  grabProfileData();
   grabFriendsList();
   console.log(data);
+};
+
+export const updateLoggedInUser = async (
+  userID: string,
+  dispatch: Function
+) => {
+  const { data } = await axios.get(
+    `http://localhost:8080/users/profile/${userID}`
+  );
+
+  dispatch(
+    setUser({
+      user: data[0],
+    })
+  );
 };
 
 const Profile: React.FC<ProfileProps> = ({
@@ -175,6 +191,8 @@ const Profile: React.FC<ProfileProps> = ({
       `http://localhost:8080/users/profile/${router.query.id}`
     );
     setProfileData(data[0]);
+    console.log(data);
+    console.log(user._id);
   };
 
   const grabFriendsList = async () => {
@@ -219,6 +237,9 @@ const Profile: React.FC<ProfileProps> = ({
     }
   }, [user]);
 
+  console.log(profileData);
+  console.log(user);
+
   return (
     <div className={ProfileStyles.profile}>
       {profileData && user && (
@@ -256,6 +277,7 @@ const Profile: React.FC<ProfileProps> = ({
               </div>
               {profileData._id !== user._id && (
                 <FriendStatus
+                  grabProfileData={grabProfileData}
                   profileData={profileData}
                   grabFriendsList={grabFriendsList}
                   socket={socket}

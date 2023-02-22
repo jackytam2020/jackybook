@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Socket } from 'socket.io-client';
 
 export interface User {
   firstName: string;
@@ -38,7 +37,6 @@ type InitialState = {
   user: User | null;
   token: String | null;
   posts: PostsArray[];
-  socket: Socket | null;
 };
 
 const initialState: InitialState = {
@@ -46,7 +44,6 @@ const initialState: InitialState = {
   user: null,
   token: null,
   posts: [],
-  socket: null,
 };
 
 export const authSlice = createSlice({
@@ -101,10 +98,6 @@ export const authSlice = createSlice({
       state.posts = action.payload.posts;
       // localStorage.setItem('posts', JSON.stringify(state.posts));
     },
-    setSocket: (state, action) => {
-      state.socket = action.payload.socket;
-      // localStorage.setItem('posts', JSON.stringify(state.posts));
-    },
     // setPost: (state, action) => {
     //   const updatedPosts = state.posts.map((post: Post) => {
     //     if (post._id === action.payload.post._id) return action.payload;
@@ -125,6 +118,5 @@ export const {
   setRemoveFriendRequest,
   setRemoveFriend,
   setUser,
-  setSocket,
 } = authSlice.actions;
 export default authSlice.reducer;
