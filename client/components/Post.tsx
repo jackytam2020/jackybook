@@ -104,10 +104,12 @@ const Post: React.FC<PostProps> = ({
     grabComments();
   }, []);
 
-  //mark the post that was selected from the notifications menu
+  //mark the post that was selected from the notifications menu and load the new content
   useEffect(() => {
-    if (selectedPostID === _id) {
+    if (selectedPostID === _id && grabFeedPosts) {
       setBackgroundColor('#78B6E5');
+      grabFeedPosts();
+      grabComments();
       const timer = setTimeout(() => {
         setBackgroundColor('white');
         setSelectedPostID('');

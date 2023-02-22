@@ -4,10 +4,10 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { useDispatch } from 'react-redux';
-import { setPosts, setSocket } from '../state/index';
+import { setPosts } from '../state/index';
 import { PostsArray } from '../state';
 import { Socket } from 'socket.io-client';
-import { scroller } from 'react-scroll';
+// import {socket} from '../service/socket'
 
 import NewPostBar from '../components/NewPostBar';
 import Post from '../components/Post';
@@ -65,6 +65,7 @@ const home: React.FC<HomeProp> = ({
         posts: data.reverse(),
       })
     );
+    console.log(data);
   };
 
   useEffect(() => {
@@ -81,19 +82,6 @@ const home: React.FC<HomeProp> = ({
       }
     }
   }, [socket, user]);
-
-  // var Scroll = require('react-scroll');
-  // var scroller = Scroll.scroller;
-
-  // // useEffect(() => {
-  //   if (selectedPostID) {
-  //     scroller.scrollTo(selectedPostID, {
-  //       duration: 1000,
-  //       delay: 100,
-  //       smooth: true,
-  //     });
-  //   }
-  // }, [selectedPostID]);
 
   return (
     <div className={homeStyles.home}>

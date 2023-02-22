@@ -3,6 +3,14 @@ import notificationRowStyles from '../styles/NotificationRow.module.scss';
 import { scroller } from 'react-scroll';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { User } from '../state';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { updateLoggedInUser } from '../pages/profile/[id]';
+
+interface UserState {
+  user: User;
+}
 
 interface NotificationRowProp {
   senderID: string;
@@ -27,7 +35,9 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
 }) => {
   const [notificationType, setNotificationType] = useState('');
   const router = useRouter();
+  const dispatch = useDispatch();
   const currentUrl = router.asPath;
+  const user = useSelector<UserState, User>((state) => state.user);
 
   useEffect(() => {
     if (type === 'like') {
@@ -35,7 +45,7 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
     } else if (type === 'comment') {
       setNotificationType(`${senderName} commented on your post: "${comment}"`);
     } else if (type === 'likedComment') {
-      setNotificationType(`${senderName} liked your post`);
+      setNotificationType(`${senderName} liked your comment`);
     } else if (type === 'friendRequest') {
       setNotificationType(`${senderName} sent you a friend request`);
     } else if (type === 'acceptedRequest') {
@@ -50,9 +60,10 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
     <div
       className={notificationRowStyles.notificationRow}
       onClick={() => {
-        if (type === 'friendRequest' || type === 'acceptedRequest')
+        if (type === 'friendRequest' || type === 'acceptedRequest') {
           router.push(`/profile/${senderID}`);
-        else if (
+          updateLoggedInUser(user._id, dispatch);
+        } else if (
           type === 'like' ||
           type === 'comment' ||
           type === 'likedComment'
@@ -60,9 +71,9 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
           router.push('/home');
           setSelectedPostID(postID);
           let offset = -100;
-          if (currentUrl !== '/home') {
-            offset = 400;
-          }
+          // if (currentUrl !== '/home') {
+          //   offset = 400;
+          // }
           scroller.scrollTo(postID, {
             duration: 1000,
             delay: 100,

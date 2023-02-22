@@ -19,6 +19,7 @@ import { User } from '../state';
 import { useDispatch } from 'react-redux';
 import { setLogout } from '../state/index';
 import { Socket } from 'socket.io-client';
+// import { socket } from '../service/socket';
 import { NotificationProp } from './Layout';
 
 interface UserState {
