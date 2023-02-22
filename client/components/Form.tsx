@@ -94,21 +94,21 @@ const Form: React.FC<Props> = ({ page }) => {
   };
 
   const loginUser = async () => {
-    const response = await axios.post('http://localhost:8080/auth/login', {
+    const { data } = await axios.post('http://localhost:8080/auth/login', {
       email: loginValues.email,
       password: loginValues.password,
     });
 
-    if (response) {
+    if (data) {
       dispatch(
         setLogin({
-          user: response.data.user,
-          token: response.data.token,
+          user: data.user,
+          token: data.token,
         })
       );
+      // socket.emit('newUser', data.user._id);
+      router.push('/home');
     }
-
-    router.push('/home');
   };
 
   const handleSubmit = (e: React.SyntheticEvent) => {

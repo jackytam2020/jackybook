@@ -7,6 +7,10 @@ import Link from 'next/link';
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
 import axios from 'axios';
+import { handleNotifications } from '../pages/_app';
+import { useSelector } from 'react-redux';
+import { User } from '../state';
+import { Socket } from 'socket.io-client';
 
 interface LikeCounterProps {
   likes: number;
@@ -36,15 +40,18 @@ interface CommentProp {
   loggedInUser: string;
   userPicturePath: string;
   userID: string;
-  // isEditDeleteOpen: boolean;
-  // setIsEditDeleteOpen: (arg0: boolean) => void;
-  // editDeleteMenuRef: React.RefObject<HTMLInputElement>;
+  postID: string;
   editComment: (
     commentID: string,
     editValue: string,
     setIsModalOpen: Function
   ) => void;
   deleteComment: (commentID: string) => void;
+  socket: Socket;
+}
+
+interface UserState {
+  user: User;
 }
 
 const Comment = ({
@@ -59,9 +66,8 @@ const Comment = ({
   loggedInUser,
   userPicturePath,
   userID,
-  // isEditDeleteOpen,
-  // setIsEditDeleteOpen,
-  // editDeleteMenuRef,
+  postID,
+  socket,
   editComment,
   deleteComment,
 }: CommentProp) => {
@@ -70,6 +76,7 @@ const Comment = ({
   const [showMoreIcon, setShowMoreIcon] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
+  const user = useSelector<UserState, User>((state) => state.user);
 
   const grabCommentLikedList = async () => {
     const { data } = await axios.get(
@@ -195,6 +202,14 @@ const Comment = ({
               className={commentStyles.commentContainer__like}
               onClick={() => {
                 pressLikeCommentButton(commentID);
+                handleNotifications(
+                  socket,
+                  user,
+                  userID,
+                  'likedComment',
+                  postID,
+                  comment
+                );
               }}
             >
               Like

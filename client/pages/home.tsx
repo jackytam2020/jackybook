@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import homeStyles from '../styles/Home.module.scss';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { useDispatch } from 'react-redux';
-import { setPosts } from '../state/index';
+import { setPosts, setSocket } from '../state/index';
 import { PostsArray } from '../state';
+import { Socket } from 'socket.io-client';
+import { scroller } from 'react-scroll';
 
 import NewPostBar from '../components/NewPostBar';
 import Post from '../components/Post';
@@ -16,6 +18,12 @@ interface UserState {
 
 interface PostState {
   posts: PostsArray;
+}
+
+interface HomeProp {
+  socket: Socket;
+  selectedPostID: string;
+  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const pressLikeButton = async (
@@ -39,7 +47,11 @@ export const deletePost = async (postID: string, grabFeedPosts: () => void) => {
   grabFeedPosts();
 };
 
-const home = () => {
+const home: React.FC<HomeProp> = ({
+  socket,
+  selectedPostID,
+  setSelectedPostID,
+}) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const posts = useSelector<PostState, PostsArray>((state) => state.posts);
   const dispatch = useDispatch();
@@ -53,34 +65,35 @@ const home = () => {
         posts: data.reverse(),
       })
     );
-
-    console.log(data);
   };
 
   useEffect(() => {
     grabFeedPosts();
   }, []);
 
-  // const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
-  // let editDeleteMenuRef = useRef<HTMLInputElement>(null);
+  const isConnected = useRef(true);
 
-  // //close edit delete comment menu by clicking anywhere on the homepage
-  // useEffect(() => {
-  //   const handleDocumentClick = (event: MouseEvent) => {
-  //     if (
-  //       editDeleteMenuRef.current &&
-  //       !editDeleteMenuRef.current.contains(event.target as Node)
-  //     ) {
-  //       setIsEditDeleteOpen(false);
-  //     }
-  //   };
+  useEffect(() => {
+    if (isConnected.current) {
+      isConnected.current = false;
+      if (user) {
+        socket?.emit('newUser', user._id);
+      }
+    }
+  }, [socket, user]);
 
-  //   document.addEventListener('mousedown', handleDocumentClick);
+  // var Scroll = require('react-scroll');
+  // var scroller = Scroll.scroller;
 
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleDocumentClick);
-  //   };
-  // }, [editDeleteMenuRef]);
+  // // useEffect(() => {
+  //   if (selectedPostID) {
+  //     scroller.scrollTo(selectedPostID, {
+  //       duration: 1000,
+  //       delay: 100,
+  //       smooth: true,
+  //     });
+  //   }
+  // }, [selectedPostID]);
 
   return (
     <div className={homeStyles.home}>
@@ -98,9 +111,9 @@ const home = () => {
                 pressLikeButton={pressLikeButton}
                 loggedInUser={user._id}
                 grabFeedPosts={grabFeedPosts}
-                // isEditDeleteOpen={isEditDeleteOpen}
-                // setIsEditDeleteOpen={setIsEditDeleteOpen}
-                // editDeleteMenuRef={editDeleteMenuRef}
+                socket={socket}
+                selectedPostID={selectedPostID}
+                setSelectedPostID={setSelectedPostID}
               />
             ))}
         </section>

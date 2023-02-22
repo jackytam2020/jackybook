@@ -9,10 +9,12 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import Link from 'next/link';
+import { Socket } from 'socket.io-client';
 
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
+import { handleNotifications } from '../pages/_app';
 
 interface UserState {
   user: User;
@@ -33,10 +35,10 @@ interface PostProps {
   loggedInUser: string;
   userPicturePath: string;
   grabFeedPosts?: () => void;
-  // isEditDeleteOpen: boolean;
-  // setIsEditDeleteOpen: (arg0: boolean) => void;
-  // editDeleteMenuRef: React.RefObject<HTMLInputElement>;
   grabProfileFeedPosts?: () => void;
+  socket: Socket;
+  selectedPostID: string;
+  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -54,16 +56,17 @@ const Post: React.FC<PostProps> = ({
   pressLikeButton,
   userPicturePath,
   grabFeedPosts,
-  // isEditDeleteOpen,
-  // setIsEditDeleteOpen,
-  // editDeleteMenuRef,
   grabProfileFeedPosts,
+  socket,
+  selectedPostID,
+  setSelectedPostID,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [commentsList, setCommentsList] = useState<[]>([]);
   const [likedList, setLikedList] = useState<[]>([]);
+  const [backgroundColor, setBackgroundColor] = useState<string>('white');
 
   const user = useSelector<UserState, User>((state) => state.user);
 
@@ -101,8 +104,27 @@ const Post: React.FC<PostProps> = ({
     grabComments();
   }, []);
 
+  //mark the post that was selected from the notifications menu
+  useEffect(() => {
+    if (selectedPostID === _id) {
+      setBackgroundColor('#78B6E5');
+      const timer = setTimeout(() => {
+        setBackgroundColor('white');
+        setSelectedPostID('');
+      }, 1000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [selectedPostID, socket]);
+
   return (
-    <div className={postStyles.post}>
+    <div
+      className={postStyles.post}
+      id={_id}
+      style={{ backgroundColor: backgroundColor }}
+    >
       <div className={postStyles.post__topButtons}>
         <Link href={`/profile/${userID}`}>
           <div className={postStyles.post__topButtonsLeft}>
@@ -173,6 +195,7 @@ const Post: React.FC<PostProps> = ({
           grabPostLikedList={grabPostLikedList}
           type={'post'}
           likedList={likedList}
+          socket={socket}
         />
         <p
           className={postStyles.post__comments}
@@ -205,6 +228,7 @@ const Post: React.FC<PostProps> = ({
                 } else if (grabFeedPosts) {
                   pressLikeButton(_id, grabFeedPosts, user);
                 }
+                handleNotifications(socket, user, userID, 'like', _id);
               }}
             ></ThumbUpOffAltOutlinedIcon>
           )}
@@ -226,12 +250,11 @@ const Post: React.FC<PostProps> = ({
         isCommentsOpen={isCommentsOpen}
         commentsList={commentsList}
         postID={_id}
+        userID={userID}
         grabComments={grabComments}
-        // isEditDeleteOpen={isEditDeleteOpen}
-        // setIsEditDeleteOpen={setIsEditDeleteOpen}
-        // editDeleteMenuRef={editDeleteMenuRef}
         grabFeedPosts={grabFeedPosts}
         grabProfileFeedPosts={grabProfileFeedPosts}
+        socket={socket}
       />
     </div>
   );

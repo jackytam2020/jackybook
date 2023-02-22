@@ -2,26 +2,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 
   a {
     text-decoration: none;
     color: white;
-  }
-
-  &__searchContainer {
-    position: relative;
-  }
-  &___searchIcon {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-  }
-  &__search {
-    margin-left: 2rem;
-    height: 40px;
-    border: none;
-    border-radius: 5px;
   }
   &__right,
   &__left {

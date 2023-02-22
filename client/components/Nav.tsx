@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import navStyles from '../styles/Nav.module.scss';
 import Link from 'next/link';
 import { styled, alpha } from '@mui/material/styles';
@@ -14,14 +14,21 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MessageIcon from '@mui/icons-material/Message';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { useDispatch } from 'react-redux';
-import state, { setPosts, setLogout } from '../state/index';
+import { setLogout } from '../state/index';
+import { Socket } from 'socket.io-client';
+import { NotificationProp } from './Layout';
 
 interface UserState {
   user: User;
+}
+
+interface NavProp {
+  socket: Socket;
+  notifications: NotificationProp[];
+  setNotifications: React.Dispatch<React.SetStateAction<NotificationProp[]>>;
 }
 
 const Search = styled('div')(({ theme }) => ({
@@ -65,9 +72,23 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Nav() {
+const Nav: React.FC<NavProp> = ({
+  socket,
+  notifications,
+  setNotifications,
+}) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const dispatch = useDispatch();
+
+  //get real time updated notifications / socket array should be empty at first
+  useEffect(() => {
+    console.log('second function');
+    socket.on('getNotification', (data) => {
+      setNotifications((prev) => [...prev, data]);
+    });
+  }, [socket]);
+
+  console.log(notifications);
 
   return (
     <>
@@ -96,13 +117,8 @@ function Nav() {
           {user !== null && (
             <div className={navStyles.nav__right}>
               <IconButton size="large" color="inherit">
-                <Badge badgeContent={17} color="error">
+                <Badge badgeContent={notifications.length} color="error">
                   <NotificationsIcon />
-                </Badge>
-              </IconButton>
-              <IconButton size="large" color="inherit">
-                <Badge badgeContent={2} color="error">
-                  <MessageIcon />
                 </Badge>
               </IconButton>
 
@@ -119,6 +135,8 @@ function Nav() {
                   variant="outlined"
                   onClick={() => {
                     dispatch(setLogout());
+                    socket.emit('logout');
+                    setNotifications([]);
                   }}
                 >
                   Logout
@@ -130,6 +148,6 @@ function Nav() {
       </AppBar>
     </>
   );
-}
+};
 
 export default Nav;

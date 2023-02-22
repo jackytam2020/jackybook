@@ -11,8 +11,11 @@ import {
   setNewFriend,
   setRemoveFriendRequest,
   setRemoveFriend,
+  setUser,
 } from '../../state';
 import { GetServerSidePropsContext } from 'next';
+import { Socket } from 'socket.io-client';
+import { handleNotifications } from '../_app';
 
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
@@ -38,6 +41,7 @@ interface ProfileProps {
   serverProfileData: User;
   serverFriendsData: User[];
   serverPostData: PostsArray;
+  socket: Socket;
 }
 
 export interface FriendRequestProps {
@@ -47,13 +51,16 @@ export interface FriendRequestProps {
   picturePath: string;
   firstName: string;
   lastName: string;
+  socket: Socket;
+  user: User;
 }
 
 //exportable functions
 export const sendFriendRequest = async (
   user: User,
   targetUserID: string,
-  dispatch: Function
+  dispatch: Function,
+  socket: Socket
 ) => {
   const { data } = await axios.post(
     `http://localhost:8080/users/${user._id}/sendFriendRequest/${targetUserID}`,
@@ -68,14 +75,18 @@ export const sendFriendRequest = async (
       requests: data.targetID,
     })
   );
+
+  handleNotifications(socket, user, targetUserID, 'friendRequest');
 };
 
 export const acceptFriendRequest = async (
   userID: string,
   targetID: string,
-  dispatch: Function
+  dispatch: Function,
+  socket: Socket,
+  user: User
 ) => {
-  const { data } = await axios.patch(
+  await axios.patch(
     `http://localhost:8080/users/${targetID}/addFriend/${userID}`
   );
 
@@ -86,6 +97,7 @@ export const acceptFriendRequest = async (
   );
 
   removeFriendRequest(targetID, userID, dispatch);
+  handleNotifications(socket, user, userID, 'acceptedRequest');
 };
 
 export const removeFriendRequest = async (
@@ -111,7 +123,7 @@ export const removeFriendRequest = async (
 export const removeFriend = async (
   userID: string,
   friendID: string,
-  // grabFriendsList: () => void,
+  grabFriendsList: () => void,
   // grabProfileData: () => void,
   dispatch: Function
 ) => {
@@ -124,6 +136,7 @@ export const removeFriend = async (
       friendID: friendID,
     })
   );
+  grabFriendsList();
   console.log(data);
 };
 
@@ -131,6 +144,7 @@ const Profile: React.FC<ProfileProps> = ({
   serverProfileData,
   serverFriendsData,
   serverPostData,
+  socket,
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -193,6 +207,15 @@ const Profile: React.FC<ProfileProps> = ({
       grabFriendRequests();
       grabProfileData();
       grabFriendsList();
+
+      //if the current profile page is the logged in user, update the redux user state
+      if (router.query.id === user._id) {
+        dispatch(
+          setUser({
+            user: profileData,
+          })
+        );
+      }
     }
   }, [user]);
 
@@ -234,7 +257,8 @@ const Profile: React.FC<ProfileProps> = ({
               {profileData._id !== user._id && (
                 <FriendStatus
                   profileData={profileData}
-                  friendRequests={friendRequests}
+                  grabFriendsList={grabFriendsList}
+                  socket={socket}
                 />
               )}
             </div>
@@ -284,7 +308,12 @@ const Profile: React.FC<ProfileProps> = ({
                 <div className={ProfileStyles.profile__requestList}>
                   {Array.isArray(friendRequests) &&
                     friendRequests.map((request) => (
-                      <FriendRequestRow key={request._id} {...request} />
+                      <FriendRequestRow
+                        key={request._id}
+                        {...request}
+                        socket={socket}
+                        user={user}
+                      />
                     ))}
                 </div>
               </section>

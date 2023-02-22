@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { sendFriendRequest } from '../pages/profile/[id]';
 import { removeFriendRequest } from '../pages/profile/[id]';
+import { Socket } from 'socket.io-client';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -35,6 +36,7 @@ interface LikedUserProps {
   friends: string[];
   loggedInUser: string;
   likedUserID: string;
+  socket: Socket;
 }
 
 const LikedUser: React.FC<LikedUserProps> = ({
@@ -44,10 +46,19 @@ const LikedUser: React.FC<LikedUserProps> = ({
   friends,
   loggedInUser,
   likedUserID,
+  socket,
 }) => {
-  const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [buttonStatus, setButtonStatus] = useState<string>('Add Friend');
   const user = useSelector<UserState, User>((state) => state.user);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user.friendRequests.includes(likedUserID)) {
+      setButtonStatus('Cancel Request');
+    } else {
+      setButtonStatus('Add Friend');
+    }
+  }, [user.friendRequests]);
   return (
     <div className={likeModalStyles.likeModal__likedUser}>
       <Link href={`/profile/${likedUserID}`}>
@@ -64,19 +75,14 @@ const LikedUser: React.FC<LikedUserProps> = ({
         <Button
           variant="contained"
           onClick={() => {
-            if (user.friendRequests.includes(likedUserID)) {
-              //run delete friend request function
+            if (buttonStatus === 'Add Friend') {
+              sendFriendRequest(user, likedUserID, dispatch, socket);
+            } else if (buttonStatus === 'Cancel Request') {
               removeFriendRequest(likedUserID, user._id, dispatch);
-            } else {
-              sendFriendRequest(user, likedUserID, dispatch);
             }
-            console.log(user.friendRequests);
-            console.log(likedUserID);
           }}
         >
-          {user.friendRequests.includes(likedUserID)
-            ? 'Cancel Request'
-            : 'Add Friend'}
+          {buttonStatus}
         </Button>
       )}
     </div>
@@ -90,6 +96,7 @@ interface LikeModalProps {
   grabCommentLikedList?: () => void;
   type: string;
   likedList: Array<LikedUserProps>;
+  socket: Socket;
 }
 
 const LikeModal: React.FC<LikeModalProps> = ({
@@ -99,6 +106,7 @@ const LikeModal: React.FC<LikeModalProps> = ({
   likedList,
   type,
   grabCommentLikedList,
+  socket,
 }) => {
   useEffect(() => {
     if (type === 'post' && grabPostLikedList) {
@@ -129,6 +137,7 @@ const LikeModal: React.FC<LikeModalProps> = ({
                   {...likedUser}
                   likedUserID={likedUser._id}
                   loggedInUser={user._id}
+                  socket={socket}
                 />
               ))}
           </div>

@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useRef } from 'react';
 import '../styles/globals.scss';
 import type { AppProps } from 'next/app';
 import authReducer from '../state';
@@ -14,11 +15,20 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import sessionStorage from 'redux-persist/lib/storage/session';
 import { PersistGate } from 'redux-persist/integration/react';
-import { useRouter } from 'next/router';
+import { io, Socket } from 'socket.io-client';
+import axios from 'axios';
+import { User } from '../state';
+
 import Layout from '../components/Layout';
 
-const persistConfig = { timeout: 100, key: 'root', storage, version: 1 };
+const persistConfig = {
+  timeout: 100,
+  key: 'root',
+  storage: sessionStorage,
+  version: 1,
+};
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
   reducer: persistedReducer,
@@ -32,20 +42,71 @@ const store = configureStore({
 
 // const store = configureStore({ reducer: authReducer });
 
+export const handleNotifications = async (
+  socket: Socket,
+  user: User,
+  receiverID: String,
+  type: string,
+  postID?: string,
+  comment?: string
+) => {
+  //add notification to database unless if user is sending events to themselves
+  if (user._id !== receiverID) {
+    socket.emit('sendNotification', {
+      senderName: user.firstName,
+      senderID: user._id,
+      senderPicturePath: user.picturePath,
+      comment: comment,
+      postID: postID,
+      receiverID: receiverID,
+      type: type,
+      createdAt: new Date(),
+    });
+
+    await axios.post(
+      `http://localhost:8080/notifications/${user._id}/sendNotification/${receiverID}`,
+      {
+        type: type,
+        senderPicturePath: user.picturePath,
+        comment: comment,
+        senderName: user.firstName,
+        postID: postID,
+      }
+    );
+  }
+};
+
 export default function App({ Component, pageProps }: AppProps) {
-  // const mode = useSelector((state) => state.mode);
-  const router = useRouter();
+  // const [socket, setSocket] = useState<Socket | null>(null);
+  const [selectedPostID, setSelectedPostID] = useState<string>('');
+
+  // const isConnected = useRef(true);
+  // useEffect(() => {
+  //   if (isConnected.current) {
+  //     isConnected.current = false;
+  //     setSocket(io('http://localhost:8080'));
+  //   }
+  // }, []);
+
+  const socket = io('http://localhost:8080');
 
   return (
     <Provider store={store}>
-      <PersistGate
-        loading={<div>loading...</div>}
-        persistor={persistStore(store)}
-      >
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </PersistGate>
+      {socket && (
+        <PersistGate
+          loading={<div>loading...</div>}
+          persistor={persistStore(store)}
+        >
+          <Layout socket={socket} setSelectedPostID={setSelectedPostID}>
+            <Component
+              {...pageProps}
+              socket={socket}
+              selectedPostID={selectedPostID}
+              setSelectedPostID={setSelectedPostID}
+            />
+          </Layout>
+        </PersistGate>
+      )}
     </Provider>
   );
 }

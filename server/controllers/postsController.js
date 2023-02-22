@@ -61,6 +61,21 @@ export const grabPostsFromProfile = async (req, res) => {
   }
 };
 
+export const grabSinglePost = async (req, res) => {
+  try {
+    const postID = req.params.postID;
+    const post = await Post.findById(postID);
+
+    if (post) {
+      res.status(200).json(post);
+    } else {
+      res.status(404).json({ message: 'post not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const likePost = async (req, res) => {
   try {
     const { postID } = req.params;
