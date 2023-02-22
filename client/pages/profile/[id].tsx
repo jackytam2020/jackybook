@@ -86,7 +86,7 @@ export const acceptFriendRequest = async (
   socket: Socket,
   user: User
 ) => {
-  const { data } = await axios.patch(
+  await axios.patch(
     `http://localhost:8080/users/${targetID}/addFriend/${userID}`
   );
 

@@ -10,7 +10,6 @@ import Dropzone from 'react-dropzone';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../state/index';
 import { useRouter } from 'next/navigation';
-import { Socket } from 'socket.io-client';
 
 interface Picture {
   path?: string;
@@ -45,7 +44,7 @@ interface File {
   append: Function;
 }
 
-const Form: React.FC<Props> = ({ page, socket }) => {
+const Form: React.FC<Props> = ({ page }) => {
   const [registerValues, setRegisterValues] = useState<RegisterValues>({
     email: '',
     password: '',
@@ -121,8 +120,6 @@ const Form: React.FC<Props> = ({ page, socket }) => {
       loginUser();
     }
   };
-
-  console.log(socket);
 
   return (
     <>

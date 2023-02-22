@@ -10,6 +10,7 @@ import { User } from '../state';
 interface LayoutProps {
   children: React.ReactNode;
   socket: Socket;
+  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface UserState {
@@ -17,7 +18,7 @@ interface UserState {
 }
 
 export interface NotificationProp {
-  createdAt: Date;
+  createdAt: string;
   postID: string;
   receiverID: string;
   senderID: string;
@@ -25,9 +26,14 @@ export interface NotificationProp {
   senderPicturePath: string;
   type: string;
   _id: string;
+  comment: string;
 }
 
-const Layout: React.FunctionComponent<LayoutProps> = ({ children, socket }) => {
+const Layout: React.FunctionComponent<LayoutProps> = ({
+  children,
+  socket,
+  setSelectedPostID,
+}) => {
   const [notifications, setNotifications] = useState<NotificationProp[]>([]);
   const user = useSelector<UserState, User>((state) => state.user);
 
@@ -48,7 +54,6 @@ const Layout: React.FunctionComponent<LayoutProps> = ({ children, socket }) => {
 
   //call function to get notifications on component mount
   useEffect(() => {
-    console.log('first function');
     if (user) {
       getNotifications();
     }
@@ -65,6 +70,7 @@ const Layout: React.FunctionComponent<LayoutProps> = ({ children, socket }) => {
         <NotificationsDisplay
           notifications={notifications}
           deleteNotifications={deleteNotifications}
+          setSelectedPostID={setSelectedPostID}
         />
         <main>{children}</main>
       </div>

@@ -1,8 +1,19 @@
 import React from 'react';
 import notificationStyles from '../styles/Notifications.module.scss';
 import NotificationRow from './NotificationRow';
+import { NotificationProp } from './Layout';
 
-const NotificationsDisplay = ({ notifications, deleteNotifications }) => {
+interface NotificationsDisplayProp {
+  notifications: NotificationProp[];
+  deleteNotifications: () => void;
+  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({
+  notifications,
+  deleteNotifications,
+  setSelectedPostID,
+}) => {
   return (
     <div className={notificationStyles.notificationDisplay}>
       <div className={notificationStyles.notificationDisplay__headers}>
@@ -28,7 +39,11 @@ const NotificationsDisplay = ({ notifications, deleteNotifications }) => {
               .slice()
               .reverse()
               .map((notification) => (
-                <NotificationRow key={notification._id} {...notification} />
+                <NotificationRow
+                  key={notification._id}
+                  {...notification}
+                  setSelectedPostID={setSelectedPostID}
+                />
               ))}
           </>
         )}

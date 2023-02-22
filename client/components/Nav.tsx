@@ -18,10 +18,8 @@ import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { useDispatch } from 'react-redux';
 import { setLogout } from '../state/index';
-import axios from 'axios';
 import { Socket } from 'socket.io-client';
 import { NotificationProp } from './Layout';
-import { emit } from 'process';
 
 interface UserState {
   user: User;
@@ -29,19 +27,9 @@ interface UserState {
 
 interface NavProp {
   socket: Socket;
-  notifications: NotificationProp;
+  notifications: NotificationProp[];
+  setNotifications: React.Dispatch<React.SetStateAction<NotificationProp[]>>;
 }
-
-// interface NotificationProp {
-//   createdAt: Date;
-//   postID: string;
-//   receiverID: string;
-//   senderID: string;
-//   senderName: string;
-//   senderPicturePath: string;
-//   type: string;
-//   _id: string;
-// }
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',

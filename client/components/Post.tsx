@@ -37,6 +37,8 @@ interface PostProps {
   grabFeedPosts?: () => void;
   grabProfileFeedPosts?: () => void;
   socket: Socket;
+  selectedPostID: string;
+  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -56,12 +58,15 @@ const Post: React.FC<PostProps> = ({
   grabFeedPosts,
   grabProfileFeedPosts,
   socket,
+  selectedPostID,
+  setSelectedPostID,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [commentsList, setCommentsList] = useState<[]>([]);
   const [likedList, setLikedList] = useState<[]>([]);
+  const [backgroundColor, setBackgroundColor] = useState<string>('white');
 
   const user = useSelector<UserState, User>((state) => state.user);
 
@@ -99,8 +104,27 @@ const Post: React.FC<PostProps> = ({
     grabComments();
   }, []);
 
+  //mark the post that was selected from the notifications menu
+  useEffect(() => {
+    if (selectedPostID === _id) {
+      setBackgroundColor('#78B6E5');
+      const timer = setTimeout(() => {
+        setBackgroundColor('white');
+        setSelectedPostID('');
+      }, 1000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [selectedPostID, socket]);
+
   return (
-    <div className={postStyles.post}>
+    <div
+      className={postStyles.post}
+      id={_id}
+      style={{ backgroundColor: backgroundColor }}
+    >
       <div className={postStyles.post__topButtons}>
         <Link href={`/profile/${userID}`}>
           <div className={postStyles.post__topButtonsLeft}>
@@ -171,6 +195,7 @@ const Post: React.FC<PostProps> = ({
           grabPostLikedList={grabPostLikedList}
           type={'post'}
           likedList={likedList}
+          socket={socket}
         />
         <p
           className={postStyles.post__comments}

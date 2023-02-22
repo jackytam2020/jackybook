@@ -6,7 +6,8 @@ import { User } from '../state';
 import { useDispatch } from 'react-redux';
 import { setPosts, setSocket } from '../state/index';
 import { PostsArray } from '../state';
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
+import { scroller } from 'react-scroll';
 
 import NewPostBar from '../components/NewPostBar';
 import Post from '../components/Post';
@@ -21,6 +22,8 @@ interface PostState {
 
 interface HomeProp {
   socket: Socket;
+  selectedPostID: string;
+  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const pressLikeButton = async (
@@ -44,7 +47,11 @@ export const deletePost = async (postID: string, grabFeedPosts: () => void) => {
   grabFeedPosts();
 };
 
-const home: React.FC<HomeProp> = ({ socket }) => {
+const home: React.FC<HomeProp> = ({
+  socket,
+  selectedPostID,
+  setSelectedPostID,
+}) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const posts = useSelector<PostState, PostsArray>((state) => state.posts);
   const dispatch = useDispatch();
@@ -74,7 +81,19 @@ const home: React.FC<HomeProp> = ({ socket }) => {
       }
     }
   }, [socket, user]);
-  console.log(socket);
+
+  // var Scroll = require('react-scroll');
+  // var scroller = Scroll.scroller;
+
+  // // useEffect(() => {
+  //   if (selectedPostID) {
+  //     scroller.scrollTo(selectedPostID, {
+  //       duration: 1000,
+  //       delay: 100,
+  //       smooth: true,
+  //     });
+  //   }
+  // }, [selectedPostID]);
 
   return (
     <div className={homeStyles.home}>
@@ -93,6 +112,8 @@ const home: React.FC<HomeProp> = ({ socket }) => {
                 loggedInUser={user._id}
                 grabFeedPosts={grabFeedPosts}
                 socket={socket}
+                selectedPostID={selectedPostID}
+                setSelectedPostID={setSelectedPostID}
               />
             ))}
         </section>

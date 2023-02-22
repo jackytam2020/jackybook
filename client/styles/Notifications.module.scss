@@ -7,19 +7,21 @@
   z-index: 3;
   right: 20px;
   top: -10px;
-  border-radius: 5px;
-  padding: 1rem;
+  border-radius: 10px;
 
   &__notificationList {
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
-    row-gap: 1rem;
+    padding: 0 0.5rem;
+    padding-bottom: 1rem;
   }
   &__headers {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    margin-top: 1rem;
+    padding: 0 1rem;
   }
   &__markRead {
     color: rgb(25, 118, 210);

@@ -78,6 +78,7 @@ export const handleNotifications = async (
 
 export default function App({ Component, pageProps }: AppProps) {
   // const [socket, setSocket] = useState<Socket | null>(null);
+  const [selectedPostID, setSelectedPostID] = useState<string>('');
 
   // const isConnected = useRef(true);
   // useEffect(() => {
@@ -96,8 +97,13 @@ export default function App({ Component, pageProps }: AppProps) {
           loading={<div>loading...</div>}
           persistor={persistStore(store)}
         >
-          <Layout socket={socket}>
-            <Component {...pageProps} socket={socket} />
+          <Layout socket={socket} setSelectedPostID={setSelectedPostID}>
+            <Component
+              {...pageProps}
+              socket={socket}
+              selectedPostID={selectedPostID}
+              setSelectedPostID={setSelectedPostID}
+            />
           </Layout>
         </PersistGate>
       )}

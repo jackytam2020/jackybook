@@ -3,6 +3,9 @@
   width: 100%;
   align-items: flex-start;
   column-gap: 1rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+  cursor: pointer;
   &__profilePic {
     min-width: 50px;
     max-width: 50px;
@@ -13,4 +16,9 @@
   &__Date {
     font-size: 0.75rem;
   }
+}
+
+.notificationRow:hover {
+  background-color: rgb(25, 118, 210);
+  color: white;
 }
