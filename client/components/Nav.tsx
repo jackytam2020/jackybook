@@ -108,7 +108,7 @@ const Nav: React.FC<NavProp> = ({
         users.filter((user) =>
           (user.firstName.trim() + user.lastName.trim())
             .toLowerCase()
-            .includes(searchQuery.toLowerCase().trim())
+            .includes(searchQuery.toLowerCase().replace(/\s/g, ''))
         )
       );
     }
@@ -119,7 +119,7 @@ const Nav: React.FC<NavProp> = ({
       users.filter((user) =>
         (user.firstName.trim() + user.lastName.trim())
           .toLowerCase()
-          .includes(searchQuery.toLowerCase().trim())
+          .includes(searchQuery.toLowerCase().replace(/\s/g, ''))
       )
     );
   };
