@@ -7,15 +7,28 @@ interface NotificationsDisplayProp {
   notifications: NotificationProp[];
   deleteNotifications: () => void;
   setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
+  isNotificationOpened: boolean;
+  setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  notificationRef: React.RefObject<HTMLDivElement>;
 }
 
 const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({
   notifications,
   deleteNotifications,
   setSelectedPostID,
+  isNotificationOpened,
+  notificationRef,
+  setIsNotificationOpened,
 }) => {
   return (
-    <div className={notificationStyles.notificationDisplay}>
+    <div
+      className={
+        isNotificationOpened
+          ? notificationStyles.notificationDisplay
+          : notificationStyles.notificationDisplayClosed
+      }
+      ref={notificationRef}
+    >
       <div className={notificationStyles.notificationDisplay__headers}>
         <h2>Notifications</h2>
         <p
@@ -43,6 +56,7 @@ const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({
                   key={notification._id}
                   {...notification}
                   setSelectedPostID={setSelectedPostID}
+                  setIsNotificationOpened={setIsNotificationOpened}
                 />
               ))}
           </>

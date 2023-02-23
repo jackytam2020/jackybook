@@ -35,6 +35,8 @@ interface NavProp {
   socket: Socket;
   notifications: NotificationProp[];
   setNotifications: React.Dispatch<React.SetStateAction<NotificationProp[]>>;
+  setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  isNotificationOpened: boolean;
 }
 
 const Search = styled('div')(({ theme }) => ({
@@ -82,11 +84,13 @@ const Nav: React.FC<NavProp> = ({
   socket,
   notifications,
   setNotifications,
+  setIsNotificationOpened,
+  isNotificationOpened,
 }) => {
   const user = useSelector<UserState, User>((state) => state.user);
   let users = useSelector<UsersState, User[]>((state) => state.users);
   //remove logged in user from users array to display other users in search result
-  users = users.filter((u) => u._id != user._id);
+  if (user) users = users.filter((u) => u._id != user._id);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredUsers, setFilteredUsers] = useState<User[]>([...users]);
   const dispatch = useDispatch();
@@ -165,7 +169,13 @@ const Nav: React.FC<NavProp> = ({
           {user !== null && (
             <div className={navStyles.nav__right}>
               <IconButton size="large" color="inherit">
-                <Badge badgeContent={notifications.length} color="error">
+                <Badge
+                  badgeContent={notifications.length}
+                  color="error"
+                  onClick={() => {
+                    setIsNotificationOpened(true);
+                  }}
+                >
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
