@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   grabProfile,
+  grabAllUsers,
   grabUserFriends,
   addNewFriend,
   deleteFriend,
@@ -10,6 +11,7 @@ import {
 } from '../controllers/usersController.js';
 const router = express.Router();
 
+router.get('/', grabAllUsers);
 router.get('/profile/:id', grabProfile);
 router.get('/friends/:id', grabUserFriends);
 router.get('/:id/grabAllFriendRequests', grabAllFriendRequests);

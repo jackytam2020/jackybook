@@ -2,10 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import homeStyles from '../styles/Home.module.scss';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { User } from '../state';
 import { useDispatch } from 'react-redux';
 import { setPosts } from '../state/index';
-import { PostsArray } from '../state';
+import { User, PostsArray, setAllUsers } from '../state';
 import { Socket } from 'socket.io-client';
 // import {socket} from '../service/socket'
 
@@ -24,6 +23,7 @@ interface HomeProp {
   socket: Socket;
   selectedPostID: string;
   setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
+  users: User[];
 }
 
 export const pressLikeButton = async (
@@ -51,6 +51,7 @@ const home: React.FC<HomeProp> = ({
   socket,
   selectedPostID,
   setSelectedPostID,
+  users,
 }) => {
   const user = useSelector<UserState, User>((state) => state.user);
   const posts = useSelector<PostState, PostsArray>((state) => state.posts);
@@ -70,6 +71,13 @@ const home: React.FC<HomeProp> = ({
 
   useEffect(() => {
     grabFeedPosts();
+
+    //grab all users from database and assign it to redux state
+    dispatch(
+      setAllUsers({
+        users: users,
+      })
+    );
   }, []);
 
   const isConnected = useRef(true);
@@ -111,3 +119,13 @@ const home: React.FC<HomeProp> = ({
 };
 
 export default home;
+
+//grab all users and send it home page as prop
+export const getServerSideProps = async () => {
+  const { data } = await axios.get('http://localhost:8080/users');
+  return {
+    props: {
+      users: data,
+    },
+  };
+};

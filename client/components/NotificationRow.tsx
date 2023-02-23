@@ -62,6 +62,7 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
       onClick={() => {
         if (type === 'friendRequest' || type === 'acceptedRequest') {
           router.push(`/profile/${senderID}`);
+          //need to update user redux state so it doesn't have old data for friend requests
           updateLoggedInUser(user._id, dispatch);
         } else if (
           type === 'like' ||
