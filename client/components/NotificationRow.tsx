@@ -21,6 +21,7 @@ interface NotificationRowProp {
   createdAt: string;
   postID: string;
   setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
+  setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const NotificationRow: React.FC<NotificationRowProp> = ({
@@ -32,6 +33,7 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
   createdAt,
   postID,
   setSelectedPostID,
+  setIsNotificationOpened,
 }) => {
   const [notificationType, setNotificationType] = useState('');
   const router = useRouter();
@@ -82,6 +84,7 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
             offset: offset,
           });
         }
+        setIsNotificationOpened(false);
       }}
     >
       <img

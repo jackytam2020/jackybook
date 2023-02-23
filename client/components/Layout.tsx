@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Nav from './Nav';
 import { Socket } from 'socket.io-client';
 import layoutStyles from '../styles/Layout.module.scss';
@@ -35,6 +35,8 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
   setSelectedPostID,
 }) => {
   const [notifications, setNotifications] = useState<NotificationProp[]>([]);
+  const [isNotificationOpened, setIsNotificationOpened] =
+    useState<boolean>(false);
   const user = useSelector<UserState, User>((state) => state.user);
 
   //get request to get all notifications
@@ -59,18 +61,34 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
     }
   }, [user]);
 
+  const notificationRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', (e) => {
+      // if()
+      if (!notificationRef.current?.contains(e.target as Node)) {
+        setIsNotificationOpened(false);
+      }
+    });
+  }, []);
+
   return (
     <div className={layoutStyles.layout}>
       <Nav
         socket={socket}
         notifications={notifications}
         setNotifications={setNotifications}
+        setIsNotificationOpened={setIsNotificationOpened}
+        isNotificationOpened={isNotificationOpened}
       />
       <div className={layoutStyles.layout__main}>
         <NotificationsDisplay
           notifications={notifications}
+          isNotificationOpened={isNotificationOpened}
+          setIsNotificationOpened={setIsNotificationOpened}
           deleteNotifications={deleteNotifications}
           setSelectedPostID={setSelectedPostID}
+          notificationRef={notificationRef}
         />
         <main>{children}</main>
       </div>
