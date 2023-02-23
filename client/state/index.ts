@@ -37,6 +37,7 @@ type InitialState = {
   user: User | null;
   token: String | null;
   posts: PostsArray[];
+  users: User[];
 };
 
 const initialState: InitialState = {
@@ -44,6 +45,7 @@ const initialState: InitialState = {
   user: null,
   token: null,
   posts: [],
+  users: [],
 };
 
 export const authSlice = createSlice({
@@ -56,9 +58,9 @@ export const authSlice = createSlice({
     setLogin: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
-
-      // localStorage.setItem('user', JSON.stringify(state.user));
-      // localStorage.setItem('token', JSON.stringify(state.token));
+    },
+    setAllUsers: (state, action) => {
+      state.users = action.payload.users;
     },
     setUser: (state, action) => {
       state.user = action.payload.user;
@@ -118,5 +120,6 @@ export const {
   setRemoveFriendRequest,
   setRemoveFriend,
   setUser,
+  setAllUsers,
 } = authSlice.actions;
 export default authSlice.reducer;

@@ -17,6 +17,16 @@ export const grabProfile = async (req, res) => {
   }
 };
 
+export const grabAllUsers = async (req, res) => {
+  try {
+    User.find().then((result) => {
+      res.status(200).json(result);
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const grabUserFriends = (req, res) => {
   try {
     User.find({ _id: req.params.id }, 'friends', function (err, result) {

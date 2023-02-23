@@ -1,0 +1,16 @@
+.searchResults {
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  z-index: 1;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  color: black;
+}
+
+.searchResultsEmpty {
+  display: none;
+}

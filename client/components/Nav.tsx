@@ -21,9 +21,14 @@ import { setLogout } from '../state/index';
 import { Socket } from 'socket.io-client';
 // import { socket } from '../service/socket';
 import { NotificationProp } from './Layout';
+import SearchResults from './SearchResults';
 
 interface UserState {
   user: User;
+}
+
+interface UsersState {
+  users: User[];
 }
 
 interface NavProp {
@@ -79,17 +84,51 @@ const Nav: React.FC<NavProp> = ({
   setNotifications,
 }) => {
   const user = useSelector<UserState, User>((state) => state.user);
+  let users = useSelector<UsersState, User[]>((state) => state.users);
+  //remove logged in user from users array to display other users in search result
+  users = users.filter((u) => u._id != user._id);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([...users]);
   const dispatch = useDispatch();
 
   //get real time updated notifications / socket array should be empty at first
   useEffect(() => {
-    console.log('second function');
     socket.on('getNotification', (data) => {
       setNotifications((prev) => [...prev, data]);
     });
   }, [socket]);
 
-  console.log(notifications);
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Backspace') {
+      setFilteredUsers(
+        users.filter((user) =>
+          (user.firstName.trim() + user.lastName.trim())
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase().trim())
+        )
+      );
+    }
+  };
+
+  const searchUser = () => {
+    setFilteredUsers(
+      users.filter((user) =>
+        (user.firstName.trim() + user.lastName.trim())
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase().trim())
+      )
+    );
+  };
+
+  const handleKeyUp = () => {
+    if (searchQuery === '') {
+      setFilteredUsers([...users]);
+    }
+  };
+
+  useEffect(() => {
+    searchUser();
+  }, [searchQuery]);
 
   return (
     <>
@@ -109,8 +148,16 @@ const Nav: React.FC<NavProp> = ({
                   placeholder="Search…"
                   inputProps={{ 'aria-label': 'search' }}
                   onChange={(e) => {
-                    console.log(e.target.value);
+                    setSearchQuery(e.target.value);
                   }}
+                  onKeyDown={handleKeyDown}
+                  onKeyUp={handleKeyUp}
+                  value={searchQuery}
+                />
+                <SearchResults
+                  filteredUsers={filteredUsers}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
                 />
               </Search>
             )}

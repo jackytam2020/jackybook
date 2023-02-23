@@ -77,16 +77,7 @@ export const handleNotifications = async (
 };
 
 export default function App({ Component, pageProps }: AppProps) {
-  // const [socket, setSocket] = useState<Socket | null>(null);
   const [selectedPostID, setSelectedPostID] = useState<string>('');
-
-  // const isConnected = useRef(true);
-  // useEffect(() => {
-  //   if (isConnected.current) {
-  //     isConnected.current = false;
-  //     setSocket(io('http://localhost:8080'));
-  //   }
-  // }, []);
 
   const socket = io('http://localhost:8080');
 
