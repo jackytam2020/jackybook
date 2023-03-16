@@ -82,7 +82,6 @@ mongoose
           userID,
           socketID,
         });
-      console.log('the array', onlineUsers);
     };
 
     const removeUser = (socketID) => {

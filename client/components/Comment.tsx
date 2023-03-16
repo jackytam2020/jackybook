@@ -11,6 +11,8 @@ import { handleNotifications } from '../utils/notifications/handleNotification';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { Socket } from 'socket.io-client';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 interface LikeCounterProps {
   likes: number;
@@ -90,6 +92,8 @@ const Comment = ({
       setShowMoreIcon(false);
     }
   }, [isEditDeleteOpen]);
+
+  dayjs.extend(relativeTime);
 
   return (
     <div
@@ -217,7 +221,11 @@ const Comment = ({
             </p>
           )}
           <p className={commentStyles.commentContainer__datePosted}>
-            {datePosted}
+            {dayjs(datePosted).fromNow().includes('minute') ||
+            dayjs(datePosted).fromNow().includes('second') ||
+            dayjs(datePosted).fromNow().includes('hour')
+              ? dayjs(datePosted).fromNow()
+              : dayjs(datePosted).format('MM/DD/YYYY')}
           </p>
         </div>
       </div>
