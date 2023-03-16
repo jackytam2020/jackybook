@@ -7,7 +7,7 @@ const FriendRequestSchema = new mongoose.Schema(
       required: true,
       max: 50,
     },
-    targetID: {
+    receiverID: {
       type: String,
       required: true,
       max: 50,

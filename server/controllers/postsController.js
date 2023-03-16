@@ -23,7 +23,7 @@ export const newPost = async (req, res) => {
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -44,7 +44,7 @@ export const grabFeedPosts = async (req, res) => {
         res.status(404).json({ message: 'no posts to show' });
       });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -57,7 +57,7 @@ export const grabPostsFromProfile = async (req, res) => {
       })
       .catch((err) => res.status(404).json({ message: 'no posts to show' }));
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -72,7 +72,7 @@ export const grabSinglePost = async (req, res) => {
       res.status(404).json({ message: 'post not found' });
     }
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -96,7 +96,7 @@ export const likePost = async (req, res) => {
     );
     res.status(200).json(updatedPost);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -114,7 +114,7 @@ export const likedList = async (req, res) => {
       res.status(200).json(result);
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -135,23 +135,14 @@ export const editPost = async (req, res) => {
       }
     );
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
 export const deletePost = async (req, res) => {
   try {
     const { postID } = req.params;
-    // const { userID } = req.body;
     const post = await Post.findById(postID);
-
-    // if (post.userID !== userID) {
-    //   return res.status(403).json({
-    //     message: 'unable to delete post, not original owner of post',
-    //   });
-    // } else {
-
-    // }
     Post.deleteOne({ _id: postID }, function (err, result) {
       if (err) {
         res.status(400).json({ message: 'Post was not deleted' });
@@ -160,7 +151,7 @@ export const deletePost = async (req, res) => {
       }
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -187,12 +178,10 @@ export const addComment = async (req, res) => {
     //add newly generated comment's id to comments array in post collection
     post.comments.push(savedNewComment._id);
     await post.save();
-    // await Post.findByIdAndUpdate(postID, {
-    //   $push: { comments: savedNewComment._id },
-    // });
+
     res.status(201).json(savedNewComment);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -201,12 +190,10 @@ export const grabPostComments = async (req, res) => {
     const { postID } = req.params;
 
     const comments = await Comment.find({ postID: postID });
-    // if (!comments.length) {
-    //   return res.status(404).json({ message: 'no comments found' });
-    // }
-    return res.status(200).json(comments);
+
+    res.status(200).json(comments);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -232,7 +219,7 @@ export const likeComment = async (req, res) => {
     );
     res.status(200).json(updateComment);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -250,7 +237,7 @@ export const likedCommentList = async (req, res) => {
       res.status(200).json(result);
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -271,7 +258,7 @@ export const editComment = async (req, res) => {
       }
     );
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
 
@@ -288,6 +275,6 @@ export const deleteComment = async (req, res) => {
     await Comment.deleteOne({ _id: commentID });
     res.status(200).json({ message: 'Deleted Comment' });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err });
   }
 };
