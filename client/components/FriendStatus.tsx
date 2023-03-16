@@ -4,6 +4,8 @@ import { User } from '../state';
 import { Socket } from 'socket.io-client';
 
 import Button from '@mui/material/Button';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   sendFriendRequest,
@@ -50,6 +52,16 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
       setButtonStatus('Accept Friend Request');
     }
   }, [user.friendRequests, profileData, user.friends]);
+
+  const removeFriendError = () =>
+    toast.error(`${profileData.firstName} is no longer on your friend's list`, {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
   return (
     <div style={{ marginTop: '1rem' }}>
       <Button
@@ -63,7 +75,7 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
               dispatch,
               grabProfileData,
               user,
-              profileData.firstName
+              removeFriendError
             );
           } else if (buttonStatus === 'Add Friend') {
             sendFriendRequest(user, profileData._id, dispatch, socket);
@@ -81,6 +93,7 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
         }}
       >
         {buttonStatus}
+        <ToastContainer />
       </Button>
     </div>
   );

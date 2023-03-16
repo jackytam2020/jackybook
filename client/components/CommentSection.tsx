@@ -135,13 +135,21 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               setNewCommentValue(e.target.value);
             }}
           ></input>
-          <SendIcon
-            className={commentStyles.commentSection__sendIcon}
-            color="primary"
-            onClick={() => {
-              postComment();
-            }}
-          ></SendIcon>
+          {newCommentValue.length > 0 ? (
+            <SendIcon
+              className={commentStyles.commentSection__sendIcon}
+              color="primary"
+              onClick={() => {
+                postComment();
+              }}
+            ></SendIcon>
+          ) : (
+            <SendIcon
+              className={commentStyles.commentSection__sendIcon}
+              sx={{ cursor: 'not-allowed' }}
+              color="disabled"
+            ></SendIcon>
+          )}
         </div>
       </div>
 

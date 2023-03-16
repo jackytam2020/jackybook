@@ -59,6 +59,7 @@ const home: React.FC<HomeProp> = ({
 
   const isConnected = useRef(true);
 
+  //add new online user to socket
   useEffect(() => {
     if (isConnected.current) {
       isConnected.current = false;
@@ -75,7 +76,7 @@ const home: React.FC<HomeProp> = ({
           <NewPostBar grabFeedPosts={grabFeedPosts} />
         </article>
         <section className={homeStyles.home__postsSection}>
-          {Array.isArray(posts) &&
+          {Array.isArray(posts) && posts.length > 0 ? (
             posts.map((post) => (
               <Post
                 key={post._id}
@@ -86,7 +87,10 @@ const home: React.FC<HomeProp> = ({
                 selectedPostID={selectedPostID}
                 setSelectedPostID={setSelectedPostID}
               />
-            ))}
+            ))
+          ) : (
+            <p style={{ color: 'grey' }}>No posts to show</p>
+          )}
         </section>
       </main>
     </div>

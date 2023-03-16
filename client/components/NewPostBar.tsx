@@ -50,6 +50,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     webkitRelativePath: '',
   });
   const [post, setPost] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('bikyb');
 
   const user = useSelector((state: UserRootState) => state.user);
   const token = useSelector((state: TokenRootState) => state.token);
@@ -94,6 +95,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
             src={`http://localhost:8080/assets/${user && user.picturePath}`}
             alt={user && user.picturePath}
           />
+
           <input
             className={newPostStyles.newPostBar__postInput}
             onChange={(e) => {
@@ -130,14 +132,26 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
             Photo/Video
           </Typography>
         </div>
-        <Button
-          variant="contained"
-          onClick={() => {
-            submitPost();
-          }}
-        >
-          Post
-        </Button>
+        {post.length > 0 ? (
+          <Button
+            variant="contained"
+            onClick={() => {
+              submitPost();
+            }}
+          >
+            Post
+          </Button>
+        ) : (
+          <span style={{ cursor: 'not-allowed' }}>
+            <Button
+              disabled
+              variant="contained"
+              className={newPostStyles.newPostBar__disabledButton}
+            >
+              Post
+            </Button>
+          </span>
+        )}
       </div>
     </div>
   );

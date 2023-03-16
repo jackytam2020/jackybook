@@ -10,6 +10,8 @@ import Dropzone from 'react-dropzone';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../state/index';
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Picture {
   path?: string;
@@ -72,7 +74,28 @@ const Form: React.FC<Props> = ({ page }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const registerUser = async () => {
+  const successfulSignUp = () =>
+    toast.success('Account Signed Up', {
+      position: 'bottom-right',
+      autoClose: 1000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
+
+  const loginError = () =>
+    toast.error('Incorrect Email or Password', {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
+
+  const registerUser = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
     const formData: File = new FormData();
 
     formData.append('firstName', registerValues.firstName);
@@ -88,15 +111,20 @@ const Form: React.FC<Props> = ({ page }) => {
       'http://localhost:8080/auth/register',
       formData
     );
+    successfulSignUp();
+
+    setTimeout(() => {
+      router.push('/');
+    }, 1200);
   };
 
   const loginUser = async () => {
-    const { data } = await axios.post('http://localhost:8080/auth/login', {
-      email: loginValues.email,
-      password: loginValues.password,
-    });
+    try {
+      const { data } = await axios.post('http://localhost:8080/auth/login', {
+        email: loginValues.email,
+        password: loginValues.password,
+      });
 
-    if (data) {
       dispatch(
         setLogin({
           user: data.user,
@@ -104,6 +132,8 @@ const Form: React.FC<Props> = ({ page }) => {
         })
       );
       router.push('/home');
+    } catch {
+      loginError();
     }
   };
 
@@ -111,7 +141,7 @@ const Form: React.FC<Props> = ({ page }) => {
     e.preventDefault();
 
     if (page === 'register') {
-      registerUser();
+      registerUser(e);
     } else if (page === 'login') {
       loginUser();
     }
@@ -245,13 +275,32 @@ const Form: React.FC<Props> = ({ page }) => {
                 }}
                 sx={{ gridColumn: 'span 4' }}
               />
-              <Button
-                variant="contained"
-                sx={{ gridColumn: 'span 4' }}
-                type="submit"
-              >
-                Submit
-              </Button>
+              {registerValues.email !== '' &&
+              registerValues.password !== '' &&
+              registerValues.firstName !== '' &&
+              registerValues.lastName !== '' &&
+              registerValues.location !== '' &&
+              registerValues.occupation !== '' &&
+              registerValues.picture.path !== '' ? (
+                <Button
+                  variant="contained"
+                  sx={{ gridColumn: 'span 4' }}
+                  type="submit"
+                >
+                  Submit
+                </Button>
+              ) : (
+                <span
+                  style={{
+                    cursor: 'not-allowed',
+                    gridColumn: 'span 4',
+                  }}
+                >
+                  <Button variant="contained" sx={{ width: '100%' }} disabled>
+                    Submit
+                  </Button>
+                </span>
+              )}
             </>
           )}
           {page === 'login' && (
@@ -281,16 +330,32 @@ const Form: React.FC<Props> = ({ page }) => {
                 }}
                 sx={{ gridColumn: 'span 4' }}
               />
-              <Button
-                variant="contained"
-                sx={{ gridColumn: 'span 4' }}
-                type="submit"
-              >
-                Login
-              </Button>
+              {loginValues.email && loginValues.password !== '' ? (
+                <Button
+                  variant="contained"
+                  sx={{ gridColumn: 'span 4' }}
+                  type="submit"
+                >
+                  Login
+                </Button>
+              ) : (
+                <span
+                  style={{
+                    cursor: 'not-allowed',
+                    gridColumn: 'span 4',
+                  }}
+                >
+                  <Button variant="contained" disabled sx={{ width: '100%' }}>
+                    Login
+                  </Button>
+                </span>
+              )}
             </>
           )}
         </Box>
+        <ToastContainer
+        // toastStyle={{ backgroundColor: 'green', color: 'white' }}
+        />
       </form>
     </>
   );

@@ -179,7 +179,7 @@ const Profile: React.FC<ProfileProps> = ({
 
             <h2 className={ProfileStyles.profile__feedHeader}>Posts</h2>
             <section className={ProfileStyles.profile__postsSection}>
-              {Array.isArray(posts) &&
+              {Array.isArray(posts) && posts.length > 0 ? (
                 posts
                   .slice()
                   .reverse()
@@ -190,7 +190,14 @@ const Profile: React.FC<ProfileProps> = ({
                       loggedInUser={user._id}
                       grabProfileFeedPosts={grabProfileFeedPosts}
                     />
-                  ))}
+                  ))
+              ) : (
+                <p style={{ color: 'grey' }}>
+                  {profileData._id === user._id
+                    ? `No posts to show`
+                    : `${profileData.firstName} has not made a post yet`}
+                </p>
+              )}
             </section>
           </main>
 

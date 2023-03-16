@@ -9,27 +9,24 @@ export const removeFriend = async (
   dispatch: Function,
   grabProfileData: () => void,
   user: User,
-  firstName: string
+  removeFriendError: () => void
 ) => {
-  // const { data } = await axios.patch(
-  //   `http://localhost:8080/users/${userID}/deleteFriend/${friendID}`
-  // );
-
   try {
     await axios.patch(
       `http://localhost:8080/users/${userID}/deleteFriend/${friendID}`
     );
+    updateLoggedInUser(user._id, dispatch);
+
+    dispatch(
+      setRemoveFriend({
+        friendID: friendID,
+      })
+    );
+    grabProfileData();
+    grabFriendsList();
   } catch {
-    alert(`${firstName} is no longer on your friend's list`);
+    removeFriendError();
+    grabProfileData();
+    grabFriendsList();
   }
-
-  updateLoggedInUser(user._id, dispatch);
-
-  dispatch(
-    setRemoveFriend({
-      friendID: friendID,
-    })
-  );
-  grabProfileData();
-  grabFriendsList();
 };
