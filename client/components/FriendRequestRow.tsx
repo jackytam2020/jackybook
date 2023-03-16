@@ -14,7 +14,7 @@ import {
 
 const FriendRequestRow: React.FC<FriendRequestProps> = ({
   userID,
-  targetID,
+  receiverID,
   picturePath,
   firstName,
   lastName,
@@ -40,12 +40,12 @@ const FriendRequestRow: React.FC<FriendRequestProps> = ({
       <div className={friendRequestRowStyles.requestRow__requestActions}>
         <CheckOutlinedIcon
           onClick={() => {
-            acceptFriendRequest(userID, targetID, dispatch, socket, user);
+            acceptFriendRequest(userID, receiverID, dispatch, socket, user);
           }}
         ></CheckOutlinedIcon>
         <CancelOutlinedIcon
           onClick={() => {
-            removeFriendRequest(targetID, userID, dispatch);
+            removeFriendRequest(receiverID, userID, dispatch);
           }}
         ></CancelOutlinedIcon>
       </div>

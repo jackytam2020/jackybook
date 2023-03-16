@@ -10,12 +10,13 @@ import { handleNotifications } from '../notifications/handleNotification';
 
 export const sendFriendRequest = async (
   user: User,
-  targetUserID: string,
+  receiverID: string,
   dispatch: Function,
   socket: Socket
 ) => {
   const { data } = await axios.post(
-    `http://localhost:8080/users/${user._id}/sendFriendRequest/${targetUserID}`,
+    //user is sender
+    `http://localhost:8080/users/${user._id}/sendFriendRequest/${receiverID}`,
     {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -24,47 +25,47 @@ export const sendFriendRequest = async (
   );
   dispatch(
     setFriendRequests({
-      requests: data.targetID,
+      requests: data.receiverID,
     })
   );
 
-  handleNotifications(socket, user, targetUserID, 'friendRequest');
+  handleNotifications(socket, user, receiverID, 'friendRequest');
 };
 
 export const acceptFriendRequest = async (
-  userID: string,
-  targetID: string,
+  senderID: string,
+  receiverID: string,
   dispatch: Function,
   socket: Socket,
   user: User
 ) => {
   await axios.patch(
-    `http://localhost:8080/users/${targetID}/addFriend/${userID}`
+    `http://localhost:8080/users/${receiverID}/addFriend/${senderID}`
   );
 
   dispatch(
     setNewFriend({
-      newFriend: userID,
+      newFriend: senderID,
     })
   );
 
-  removeFriendRequest(targetID, userID, dispatch);
-  handleNotifications(socket, user, userID, 'acceptedRequest');
+  removeFriendRequest(receiverID, senderID, dispatch);
+  handleNotifications(socket, user, senderID, 'acceptedRequest');
 };
 
 export const removeFriendRequest = async (
-  userID: string,
-  requestSenderID: string,
+  receiverID: string,
+  senderID: string,
   dispatch?: Function
 ) => {
   const response = await axios.delete(
-    `http://localhost:8080/users/${userID}/removeFriendRequest/${requestSenderID}`
+    `http://localhost:8080/users/${receiverID}/removeFriendRequest/${senderID}`
   );
 
   if (dispatch) {
     dispatch(
       setRemoveFriendRequest({
-        userID: userID,
+        userID: receiverID,
       })
     );
   }

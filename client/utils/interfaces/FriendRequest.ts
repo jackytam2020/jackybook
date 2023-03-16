@@ -4,7 +4,7 @@ import { Socket } from 'socket.io-client';
 export interface FriendRequestProps {
   _id: string;
   userID: string;
-  targetID: string;
+  receiverID: string;
   picturePath: string;
   firstName: string;
   lastName: string;
