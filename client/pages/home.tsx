@@ -6,16 +6,15 @@ import { useDispatch } from 'react-redux';
 import { setPosts } from '../state/index';
 import { User, PostsArray, setAllUsers } from '../state';
 import { Socket } from 'socket.io-client';
-// import {socket} from '../service/socket'
 
 import NewPostBar from '../components/NewPostBar';
 import Post from '../components/Post';
 
-interface UserState {
+interface UserRootState {
   user: User;
 }
 
-interface PostState {
+interface PostRootState {
   posts: PostsArray;
 }
 
@@ -26,35 +25,14 @@ interface HomeProp {
   users: User[];
 }
 
-export const pressLikeButton = async (
-  postID: string,
-  grabFeedPosts: () => void,
-  user: User
-) => {
-  const response = await axios.patch(
-    `http://localhost:8080/posts/${postID}/likePost`,
-    { userID: user._id }
-  );
-  grabFeedPosts();
-  console.log(response);
-};
-
-export const deletePost = async (postID: string, grabFeedPosts: () => void) => {
-  const response = await axios.delete(
-    `http://localhost:8080/posts/${postID}/deletePost`
-  );
-  console.log(response);
-  grabFeedPosts();
-};
-
 const home: React.FC<HomeProp> = ({
   socket,
   selectedPostID,
   setSelectedPostID,
   users,
 }) => {
-  const user = useSelector<UserState, User>((state) => state.user);
-  const posts = useSelector<PostState, PostsArray>((state) => state.posts);
+  const user = useSelector((state: UserRootState) => state.user);
+  const posts = useSelector((state: PostRootState) => state.posts);
   const dispatch = useDispatch();
 
   const grabFeedPosts = async () => {
@@ -66,7 +44,6 @@ const home: React.FC<HomeProp> = ({
         posts: data.reverse(),
       })
     );
-    console.log(data);
   };
 
   useEffect(() => {
@@ -82,6 +59,7 @@ const home: React.FC<HomeProp> = ({
 
   const isConnected = useRef(true);
 
+  //add new online user to socket
   useEffect(() => {
     if (isConnected.current) {
       isConnected.current = false;
@@ -98,20 +76,21 @@ const home: React.FC<HomeProp> = ({
           <NewPostBar grabFeedPosts={grabFeedPosts} />
         </article>
         <section className={homeStyles.home__postsSection}>
-          {Array.isArray(posts) &&
+          {Array.isArray(posts) && posts.length > 0 ? (
             posts.map((post) => (
               <Post
                 key={post._id}
                 {...post}
-                deletePost={deletePost}
-                pressLikeButton={pressLikeButton}
                 loggedInUser={user._id}
                 grabFeedPosts={grabFeedPosts}
                 socket={socket}
                 selectedPostID={selectedPostID}
                 setSelectedPostID={setSelectedPostID}
               />
-            ))}
+            ))
+          ) : (
+            <p style={{ color: 'grey' }}>No posts to show</p>
+          )}
         </section>
       </main>
     </div>

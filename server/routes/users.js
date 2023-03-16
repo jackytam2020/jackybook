@@ -15,9 +15,12 @@ router.get('/', grabAllUsers);
 router.get('/profile/:id', grabProfile);
 router.get('/friends/:id', grabUserFriends);
 router.get('/:id/grabAllFriendRequests', grabAllFriendRequests);
-router.post('/:id/sendFriendRequest/:friendID', sendFriendRequest);
-router.patch('/:id/addFriend/:friendID', addNewFriend);
+router.post('/:id/sendFriendRequest/:receiverID', sendFriendRequest);
+router.patch('/:receiverID/addFriend/:senderID', addNewFriend);
 router.patch('/:id/deleteFriend/:friendID', deleteFriend);
-router.delete('/:id/removeFriendRequest/:requestSenderID', removeFriendRequest);
+router.delete(
+  '/:receiverID/removeFriendRequest/:senderID',
+  removeFriendRequest
+);
 
 export default router;

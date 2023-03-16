@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import likeModalStyles from '../styles/LikeModalStyles.module.scss';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
+import { Modal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../state';
-import Link from 'next/link';
-import { useDispatch } from 'react-redux';
-import { sendFriendRequest } from '../pages/profile/[id]';
-import { removeFriendRequest } from '../pages/profile/[id]';
+
 import { Socket } from 'socket.io-client';
+
+import LikedUser from './LikedUser';
+import { updateLoggedInUser } from '../utils/updateLoggedInUser';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -39,56 +38,6 @@ interface LikedUserProps {
   socket: Socket;
 }
 
-const LikedUser: React.FC<LikedUserProps> = ({
-  picturePath,
-  firstName,
-  lastName,
-  friends,
-  loggedInUser,
-  likedUserID,
-  socket,
-}) => {
-  const [buttonStatus, setButtonStatus] = useState<string>('Add Friend');
-  const user = useSelector<UserState, User>((state) => state.user);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (user.friendRequests.includes(likedUserID)) {
-      setButtonStatus('Cancel Request');
-    } else {
-      setButtonStatus('Add Friend');
-    }
-  }, [user.friendRequests]);
-  return (
-    <div className={likeModalStyles.likeModal__likedUser}>
-      <Link href={`/profile/${likedUserID}`}>
-        <div className={likeModalStyles.likeModal__user}>
-          <img
-            className={likeModalStyles.likeModal__profilePic}
-            src={`http://localhost:8080/assets/${picturePath}`}
-            alt={picturePath}
-          />
-          <p>{`${firstName} ${lastName}`}</p>
-        </div>
-      </Link>
-      {friends.includes(loggedInUser) || likedUserID === loggedInUser ? null : (
-        <Button
-          variant="contained"
-          onClick={() => {
-            if (buttonStatus === 'Add Friend') {
-              sendFriendRequest(user, likedUserID, dispatch, socket);
-            } else if (buttonStatus === 'Cancel Request') {
-              removeFriendRequest(likedUserID, user._id, dispatch);
-            }
-          }}
-        >
-          {buttonStatus}
-        </Button>
-      )}
-    </div>
-  );
-};
-
 interface LikeModalProps {
   open: boolean;
   setIsModalOpen: Function;
@@ -114,9 +63,13 @@ const LikeModal: React.FC<LikeModalProps> = ({
     } else if (type === 'comment' && grabCommentLikedList) {
       grabCommentLikedList();
     }
+    //update logged in user data whenever modal opens
+    updateLoggedInUser(user._id, dispatch);
   }, [open]);
 
-  const user = useSelector<UserState, User>((state) => state.user);
+  const user = useSelector((state: UserState) => state.user);
+  const dispatch = useDispatch();
+
   return (
     <div className={likeModalStyles.likeModal}>
       <Modal

@@ -19,15 +19,16 @@ import { User } from '../state';
 import { useDispatch } from 'react-redux';
 import { setLogout } from '../state/index';
 import { Socket } from 'socket.io-client';
-// import { socket } from '../service/socket';
-import { NotificationProp } from './Layout';
+import { useRouter } from 'next/router';
+
+import { NotificationProp } from '../utils/interfaces/notifications';
 import SearchResults from './SearchResults';
 
-interface UserState {
+interface UserRootState {
   user: User;
 }
 
-interface UsersState {
+interface UsersRootState {
   users: User[];
 }
 
@@ -36,7 +37,6 @@ interface NavProp {
   notifications: NotificationProp[];
   setNotifications: React.Dispatch<React.SetStateAction<NotificationProp[]>>;
   setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
-  isNotificationOpened: boolean;
 }
 
 const Search = styled('div')(({ theme }) => ({
@@ -85,10 +85,9 @@ const Nav: React.FC<NavProp> = ({
   notifications,
   setNotifications,
   setIsNotificationOpened,
-  isNotificationOpened,
 }) => {
-  const user = useSelector<UserState, User>((state) => state.user);
-  let users = useSelector<UsersState, User[]>((state) => state.users);
+  const user = useSelector((state: UserRootState) => state.user);
+  let users = useSelector((state: UsersRootState) => state.users);
   //remove logged in user from users array to display other users in search result
   if (user) users = users.filter((u) => u._id != user._id);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -134,13 +133,16 @@ const Nav: React.FC<NavProp> = ({
     searchUser();
   }, [searchQuery]);
 
+  const router = useRouter();
+  const path = router.asPath;
+
   return (
     <>
       <CssBaseline />
       <AppBar position="relative">
         <Toolbar className={navStyles.nav}>
           <div className={navStyles.nav__left}>
-            <Link href={`/home`}>
+            <Link href={path === '/Register' ? '/' : `/home`}>
               <Typography variant="h5">JackyBook</Typography>
             </Link>
             {user !== null && (
@@ -168,14 +170,14 @@ const Nav: React.FC<NavProp> = ({
           </div>
           {user !== null && (
             <div className={navStyles.nav__right}>
-              <IconButton size="large" color="inherit">
-                <Badge
-                  badgeContent={notifications.length}
-                  color="error"
-                  onClick={() => {
-                    setIsNotificationOpened(true);
-                  }}
-                >
+              <IconButton
+                size="large"
+                color="inherit"
+                onClick={() => {
+                  setIsNotificationOpened(true);
+                }}
+              >
+                <Badge badgeContent={notifications.length} color="error">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>

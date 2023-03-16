@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { User, PostsArray } from '../state';
-import { useDispatch } from 'react-redux';
-import Button from '@mui/material/Button';
+import { useSelector, useDispatch } from 'react-redux';
+import { User } from '../state';
 import { Socket } from 'socket.io-client';
-import { acceptFriendRequest } from '../pages/profile/[id]';
+
+import Button from '@mui/material/Button';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   sendFriendRequest,
-  removeFriend,
+  acceptFriendRequest,
   removeFriendRequest,
-} from '../pages/profile/[id]';
+} from '../utils/friendRequest/friendRequest';
+import { removeFriend } from '../utils/friends/removeFriend';
 
 interface UserState {
   user: User;
@@ -29,7 +31,7 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
   socket,
   grabProfileData,
 }) => {
-  const user = useSelector<UserState, User>((state) => state.user);
+  const user = useSelector((state: UserState) => state.user);
   const dispatch = useDispatch();
   const [buttonStatus, setButtonStatus] = useState<string>('Add Friend');
 
@@ -50,6 +52,16 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
       setButtonStatus('Accept Friend Request');
     }
   }, [user.friendRequests, profileData, user.friends]);
+
+  const removeFriendError = () =>
+    toast.error(`${profileData.firstName} is no longer on your friend's list`, {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
   return (
     <div style={{ marginTop: '1rem' }}>
       <Button
@@ -61,7 +73,9 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
               profileData._id,
               grabFriendsList,
               dispatch,
-              grabProfileData
+              grabProfileData,
+              user,
+              removeFriendError
             );
           } else if (buttonStatus === 'Add Friend') {
             sendFriendRequest(user, profileData._id, dispatch, socket);
@@ -79,6 +93,7 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
         }}
       >
         {buttonStatus}
+        <ToastContainer />
       </Button>
     </div>
   );

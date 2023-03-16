@@ -1,7 +1,7 @@
 import React from 'react';
 import notificationStyles from '../styles/Notifications.module.scss';
 import NotificationRow from './NotificationRow';
-import { NotificationProp } from './Layout';
+import { NotificationProp } from '../utils/interfaces/notifications';
 
 interface NotificationsDisplayProp {
   notifications: NotificationProp[];

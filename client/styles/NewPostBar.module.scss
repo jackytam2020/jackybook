@@ -18,12 +18,11 @@
     border-radius: 50%;
     object-fit: cover;
   }
-
   &__postInput {
     border: none;
     background-color: #f2f2f2;
     padding-left: 1rem;
-    width: 100%;
+    flex: 1;
     border-radius: 20px;
   }
 

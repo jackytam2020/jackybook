@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 export interface User {
   firstName: string;
@@ -98,15 +98,7 @@ export const authSlice = createSlice({
     },
     setPosts: (state, action) => {
       state.posts = action.payload.posts;
-      // localStorage.setItem('posts', JSON.stringify(state.posts));
     },
-    // setPost: (state, action) => {
-    //   const updatedPosts = state.posts.map((post: Post) => {
-    //     if (post._id === action.payload.post._id) return action.payload;
-    //     return post;
-    //   });
-    //   state.posts = updatedPosts;
-    // },
   },
 });
 

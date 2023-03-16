@@ -14,7 +14,9 @@ import { Socket } from 'socket.io-client';
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
-import { handleNotifications } from '../pages/_app';
+import { handleNotifications } from '../utils/notifications/handleNotification';
+import { pressLikeButton } from '../utils/likes/pressLikeButton';
+import { deletePost } from '../utils/posts/deletePost';
 
 interface UserState {
   user: User;
@@ -29,8 +31,6 @@ interface PostProps {
   picturePath: string;
   likes: object;
   comments: object;
-  deletePost: (_id: string, grabFeedPosts: () => void) => void;
-  pressLikeButton: (_id: string, grabFeedPosts: () => void, user: User) => void;
   userID: string;
   loggedInUser: string;
   userPicturePath: string;
@@ -50,10 +50,8 @@ const Post: React.FC<PostProps> = ({
   picturePath,
   likes,
   comments,
-  deletePost,
   userID,
   loggedInUser,
-  pressLikeButton,
   userPicturePath,
   grabFeedPosts,
   grabProfileFeedPosts,
@@ -68,7 +66,7 @@ const Post: React.FC<PostProps> = ({
   const [likedList, setLikedList] = useState<[]>([]);
   const [backgroundColor, setBackgroundColor] = useState<string>('white');
 
-  const user = useSelector<UserState, User>((state) => state.user);
+  const user = useSelector((state: UserState) => state.user);
 
   const grabComments = async () => {
     const { data } = await axios.get(
@@ -97,7 +95,6 @@ const Post: React.FC<PostProps> = ({
     } else if (grabProfileFeedPosts) {
       grabProfileFeedPosts();
     }
-    console.log(data);
   };
 
   useEffect(() => {

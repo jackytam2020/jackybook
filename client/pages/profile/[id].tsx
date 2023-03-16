@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ProfileStyles from '../../styles/Profile.module.scss';
+
 import { useRouter } from 'next/router';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { User, PostsArray } from '../../state';
-import { useDispatch } from 'react-redux';
-import {
-  setPosts,
-  setFriendRequests,
-  setNewFriend,
-  setRemoveFriendRequest,
-  setRemoveFriend,
-  setUser,
-} from '../../state';
-import { GetServerSidePropsContext } from 'next';
 import { Socket } from 'socket.io-client';
-import { handleNotifications } from '../_app';
+import axios from 'axios';
+import { GetServerSidePropsContext } from 'next';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { User, PostsArray, setUser, setPosts } from '../../state';
+
+import { FriendRequestProps } from '../../utils/interfaces/FriendRequest';
 
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
@@ -25,9 +19,6 @@ import Post from '../../components/Post';
 import FriendStatus from '../../components/FriendStatus';
 import FriendRequestRow from '../../components/FriendRequestRow';
 import FriendsListRow from '../../components/FriendsListRow';
-
-//functions
-import { pressLikeButton, deletePost } from '../home';
 
 interface UserState {
   user: User;
@@ -43,118 +34,6 @@ interface ProfileProps {
   serverPostData: PostsArray;
   socket: Socket;
 }
-
-export interface FriendRequestProps {
-  _id: string;
-  userID: string;
-  targetID: string;
-  picturePath: string;
-  firstName: string;
-  lastName: string;
-  socket: Socket;
-  user: User;
-}
-
-//exportable functions
-export const sendFriendRequest = async (
-  user: User,
-  targetUserID: string,
-  dispatch: Function,
-  socket: Socket
-) => {
-  const { data } = await axios.post(
-    `http://localhost:8080/users/${user._id}/sendFriendRequest/${targetUserID}`,
-    {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      picturePath: user.picturePath,
-    }
-  );
-  dispatch(
-    setFriendRequests({
-      requests: data.targetID,
-    })
-  );
-
-  handleNotifications(socket, user, targetUserID, 'friendRequest');
-};
-
-export const acceptFriendRequest = async (
-  userID: string,
-  targetID: string,
-  dispatch: Function,
-  socket: Socket,
-  user: User
-) => {
-  await axios.patch(
-    `http://localhost:8080/users/${targetID}/addFriend/${userID}`
-  );
-
-  dispatch(
-    setNewFriend({
-      newFriend: userID,
-    })
-  );
-
-  removeFriendRequest(targetID, userID, dispatch);
-  handleNotifications(socket, user, userID, 'acceptedRequest');
-};
-
-export const removeFriendRequest = async (
-  userID: string,
-  requestSenderID: string,
-  dispatch?: Function
-) => {
-  const response = await axios.delete(
-    `http://localhost:8080/users/${userID}/removeFriendRequest/${requestSenderID}`
-  );
-
-  if (dispatch) {
-    dispatch(
-      setRemoveFriendRequest({
-        userID: userID,
-      })
-    );
-  }
-
-  console.log(response);
-};
-
-export const removeFriend = async (
-  userID: string,
-  friendID: string,
-  grabFriendsList: () => void,
-  dispatch: Function,
-  grabProfileData: () => void
-) => {
-  const { data } = await axios.patch(
-    `http://localhost:8080/users/${userID}/deleteFriend/${friendID}`
-  );
-
-  dispatch(
-    setRemoveFriend({
-      friendID: friendID,
-    })
-  );
-  grabProfileData();
-  grabFriendsList();
-  console.log(data);
-};
-
-export const updateLoggedInUser = async (
-  userID: string,
-  dispatch: Function
-) => {
-  const { data } = await axios.get(
-    `http://localhost:8080/users/profile/${userID}`
-  );
-
-  dispatch(
-    setUser({
-      user: data[0],
-    })
-  );
-};
 
 const Profile: React.FC<ProfileProps> = ({
   serverProfileData,
@@ -176,8 +55,8 @@ const Profile: React.FC<ProfileProps> = ({
     grabFriendsList();
   }, [router.asPath]);
 
-  const user = useSelector<UserState, User>((state) => state.user);
-  const posts = useSelector<PostState, PostsArray>((state) => state.posts);
+  const user = useSelector((state: UserState) => state.user);
+  const posts = useSelector((state: PostState) => state.posts);
 
   const [profileData, setProfileData] = useState<User>(serverProfileData);
   const [friendsList, setFriendsList] = useState<User[]>(serverFriendsData);
@@ -191,8 +70,6 @@ const Profile: React.FC<ProfileProps> = ({
       `http://localhost:8080/users/profile/${router.query.id}`
     );
     setProfileData(data[0]);
-    console.log(data);
-    console.log(user._id);
   };
 
   const grabFriendsList = async () => {
@@ -236,9 +113,6 @@ const Profile: React.FC<ProfileProps> = ({
       }
     }
   }, [user]);
-
-  console.log(profileData);
-  console.log(user);
 
   return (
     <div className={ProfileStyles.profile}>
@@ -305,7 +179,7 @@ const Profile: React.FC<ProfileProps> = ({
 
             <h2 className={ProfileStyles.profile__feedHeader}>Posts</h2>
             <section className={ProfileStyles.profile__postsSection}>
-              {Array.isArray(posts) &&
+              {Array.isArray(posts) && posts.length > 0 ? (
                 posts
                   .slice()
                   .reverse()
@@ -314,11 +188,16 @@ const Profile: React.FC<ProfileProps> = ({
                       key={post._id}
                       {...post}
                       loggedInUser={user._id}
-                      pressLikeButton={pressLikeButton}
                       grabProfileFeedPosts={grabProfileFeedPosts}
-                      deletePost={deletePost}
                     />
-                  ))}
+                  ))
+              ) : (
+                <p style={{ color: 'grey' }}>
+                  {profileData._id === user._id
+                    ? `No posts to show`
+                    : `${profileData.firstName} has not made a post yet`}
+                </p>
+              )}
             </section>
           </main>
 
