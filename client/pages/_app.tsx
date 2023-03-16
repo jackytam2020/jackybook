@@ -14,13 +14,9 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import sessionStorage from 'redux-persist/lib/storage/session';
 import { PersistGate } from 'redux-persist/integration/react';
-import { io, Socket } from 'socket.io-client';
-import axios from 'axios';
-import { User } from '../state';
-
+import { io } from 'socket.io-client';
 import Layout from '../components/Layout';
 
 const persistConfig = {
@@ -39,42 +35,6 @@ const store = configureStore({
       },
     }),
 });
-
-// const store = configureStore({ reducer: authReducer });
-
-export const handleNotifications = async (
-  socket: Socket,
-  user: User,
-  receiverID: String,
-  type: string,
-  postID?: string,
-  comment?: string
-) => {
-  //add notification to database unless if user is sending events to themselves
-  if (user._id !== receiverID) {
-    socket.emit('sendNotification', {
-      senderName: user.firstName,
-      senderID: user._id,
-      senderPicturePath: user.picturePath,
-      comment: comment,
-      postID: postID,
-      receiverID: receiverID,
-      type: type,
-      createdAt: new Date(),
-    });
-
-    await axios.post(
-      `http://localhost:8080/notifications/${user._id}/sendNotification/${receiverID}`,
-      {
-        type: type,
-        senderPicturePath: user.picturePath,
-        comment: comment,
-        senderName: user.firstName,
-        postID: postID,
-      }
-    );
-  }
-};
 
 export default function App({ Component, pageProps }: AppProps) {
   const [selectedPostID, setSelectedPostID] = useState<string>('');

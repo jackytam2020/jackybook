@@ -7,7 +7,7 @@ import Link from 'next/link';
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
 import axios from 'axios';
-import { handleNotifications } from '../pages/_app';
+import { handleNotifications } from '../utils/notifications/handleNotification';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { Socket } from 'socket.io-client';
@@ -44,7 +44,7 @@ interface CommentProp {
   editComment: (
     commentID: string,
     editValue: string,
-    setIsModalOpen: Function
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => void;
   deleteComment: (commentID: string) => void;
   socket: Socket;
@@ -76,7 +76,7 @@ const Comment = ({
   const [showMoreIcon, setShowMoreIcon] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
-  const user = useSelector<UserState, User>((state) => state.user);
+  const user = useSelector((state: UserState) => state.user);
 
   const grabCommentLikedList = async () => {
     const { data } = await axios.get(
@@ -133,6 +133,7 @@ const Comment = ({
               type={'comment'}
               likedList={likedList}
               grabCommentLikedList={grabCommentLikedList}
+              socket={socket}
             />
           </div>
           {userID === loggedInUser && (

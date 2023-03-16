@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Nav from './Nav';
-import { Socket } from 'socket.io-client';
 import layoutStyles from '../styles/Layout.module.scss';
-import NotificationsDisplay from './NotificationsDisplay';
+
+import { Socket } from 'socket.io-client';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+
 import { User } from '../state';
+import { useSelector } from 'react-redux';
+import { NotificationProp } from '../utils/interfaces/notifications';
+
+import Nav from './Nav';
+import NotificationsDisplay from './NotificationsDisplay';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,20 +17,8 @@ interface LayoutProps {
   setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
 }
 
-interface UserState {
+interface UserRootState {
   user: User;
-}
-
-export interface NotificationProp {
-  createdAt: string;
-  postID: string;
-  receiverID: string;
-  senderID: string;
-  senderName: string;
-  senderPicturePath: string;
-  type: string;
-  _id: string;
-  comment: string;
 }
 
 const Layout: React.FunctionComponent<LayoutProps> = ({
@@ -37,7 +29,7 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
   const [notifications, setNotifications] = useState<NotificationProp[]>([]);
   const [isNotificationOpened, setIsNotificationOpened] =
     useState<boolean>(false);
-  const user = useSelector<UserState, User>((state) => state.user);
+  const user = useSelector((state: UserRootState) => state.user);
 
   //get request to get all notifications
   const getNotifications = async () => {
@@ -65,7 +57,6 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
 
   useEffect(() => {
     document.addEventListener('mousedown', (e) => {
-      // if()
       if (!notificationRef.current?.contains(e.target as Node)) {
         setIsNotificationOpened(false);
       }
@@ -79,7 +70,6 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
         notifications={notifications}
         setNotifications={setNotifications}
         setIsNotificationOpened={setIsNotificationOpened}
-        isNotificationOpened={isNotificationOpened}
       />
       <div className={layoutStyles.layout__main}>
         <NotificationsDisplay

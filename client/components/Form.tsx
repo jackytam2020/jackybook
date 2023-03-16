@@ -88,9 +88,6 @@ const Form: React.FC<Props> = ({ page }) => {
       'http://localhost:8080/auth/register',
       formData
     );
-
-    console.log(response);
-    console.log(registerValues.picture);
   };
 
   const loginUser = async () => {
@@ -106,7 +103,6 @@ const Form: React.FC<Props> = ({ page }) => {
           token: data.token,
         })
       );
-      // socket.emit('newUser', data.user._id);
       router.push('/home');
     }
   };
@@ -198,17 +194,6 @@ const Form: React.FC<Props> = ({ page }) => {
                 <Dropzone
                   multiple={false}
                   onDrop={(acceptedFiles) => {
-                    // const file = acceptedFiles[0];
-
-                    // const inComingPicture = {
-                    //   path: URL.createObjectURL(file),
-                    //   lastModified: file.lastModified,
-                    //   lastModifiedDate: file.lastModifiedDate,
-                    //   name: file.name,
-                    //   size: file.size,
-                    //   type: file.type,
-                    //   webkitRelativePath: file.webkitRelativePath,
-                    // };
                     setRegisterValues({
                       ...registerValues,
                       picture: acceptedFiles[0],

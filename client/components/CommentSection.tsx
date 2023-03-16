@@ -7,7 +7,7 @@ import { User } from '../state';
 import { Socket } from 'socket.io-client';
 
 import Comment from './Comment';
-import { handleNotifications } from '../pages/_app';
+import { handleNotifications } from '../utils/notifications/handleNotification';
 
 interface CommentSectionProps {
   isCommentsOpen: boolean;
@@ -24,7 +24,7 @@ interface UserState {
   user: User;
 }
 
-export interface Comment {
+interface Comment {
   _id: string;
   likes: number;
   likesList: string[];
@@ -47,7 +47,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   socket,
 }) => {
   const [newCommentValue, setNewCommentValue] = useState('');
-  const user = useSelector<UserState, User>((state) => state.user);
+  const user = useSelector((state: UserState) => state.user);
 
   const postComment = async () => {
     setNewCommentValue('');
@@ -59,7 +59,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         datePosted: new Date(),
       }
     );
-    console.log(response);
     grabComments();
     handleNotifications(
       socket,
@@ -85,13 +84,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       }
     );
     grabComments();
-    console.log(response);
   };
 
   const editComment = async (
     newComment: string,
     commentID: string,
-    setIsEditModalOpen: Function
+    setIsEditModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
     const { data } = await axios.patch(
       `http://localhost:8080/posts/${commentID}/editComment`,
@@ -112,7 +110,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     } else if (grabProfileFeedPosts) {
       grabProfileFeedPosts();
     }
-    console.log(data);
   };
   return (
     <div

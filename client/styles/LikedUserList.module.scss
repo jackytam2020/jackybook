@@ -1,0 +1,17 @@
+.likedUser {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__user {
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
+  }
+  &__profilePic {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}

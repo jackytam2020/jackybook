@@ -7,23 +7,9 @@
   &__likedList {
     width: 100%;
     margin-top: 1rem;
-  }
-  &__likedUser {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  &__user {
-    display: flex;
-    align-items: center;
-    column-gap: 1rem;
-  }
-  &__profilePic {
-    background-color: cyan;
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    object-fit: cover;
+    flex-direction: column;
+    row-gap: 0.5rem;
   }
   &__exitIcon {
     position: absolute;

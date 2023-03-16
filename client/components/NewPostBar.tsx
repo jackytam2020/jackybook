@@ -7,7 +7,6 @@ import Dropzone from 'react-dropzone';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
-//type imports
 import { User } from '../state';
 
 interface MediaFile {
@@ -20,11 +19,11 @@ interface MediaFile {
   webkitRelativePath: string;
 }
 
-interface UserState {
+interface UserRootState {
   user: User;
 }
 
-interface TokenState {
+interface TokenRootState {
   token: string;
 }
 
@@ -52,8 +51,8 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
   });
   const [post, setPost] = useState<string>('');
 
-  const user = useSelector<UserState, User>((state) => state.user);
-  const token = useSelector<TokenState, string>((state) => state.token);
+  const user = useSelector((state: UserRootState) => state.user);
+  const token = useSelector((state: TokenRootState) => state.token);
 
   const submitPost = async () => {
     const formData: File = new FormData();
@@ -84,7 +83,6 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     } else if (grabProfileFeedPosts) {
       grabProfileFeedPosts();
     }
-    console.log(response);
   };
 
   return (
@@ -123,7 +121,6 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
                 ) : (
                   <div>
                     <Typography>{mediaFile.name}</Typography>
-                    {/* <AddPhotoAlternateIcon /> */}
                   </div>
                 )}
               </div>

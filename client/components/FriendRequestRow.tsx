@@ -1,16 +1,16 @@
 import React from 'react';
 import Link from 'next/link';
+import friendRequestRowStyles from '../styles/friendRequestRow.module.scss';
+import { useDispatch } from 'react-redux';
+
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
-import friendRequestRowStyles from '../styles/friendRequestRow.module.scss';
-import { FriendRequestProps } from '../pages/profile/[id]';
-
+import { FriendRequestProps } from '../utils/interfaces/FriendRequest';
 import {
   acceptFriendRequest,
   removeFriendRequest,
-} from '../pages/profile/[id]';
-import { useDispatch } from 'react-redux';
+} from '../utils/friendRequest/friendRequest';
 
 const FriendRequestRow: React.FC<FriendRequestProps> = ({
   userID,

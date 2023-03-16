@@ -19,14 +19,14 @@ const style = {
 
 interface EditModalProps {
   open: boolean;
-  setIsModalOpen: (arg0: boolean) => void;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   value: string;
   editPost?: (editValue: string) => void;
   type: string;
   editComment?: (
     commentID: string,
     editValue: string,
-    setIsModalOpen: Function
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => void;
   commentID?: string;
 }

@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import searchResultsStyles from '../styles/SearchResults.module.scss';
 import SearchResultRow from './SearchResultRow';
-import { useSelector } from 'react-redux';
 import { User } from '../state';
 
 interface SearchResultsProps {
