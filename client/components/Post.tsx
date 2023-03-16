@@ -10,6 +10,8 @@ import { useSelector } from 'react-redux';
 import { User } from '../state';
 import Link from 'next/link';
 import { Socket } from 'socket.io-client';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
@@ -118,6 +120,8 @@ const Post: React.FC<PostProps> = ({
     }
   }, [selectedPostID, socket]);
 
+  dayjs.extend(relativeTime);
+
   return (
     <div
       className={postStyles.post}
@@ -136,7 +140,13 @@ const Post: React.FC<PostProps> = ({
               <p
                 className={postStyles.post__user}
               >{`${firstName} ${lastName}`}</p>
-              <p className={postStyles.post__date}>{createdAt}</p>
+              <p className={postStyles.post__date}>
+                {dayjs(createdAt).fromNow().includes('minute') ||
+                dayjs(createdAt).fromNow().includes('second') ||
+                dayjs(createdAt).fromNow().includes('hour')
+                  ? dayjs(createdAt).fromNow()
+                  : dayjs(createdAt).format('MM/DD/YYYY')}
+              </p>
             </div>
           </div>
         </Link>
