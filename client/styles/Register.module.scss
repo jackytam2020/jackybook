@@ -1,3 +1,5 @@
+@use '../styles/partials/breakpoints' as *;
+
 .register {
   width: 100%;
   min-height: 100vh;
@@ -21,5 +23,27 @@
   &__registerLink {
     color: rgb(24, 118, 210);
     text-decoration: underline;
+  }
+}
+
+@include small() {
+  .register {
+    &__formSection {
+      width: 90%;
+    }
+  }
+}
+@include medium() {
+  .register {
+    &__formSection {
+      width: 80%;
+    }
+  }
+}
+@include large() {
+  .register {
+    &__formSection {
+      width: 50%;
+    }
   }
 }

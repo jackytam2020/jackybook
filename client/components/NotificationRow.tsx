@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import notificationRowStyles from '../styles/NotificationRow.module.scss';
 import { scroller } from 'react-scroll';
-import Link from 'next/link';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
 import { useRouter } from 'next/router';
 import { User } from '../state';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { updateLoggedInUser } from '../utils/updateLoggedInUser';
 
 interface UserState {
@@ -58,6 +60,8 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
   var Scroll = require('react-scroll');
   var scroller = Scroll.scroller;
 
+  dayjs.extend(relativeTime);
+
   return (
     <div
       className={notificationRowStyles.notificationRow}
@@ -95,7 +99,11 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
       <div className={notificationRowStyles.notificationRow__notification}>
         <p>{notificationType}</p>
         <p className={notificationRowStyles.notificationRow__Date}>
-          {createdAt}
+          {dayjs(createdAt).fromNow().includes('minute') ||
+          dayjs(createdAt).fromNow().includes('second') ||
+          dayjs(createdAt).fromNow().includes('hour')
+            ? dayjs(createdAt).fromNow()
+            : dayjs(createdAt).format('MM/DD/YYYY')}
         </p>
       </div>
     </div>
