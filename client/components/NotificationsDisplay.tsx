@@ -44,7 +44,13 @@ const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({
       <div className={notificationStyles.notificationDisplay__notificationList}>
         {notifications.length === 0 ? (
           <>
-            <p style={{ marginLeft: '0.5rem' }}>No notifications to show</p>
+            <p
+              className={
+                notificationStyles.notificationDisplay__emptyNotificationUI
+              }
+            >
+              No notifications to show
+            </p>
           </>
         ) : (
           <>

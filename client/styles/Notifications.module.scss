@@ -1,7 +1,7 @@
+@use '../styles/partials/breakpoints' as *;
+
 .notificationDisplay {
-  width: 400px;
   min-height: 200px;
-  // height: 500px;
   background-color: white;
   position: absolute;
   z-index: 3;
@@ -31,4 +31,34 @@
 
 .notificationDisplayClosed {
   display: none;
+}
+
+@include small() {
+  .notificationDisplay {
+    width: 90%;
+    right: 20;
+
+    &__headers {
+      margin-top: 1rem;
+      padding: 0 0.5rem;
+    }
+  }
+}
+
+@include medium() {
+  .notificationDisplay {
+    width: 400px;
+    &__emptyNotificationUI {
+      padding-left: 0.5rem;
+    }
+  }
+}
+
+@include large() {
+  .notificationDisplay {
+    width: 400px;
+    &__emptyNotificationUI {
+      padding-left: 0.5rem;
+    }
+  }
 }

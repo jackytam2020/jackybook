@@ -1,21 +1,8 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import CloseIcon from '@mui/icons-material/Close';
 import editModalStyles from '../styles/EditModal.module.scss';
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  borderRadius: 2,
-  p: 2,
-};
+import { Button, Box, Modal, useMediaQuery } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface EditModalProps {
   open: boolean;
@@ -41,6 +28,20 @@ const EditModal: React.FC<EditModalProps> = ({
   commentID,
 }) => {
   const [editValue, setEditValue] = useState<string>(value);
+  const isMobile = useMediaQuery('(max-width:500px)');
+
+  const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '90%' : 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    borderRadius: 2,
+    p: 2,
+  };
+
   return (
     <div className={editModalStyles.editModal}>
       <Modal

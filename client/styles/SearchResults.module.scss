@@ -1,3 +1,5 @@
+@use '../styles/partials/breakpoints' as *;
+
 .searchResults {
   position: absolute;
   background-color: white;
@@ -13,4 +15,11 @@
 
 .searchResultsEmpty {
   display: none;
+}
+
+@include small() {
+  .searchResults {
+    position: relative;
+    row-gap: 1rem;
+  }
 }

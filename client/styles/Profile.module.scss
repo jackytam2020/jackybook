@@ -1,3 +1,5 @@
+@use '../styles/partials/breakpoints' as *;
+
 .profile {
   width: 100%;
   min-height: 100vh;
@@ -10,9 +12,6 @@
 
   &__profileContainer {
     display: grid;
-    padding-left: 15%;
-    padding-right: 15%;
-    grid-template-columns: 1.5fr 3fr 1.5fr;
     column-gap: 2rem;
   }
 
@@ -56,6 +55,8 @@
     background-color: white;
     border-radius: 10px;
     padding: 1rem;
+    max-height: 300px;
+    overflow-y: scroll;
   }
   &__friendRequestsEmpty {
     background-color: white;
@@ -82,4 +83,60 @@
     flex-direction: column;
     row-gap: 2rem;
   }
+}
+
+@include small() {
+  .profile {
+    &__profileContainer {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      grid-template-columns: 1fr;
+    }
+
+    &__left {
+      order: 0;
+    }
+
+    &__feed {
+      order: 2;
+    }
+    &__friendRequests {
+      order: 1;
+    }
+    &__friendRequestsEmpty {
+      background-color: white;
+      height: 100px;
+    }
+  }
+}
+@include medium() {
+  .profile {
+    &__profileContainer {
+      padding-left: 5%;
+      padding-right: 5%;
+      grid-template-columns: 1.5fr 3fr 1.5fr;
+    }
+  }
+}
+@include large() {
+  .profile {
+    &__profileContainer {
+      padding-left: 15%;
+      padding-right: 15%;
+      grid-template-columns: 1.5fr 3fr 1.5fr;
+    }
+  }
+}
+
+.profile__friendRequests::-webkit-scrollbar {
+  width: 5px;
+}
+
+.profile__friendRequests::-webkit-scrollbar-thumb {
+  background-color: lightgrey;
+  border-radius: 5px;
+}
+
+.profile__friendRequests::-webkit-scrollbar-track {
+  background-color: white;
 }

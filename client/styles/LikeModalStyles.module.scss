@@ -1,3 +1,5 @@
+@use '../styles/partials/breakpoints' as *;
+
 .likeModal {
   position: relative;
   &__header {

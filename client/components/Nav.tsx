@@ -14,15 +14,22 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { useSelector } from 'react-redux';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../state';
-import { useDispatch } from 'react-redux';
 import { setLogout } from '../state/index';
 import { Socket } from 'socket.io-client';
 import { useRouter } from 'next/router';
 
+import {
+  searchUser,
+  backspaceSearch,
+  clearedSearch,
+} from '../utils/searchUsers/searchUsers';
+
 import { NotificationProp } from '../utils/interfaces/notifications';
 import SearchResults from './SearchResults';
+// import MobileSearch from '../pages/MobileSearch';
 
 interface UserRootState {
   user: User;
@@ -37,6 +44,8 @@ interface NavProp {
   notifications: NotificationProp[];
   setNotifications: React.Dispatch<React.SetStateAction<NotificationProp[]>>;
   setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setMobileSearchIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsNavPopOutOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Search = styled('div')(({ theme }) => ({
@@ -85,6 +94,8 @@ const Nav: React.FC<NavProp> = ({
   notifications,
   setNotifications,
   setIsNotificationOpened,
+  setMobileSearchIsOpen,
+  setIsNavPopOutOpen,
 }) => {
   const user = useSelector((state: UserRootState) => state.user);
   let users = useSelector((state: UsersRootState) => state.users);
@@ -101,36 +112,8 @@ const Nav: React.FC<NavProp> = ({
     });
   }, [socket]);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Backspace') {
-      setFilteredUsers(
-        users.filter((user) =>
-          (user.firstName.trim() + user.lastName.trim())
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase().replace(/\s/g, ''))
-        )
-      );
-    }
-  };
-
-  const searchUser = () => {
-    setFilteredUsers(
-      users.filter((user) =>
-        (user.firstName.trim() + user.lastName.trim())
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase().replace(/\s/g, ''))
-      )
-    );
-  };
-
-  const handleKeyUp = () => {
-    if (searchQuery === '') {
-      setFilteredUsers([...users]);
-    }
-  };
-
   useEffect(() => {
-    searchUser();
+    searchUser(setFilteredUsers, users, searchQuery);
   }, [searchQuery]);
 
   const router = useRouter();
@@ -141,31 +124,52 @@ const Nav: React.FC<NavProp> = ({
       <CssBaseline />
       <AppBar position="relative">
         <Toolbar className={navStyles.nav}>
+          {/* <MobileSearch /> */}
           <div className={navStyles.nav__left}>
             <Link href={path === '/Register' ? '/' : `/home`}>
               <Typography variant="h5">JackyBook</Typography>
             </Link>
             {user !== null && (
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search…"
-                  inputProps={{ 'aria-label': 'search' }}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                  }}
-                  onKeyDown={handleKeyDown}
-                  onKeyUp={handleKeyUp}
-                  value={searchQuery}
-                />
-                <SearchResults
-                  filteredUsers={filteredUsers}
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                />
-              </Search>
+              <>
+                <div className={navStyles.nav__searchInput}>
+                  <Search>
+                    <SearchIconWrapper>
+                      <SearchIcon />
+                    </SearchIconWrapper>
+                    <StyledInputBase
+                      placeholder="Search…"
+                      inputProps={{ 'aria-label': 'search' }}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        backspaceSearch(
+                          e as React.KeyboardEvent<HTMLInputElement>,
+                          setFilteredUsers,
+                          users,
+                          searchQuery
+                        );
+                      }}
+                      onKeyUp={() => {
+                        clearedSearch(setFilteredUsers, users, searchQuery);
+                      }}
+                      value={searchQuery}
+                    />
+                    <SearchResults
+                      filteredUsers={filteredUsers}
+                      searchQuery={searchQuery}
+                      setSearchQuery={setSearchQuery}
+                    />
+                  </Search>
+                </div>
+                <div className={navStyles.nav__mobileSearchIcon}>
+                  <SearchIcon
+                    onClick={() => {
+                      setMobileSearchIsOpen(true);
+                    }}
+                  />
+                </div>
+              </>
             )}
           </div>
           {user !== null && (
@@ -182,14 +186,17 @@ const Nav: React.FC<NavProp> = ({
                 </Badge>
               </IconButton>
 
-              <Link href={`/profile/${user._id}`}>
+              <Link
+                href={`/profile/${user._id}`}
+                className={navStyles.nav__profilePicHolder}
+              >
                 <img
                   className={navStyles.nav__profilePic}
                   src={`http://localhost:8080/assets/${user.picturePath}`}
                   alt={user.picturePath}
                 />
               </Link>
-              <Link href={'/'}>
+              <Link href={'/'} className={navStyles.nav__logoutButton}>
                 <Button
                   style={{ color: 'white', border: '1px solid white' }}
                   variant="outlined"
@@ -202,6 +209,13 @@ const Nav: React.FC<NavProp> = ({
                   Logout
                 </Button>
               </Link>
+              <div className={navStyles.nav__hamMenuIcon}>
+                <MenuIcon
+                  onClick={() => {
+                    setIsNavPopOutOpen(true);
+                  }}
+                />
+              </div>
             </div>
           )}
         </Toolbar>
