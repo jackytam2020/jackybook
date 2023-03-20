@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import likeModalStyles from '../styles/LikeModalStyles.module.scss';
-import Box from '@mui/material/Box';
-import { Modal } from '@mui/material';
+
 import CloseIcon from '@mui/icons-material/Close';
+import { Modal, Box, useMediaQuery } from '@mui/material';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../state';
 
@@ -10,18 +11,6 @@ import { Socket } from 'socket.io-client';
 
 import LikedUser from './LikedUser';
 import { updateLoggedInUser } from '../utils/updateLoggedInUser';
-
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  borderRadius: 2,
-  p: 2,
-};
 
 interface UserState {
   user: User;
@@ -70,6 +59,20 @@ const LikeModal: React.FC<LikeModalProps> = ({
   const user = useSelector((state: UserState) => state.user);
   const dispatch = useDispatch();
 
+  const isMobile = useMediaQuery('(max-width:500px)');
+
+  const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '90%' : 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    borderRadius: 2,
+    p: 2,
+  };
+
   return (
     <div className={likeModalStyles.likeModal}>
       <Modal
@@ -77,29 +80,32 @@ const LikeModal: React.FC<LikeModalProps> = ({
         onClose={() => {
           setIsModalOpen(false);
         }}
+        sx={{ width: '100%' }}
       >
         <Box sx={style}>
-          <div className={likeModalStyles.likeModal__header}>
-            <h3>Likes</h3>
-          </div>
-          <div className={likeModalStyles.likeModal__likedList}>
-            {Array.isArray(likedList) &&
-              likedList.map((likedUser) => (
-                <LikedUser
-                  key={likedUser._id}
-                  {...likedUser}
-                  likedUserID={likedUser._id}
-                  loggedInUser={user._id}
-                  socket={socket}
-                />
-              ))}
-          </div>
-          <CloseIcon
-            className={likeModalStyles.likeModal__exitIcon}
-            onClick={() => {
-              setIsModalOpen(false);
-            }}
-          ></CloseIcon>
+          <>
+            <div className={likeModalStyles.likeModal__header}>
+              <h3>Likes</h3>
+            </div>
+            <div className={likeModalStyles.likeModal__likedList}>
+              {Array.isArray(likedList) &&
+                likedList.map((likedUser) => (
+                  <LikedUser
+                    key={likedUser._id}
+                    {...likedUser}
+                    likedUserID={likedUser._id}
+                    loggedInUser={user._id}
+                    socket={socket}
+                  />
+                ))}
+            </div>
+            <CloseIcon
+              className={likeModalStyles.likeModal__exitIcon}
+              onClick={() => {
+                setIsModalOpen(false);
+              }}
+            ></CloseIcon>
+          </>
         </Box>
       </Modal>
     </div>

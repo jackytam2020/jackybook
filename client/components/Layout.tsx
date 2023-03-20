@@ -7,9 +7,12 @@ import axios from 'axios';
 import { User } from '../state';
 import { useSelector } from 'react-redux';
 import { NotificationProp } from '../utils/interfaces/notifications';
+import { useRouter } from 'next/router';
 
 import Nav from './Nav';
 import NotificationsDisplay from './NotificationsDisplay';
+import MobileSearch from './MobileSearch';
+import NavPopOut from './NavPopOut';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -29,6 +32,8 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
   const [notifications, setNotifications] = useState<NotificationProp[]>([]);
   const [isNotificationOpened, setIsNotificationOpened] =
     useState<boolean>(false);
+  const [mobileSearchIsOpen, setMobileSearchIsOpen] = useState(false);
+  const [isNavPopOutOpen, setIsNavPopOutOpen] = useState(false);
   const user = useSelector((state: UserRootState) => state.user);
 
   //get request to get all notifications
@@ -63,14 +68,32 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
     });
   }, []);
 
+  const router = useRouter();
+  const path = router.asPath;
+
   return (
     <div className={layoutStyles.layout}>
-      <Nav
-        socket={socket}
-        notifications={notifications}
-        setNotifications={setNotifications}
-        setIsNotificationOpened={setIsNotificationOpened}
+      <MobileSearch
+        mobileSearchIsOpen={mobileSearchIsOpen}
+        setMobileSearchIsOpen={setMobileSearchIsOpen}
       />
+      <NavPopOut
+        isNavPopOutOpen={isNavPopOutOpen}
+        setIsNavPopOutOpen={setIsNavPopOutOpen}
+        setNotifications={setNotifications}
+        socket={socket}
+      />
+      <div style={{ display: path === '/MobileSearch' ? 'none' : 'block' }}>
+        <Nav
+          socket={socket}
+          notifications={notifications}
+          setNotifications={setNotifications}
+          setIsNotificationOpened={setIsNotificationOpened}
+          setMobileSearchIsOpen={setMobileSearchIsOpen}
+          setIsNavPopOutOpen={setIsNavPopOutOpen}
+        />
+      </div>
+
       <div className={layoutStyles.layout__main}>
         <NotificationsDisplay
           notifications={notifications}

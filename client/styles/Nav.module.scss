@@ -1,3 +1,5 @@
+@use '../styles/partials/breakpoints' as *;
+
 .nav {
   display: flex;
   justify-content: space-between;
@@ -26,5 +28,53 @@
     border-radius: 50%;
     object-fit: cover;
     cursor: pointer;
+  }
+}
+
+@include small() {
+  .nav {
+    &__searchInput {
+      display: none;
+    }
+    &__mobileSearchIcon {
+      display: flex;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      padding: 0.3rem;
+      margin-left: 1rem;
+      cursor: pointer;
+    }
+    &__profilePicHolder {
+      display: none;
+    }
+    &__logoutButton {
+      display: none;
+    }
+    &__hamMenuIcon {
+      display: block;
+      align-items: center;
+      display: flex;
+    }
+  }
+}
+@include medium() {
+  .nav {
+    &__mobileSearchIcon {
+      display: none;
+    }
+    &__hamMenuIcon {
+      display: none;
+    }
+  }
+}
+@include large() {
+  .nav {
+    &__mobileSearchIcon {
+      display: none;
+    }
+    &__hamMenuIcon {
+      display: none;
+    }
   }
 }
