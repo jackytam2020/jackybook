@@ -26,9 +26,30 @@
     border-radius: 10px;
     padding-left: 0.5rem;
   }
+
+  &__searchInputDark {
+    @extend .mobileSearch__searchInput;
+    background-color: rgb(118, 119, 124);
+    color: rgb(212, 215, 221);
+  }
+
+  &__searchInputDark::placeholder {
+    color: rgb(212, 215, 221);
+  }
 }
 
-.mobileSearchSlide {
+.mobileSearchDark {
   @extend .mobileSearch;
+  background-color: rgb(58, 59, 61);
+}
+
+.mobileSearchHidden {
+  @extend .mobileSearch;
+  right: -100%;
+}
+
+.mobileSearchHiddenDark {
+  @extend .mobileSearch;
+  background-color: rgb(58, 59, 61);
   right: -100%;
 }

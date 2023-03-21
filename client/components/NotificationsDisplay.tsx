@@ -1,5 +1,7 @@
 import React from 'react';
 import notificationStyles from '../styles/Notifications.module.scss';
+import { useSelector } from 'react-redux';
+
 import NotificationRow from './NotificationRow';
 import { NotificationProp } from '../utils/interfaces/notifications';
 
@@ -12,6 +14,10 @@ interface NotificationsDisplayProp {
   notificationRef: React.RefObject<HTMLDivElement>;
 }
 
+interface ModeRootState {
+  mode: string;
+}
+
 const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({
   notifications,
   deleteNotifications,
@@ -20,11 +26,15 @@ const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({
   notificationRef,
   setIsNotificationOpened,
 }) => {
+  const mode = useSelector((state: ModeRootState) => state.mode);
+
   return (
     <div
       className={
         isNotificationOpened
-          ? notificationStyles.notificationDisplay
+          ? mode === 'light'
+            ? notificationStyles.notificationDisplay
+            : notificationStyles.notificationDisplayDark
           : notificationStyles.notificationDisplayClosed
       }
       ref={notificationRef}
@@ -63,6 +73,7 @@ const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({
                   {...notification}
                   setSelectedPostID={setSelectedPostID}
                   setIsNotificationOpened={setIsNotificationOpened}
+                  mode={mode}
                 />
               ))}
           </>

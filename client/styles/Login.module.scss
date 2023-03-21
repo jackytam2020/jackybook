@@ -19,6 +19,11 @@
     padding: 2rem 2rem;
   }
 
+  &__formSectionDark {
+    @extend .login__formSection;
+    background-color: rgb(58, 59, 61);
+  }
+
   &__registerLink {
     color: rgb(24, 118, 210);
     text-decoration: underline;

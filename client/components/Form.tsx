@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import Typography from '@mui/material/Typography';
+import {
+  TextField,
+  Box,
+  Button,
+  useMediaQuery,
+  Typography,
+} from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import axios from 'axios';
+
 import Dropzone from 'react-dropzone';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../state/index';
@@ -160,7 +163,9 @@ const Form: React.FC<Props> = ({ page }) => {
           gap="30px"
           gridTemplateColumns="repeat(4, minmax(0,1fr))"
           sx={{
-            '& > div': { gridColumn: isNonMobile ? undefined : 'span 4' },
+            '& > div': {
+              gridColumn: isNonMobile ? undefined : 'span 4',
+            },
           }}
           paddingTop="1rem"
           paddingBottom="1rem"

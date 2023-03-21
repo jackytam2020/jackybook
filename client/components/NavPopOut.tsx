@@ -14,6 +14,10 @@ interface UserRootState {
   user: User;
 }
 
+interface ModeRootState {
+  mode: string;
+}
+
 interface NavPopOutProps {
   isNavPopOutOpen: boolean;
   socket: Socket;
@@ -28,13 +32,18 @@ const NavPopOut: React.FC<NavPopOutProps> = ({
   setIsNavPopOutOpen,
 }) => {
   const user = useSelector((state: UserRootState) => state.user);
+  const mode = useSelector((state: ModeRootState) => state.mode);
   const dispatch = useDispatch();
   return (
     <div
       className={
         isNavPopOutOpen
-          ? navPopOutStyles.navPopOut
-          : navPopOutStyles.navPopOutHidden
+          ? mode === 'light'
+            ? navPopOutStyles.navPopOut
+            : navPopOutStyles.navPopOutDark
+          : mode === 'light'
+          ? navPopOutStyles.navPopOutHidden
+          : navPopOutStyles.navPopOutHiddenDark
       }
     >
       <div className={navPopOutStyles.navPopOut__profileAndBackButton}>
@@ -66,8 +75,10 @@ const NavPopOut: React.FC<NavPopOutProps> = ({
       </div>
       <Link href={'/'}>
         <Button
-          style={{ marginTop: '1rem' }}
-          variant="outlined"
+          style={{
+            marginTop: '1rem',
+          }}
+          variant={mode === 'light' ? 'outlined' : 'contained'}
           onClick={() => {
             setIsNavPopOutOpen(false);
             dispatch(setLogout());

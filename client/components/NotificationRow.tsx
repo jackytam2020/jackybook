@@ -24,6 +24,7 @@ interface NotificationRowProp {
   postID: string;
   setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
   setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  mode: string;
 }
 
 const NotificationRow: React.FC<NotificationRowProp> = ({
@@ -36,11 +37,11 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
   postID,
   setSelectedPostID,
   setIsNotificationOpened,
+  mode,
 }) => {
   const [notificationType, setNotificationType] = useState('');
   const router = useRouter();
   const dispatch = useDispatch();
-  const currentUrl = router.asPath;
   const user = useSelector<UserState, User>((state) => state.user);
 
   useEffect(() => {
@@ -64,7 +65,11 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
 
   return (
     <div
-      className={notificationRowStyles.notificationRow}
+      className={
+        mode === 'light'
+          ? notificationRowStyles.notificationRow
+          : notificationRowStyles.notificationRowDark
+      }
       onClick={() => {
         if (type === 'friendRequest' || type === 'acceptedRequest') {
           router.push(`/profile/${senderID}`);
@@ -78,9 +83,6 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
           router.push('/home');
           setSelectedPostID(postID);
           let offset = -100;
-          // if (currentUrl !== '/home') {
-          //   offset = 400;
-          // }
           scroller.scrollTo(postID, {
             duration: 1000,
             delay: 100,

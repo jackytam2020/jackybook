@@ -3,10 +3,6 @@
   column-gap: 1rem;
   margin-top: 1rem;
 
-  // p {
-  //   transition: 1s;
-  // }
-
   &__profilePic {
     width: 40px;
     height: 40px;
@@ -106,7 +102,7 @@
   }
   &__likeCounterDark {
     @extend .commentContainer__likeCounter;
-    background-color: rgb(28, 30, 33);
+    background-color: rgb(110, 111, 116);
     color: white;
   }
 }

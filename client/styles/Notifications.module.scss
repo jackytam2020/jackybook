@@ -29,6 +29,16 @@
   }
 }
 
+.notificationDisplayDark {
+  @extend .notificationDisplay;
+  background-color: rgb(58, 59, 61);
+
+  h2,
+  .notificationDisplay__emptyNotificationUI {
+    color: white;
+  }
+}
+
 .notificationDisplayClosed {
   display: none;
 }

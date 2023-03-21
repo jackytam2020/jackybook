@@ -8,6 +8,7 @@ interface SearchResultRowProps {
   lastName: string;
   picturePath: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  mode: string;
 }
 
 const SearchResultRow: React.FC<SearchResultRowProps> = ({
@@ -16,6 +17,7 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
   lastName,
   picturePath,
   setSearchQuery,
+  mode,
 }) => {
   return (
     <Link href={`/profile/${_id}`}>
@@ -30,7 +32,12 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
           src={`http://localhost:8080/assets/${picturePath}`}
           alt={picturePath}
         />
-        <p>{`${firstName} ${lastName}`}</p>
+        <p
+          style={{
+            color: mode === 'light' ? 'black' : 'white',
+            transition: '1s',
+          }}
+        >{`${firstName} ${lastName}`}</p>
       </div>
     </Link>
   );

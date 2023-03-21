@@ -20,6 +20,10 @@ interface UserRootState {
   user: User;
 }
 
+interface ModeRootState {
+  mode: string;
+}
+
 interface MobileSearchProps {
   mobileSearchIsOpen: boolean;
   setMobileSearchIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,6 +37,7 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
 
   let users = useSelector((state: UsersRootState) => state.users);
   const user = useSelector((state: UserRootState) => state.user);
+  const mode = useSelector((state: ModeRootState) => state.mode);
   //remove logged in user from users array to display other users in search result
   if (user) users = users.filter((u) => u._id != user._id);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([...users]);
@@ -46,8 +51,12 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
     <div
       className={
         mobileSearchIsOpen
-          ? mobileSearchStyles.mobileSearch
-          : mobileSearchStyles.mobileSearchSlide
+          ? mode === 'light'
+            ? mobileSearchStyles.mobileSearch
+            : mobileSearchStyles.mobileSearchDark
+          : mode === 'light'
+          ? mobileSearchStyles.mobileSearchHidden
+          : mobileSearchStyles.mobileSearchHiddenDark
       }
     >
       <div className={mobileSearchStyles.mobileSearch__backAndSearch}>
@@ -56,9 +65,16 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
             setMobileSearchIsOpen(false);
             setSearchQuery('');
           }}
+          sx={{
+            color: mode === 'light' ? 'black' : 'white',
+          }}
         />
         <input
-          className={mobileSearchStyles.mobileSearch__searchInput}
+          className={
+            mode === 'light'
+              ? mobileSearchStyles.mobileSearch__searchInput
+              : mobileSearchStyles.mobileSearch__searchInputDark
+          }
           type="text"
           placeholder="Search..."
           value={searchQuery}
