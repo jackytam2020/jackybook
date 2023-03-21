@@ -10,12 +10,14 @@ interface SearchResultsProps {
   filteredUsers: User[];
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  setMobileSearchIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SearchResults: React.FC<SearchResultsProps> = ({
   filteredUsers,
   searchQuery,
   setSearchQuery,
+  setMobileSearchIsOpen,
 }) => {
   const mode = useSelector((state: ModeRootState) => state.mode);
 
@@ -25,6 +27,9 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       {...user}
       setSearchQuery={setSearchQuery}
       mode={mode}
+      setMobileSearchIsOpen={
+        setMobileSearchIsOpen ? setMobileSearchIsOpen : null
+      }
     />
   ));
 

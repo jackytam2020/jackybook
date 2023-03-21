@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Socket } from 'socket.io-client';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { User, setLogout } from '../state';
+import { setLogout } from '../state';
 import { NotificationProp } from '../utils/interfaces/notifications';
 import {
   UserRootState,
@@ -13,6 +13,8 @@ import {
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Button } from '@mui/material';
+
+import ModeToggle from './ModeToggle';
 
 interface NavPopOutProps {
   isNavPopOutOpen: boolean;
@@ -68,6 +70,12 @@ const NavPopOut: React.FC<NavPopOutProps> = ({
             setIsNavPopOutOpen(false);
           }}
         />
+      </div>
+      <div className={navPopOutStyles.navPopOut__ModeToggleHolder}>
+        <div className={navPopOutStyles.navPopOut__ModeToggle}>
+          <ModeToggle mobile={true} />
+        </div>
+        <h3>{`${mode.charAt(0).toUpperCase() + mode.slice(1)} mode`}</h3>
       </div>
       <Link href={'/'}>
         <Button

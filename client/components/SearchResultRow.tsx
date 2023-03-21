@@ -9,6 +9,7 @@ interface SearchResultRowProps {
   picturePath: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   mode: string;
+  setMobileSearchIsOpen: React.Dispatch<React.SetStateAction<boolean>> | null;
 }
 
 const SearchResultRow: React.FC<SearchResultRowProps> = ({
@@ -18,6 +19,7 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
   picturePath,
   setSearchQuery,
   mode,
+  setMobileSearchIsOpen,
 }) => {
   return (
     <Link href={`/profile/${_id}`}>
@@ -25,6 +27,9 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
         className={searchResultRowStyles.searchResultRow}
         onClick={() => {
           setSearchQuery('');
+          if (setMobileSearchIsOpen) {
+            setMobileSearchIsOpen(false);
+          }
         }}
       >
         <img

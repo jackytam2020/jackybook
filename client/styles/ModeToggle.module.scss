@@ -1,3 +1,5 @@
+@use '../styles/partials/breakpoints' as *;
+
 @keyframes rotateIcons {
   90% {
     transform: rotate(370deg);

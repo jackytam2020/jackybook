@@ -89,6 +89,7 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
         filteredUsers={filteredUsers}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        setMobileSearchIsOpen={setMobileSearchIsOpen}
       />
     </div>
   );

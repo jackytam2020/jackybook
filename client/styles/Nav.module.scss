@@ -45,12 +45,12 @@
       margin-left: 1rem;
       cursor: pointer;
     }
-    &__profilePicHolder {
+    &__profilePicHolder,
+    &__logoutButton,
+    &__modeToggle {
       display: none;
     }
-    &__logoutButton {
-      display: none;
-    }
+
     &__hamMenuIcon {
       display: block;
       align-items: center;
