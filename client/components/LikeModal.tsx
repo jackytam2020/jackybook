@@ -27,6 +27,10 @@ interface LikedUserProps {
   socket: Socket;
 }
 
+interface ModeRootState {
+  mode: string;
+}
+
 interface LikeModalProps {
   open: boolean;
   setIsModalOpen: Function;
@@ -57,6 +61,7 @@ const LikeModal: React.FC<LikeModalProps> = ({
   }, [open]);
 
   const user = useSelector((state: UserState) => state.user);
+  const mode = useSelector((state: ModeRootState) => state.mode);
   const dispatch = useDispatch();
 
   const isMobile = useMediaQuery('(max-width:500px)');
@@ -67,7 +72,7 @@ const LikeModal: React.FC<LikeModalProps> = ({
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isMobile ? '90%' : 400,
-    bgcolor: 'background.paper',
+    backgroundColor: mode === 'light' ? 'background.paper' : 'rgb(58, 59, 61)',
     boxShadow: 24,
     borderRadius: 2,
     p: 2,
@@ -85,7 +90,13 @@ const LikeModal: React.FC<LikeModalProps> = ({
         <Box sx={style}>
           <>
             <div className={likeModalStyles.likeModal__header}>
-              <h3>Likes</h3>
+              <h3
+                style={{
+                  color: mode === 'light' ? 'black' : 'white',
+                }}
+              >
+                Likes
+              </h3>
             </div>
             <div className={likeModalStyles.likeModal__likedList}>
               {Array.isArray(likedList) &&
@@ -96,11 +107,16 @@ const LikeModal: React.FC<LikeModalProps> = ({
                     likedUserID={likedUser._id}
                     loggedInUser={user._id}
                     socket={socket}
+                    mode={mode}
                   />
                 ))}
             </div>
             <CloseIcon
               className={likeModalStyles.likeModal__exitIcon}
+              sx={{
+                color: mode === 'light' ? 'black' : 'white',
+                transition: '1s',
+              }}
               onClick={() => {
                 setIsModalOpen(false);
               }}

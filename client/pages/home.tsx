@@ -18,6 +18,10 @@ interface PostRootState {
   posts: PostsArray;
 }
 
+interface ModeRootState {
+  mode: string;
+}
+
 interface HomeProp {
   socket: Socket;
   selectedPostID: string;
@@ -33,6 +37,7 @@ const home: React.FC<HomeProp> = ({
 }) => {
   const user = useSelector((state: UserRootState) => state.user);
   const posts = useSelector((state: PostRootState) => state.posts);
+  const mode = useSelector((state: ModeRootState) => state.mode);
   const dispatch = useDispatch();
 
   const grabFeedPosts = async () => {
@@ -70,7 +75,7 @@ const home: React.FC<HomeProp> = ({
   }, [socket, user]);
 
   return (
-    <div className={homeStyles.home}>
+    <div className={mode === 'light' ? homeStyles.home : homeStyles.homeDark}>
       <main className={homeStyles.home__container}>
         <article>
           <NewPostBar grabFeedPosts={grabFeedPosts} />

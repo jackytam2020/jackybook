@@ -2,6 +2,7 @@ import React from 'react';
 import searchResultsStyles from '../styles/SearchResults.module.scss';
 import SearchResultRow from './SearchResultRow';
 import { User } from '../state';
+import { useSelector } from 'react-redux';
 
 interface SearchResultsProps {
   filteredUsers: User[];
@@ -9,20 +10,33 @@ interface SearchResultsProps {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
+interface ModeRootState {
+  mode: string;
+}
+
 const SearchResults: React.FC<SearchResultsProps> = ({
   filteredUsers,
   searchQuery,
   setSearchQuery,
 }) => {
+  const mode = useSelector((state: ModeRootState) => state.mode);
+
   const usersList = filteredUsers.map((user) => (
-    <SearchResultRow key={user._id} {...user} setSearchQuery={setSearchQuery} />
+    <SearchResultRow
+      key={user._id}
+      {...user}
+      setSearchQuery={setSearchQuery}
+      mode={mode}
+    />
   ));
 
   return (
     <div
       className={
         searchQuery !== ''
-          ? searchResultsStyles.searchResults
+          ? mode === 'light'
+            ? searchResultsStyles.searchResults
+            : searchResultsStyles.searchResultsDark
           : searchResultsStyles.searchResultsEmpty
       }
     >

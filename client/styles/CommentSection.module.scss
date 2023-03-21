@@ -28,7 +28,20 @@
     width: 100%;
     height: 100%;
     border-radius: 20px;
+    transition: 1s;
+    outline: none;
   }
+
+  &__postInputDark {
+    @extend .commentSection__postInput;
+    background-color: rgb(118, 119, 124);
+    color: rgb(212, 215, 221);
+  }
+
+  &__postInputDark::placeholder {
+    color: rgb(212, 215, 221);
+  }
+
   &__sendIcon {
     position: absolute;
     right: 10px;

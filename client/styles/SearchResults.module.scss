@@ -9,8 +9,15 @@
   margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
+  row-gap: 1rem;
   padding: 0.5rem;
   color: black;
+}
+
+.searchResultsDark {
+  @extend .searchResults;
+  background-color: rgb(58, 59, 61);
+  color: white;
 }
 
 .searchResultsEmpty {

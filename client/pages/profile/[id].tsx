@@ -11,14 +11,12 @@ import { User, PostsArray, setUser, setPosts } from '../../state';
 
 import { FriendRequestProps } from '../../utils/interfaces/FriendRequest';
 
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
-
 import NewPostBar from '../../components/NewPostBar';
 import Post from '../../components/Post';
-import FriendStatus from '../../components/FriendStatus';
 import FriendRequestRow from '../../components/FriendRequestRow';
-import FriendsListRow from '../../components/FriendsListRow';
+import FriendRequests from '../../components/FriendRequests';
+import UserInfo from '../../components/UserInfo';
+import FriendsList from '../../components/FriendsList';
 
 interface UserState {
   user: User;
@@ -26,6 +24,10 @@ interface UserState {
 
 interface PostState {
   posts: PostsArray;
+}
+
+interface ModeRootState {
+  mode: string;
 }
 
 interface ProfileProps {
@@ -57,6 +59,7 @@ const Profile: React.FC<ProfileProps> = ({
 
   const user = useSelector((state: UserState) => state.user);
   const posts = useSelector((state: PostState) => state.posts);
+  const mode = useSelector((state: ModeRootState) => state.mode);
 
   const [profileData, setProfileData] = useState<User>(serverProfileData);
   const [friendsList, setFriendsList] = useState<User[]>(serverFriendsData);
@@ -115,59 +118,23 @@ const Profile: React.FC<ProfileProps> = ({
   }, [user]);
 
   return (
-    <div className={ProfileStyles.profile}>
+    <div
+      className={
+        mode === 'light' ? ProfileStyles.profile : ProfileStyles.profileDark
+      }
+    >
       {profileData && user && (
         <div className={ProfileStyles.profile__profileContainer}>
           <section className={ProfileStyles.profile__left}>
-            <div className={ProfileStyles.profile__userSection}>
-              <div className={ProfileStyles.profile__user}>
-                <img
-                  src={`http://localhost:8080/assets/${profileData.picturePath}`}
-                  className={ProfileStyles.profile__profilePic}
-                  alt={profileData.picturePath}
-                />
-                <div className={ProfileStyles.profile__nameFriends}>
-                  <h2
-                    className={ProfileStyles.profile__name}
-                  >{`${profileData.firstName} ${profileData.lastName}`}</h2>
-                  <p
-                    className={ProfileStyles.profile__friendsCount}
-                  >{`${profileData.friends.length} friends`}</p>
-                </div>
-              </div>
-              <div className={ProfileStyles.profile__userInfo}>
-                <div className={ProfileStyles.profile__locationBox}>
-                  <LocationOnOutlinedIcon></LocationOnOutlinedIcon>
-                  <p
-                    className={ProfileStyles.profile__location}
-                  >{`${profileData.location}`}</p>
-                </div>
-                <div className={ProfileStyles.profile__occupationBox}>
-                  <WorkOutlineOutlinedIcon></WorkOutlineOutlinedIcon>
-                  <p
-                    className={ProfileStyles.profile__occupation}
-                  >{`${profileData.occupation}`}</p>
-                </div>
-              </div>
-              {profileData._id !== user._id && (
-                <FriendStatus
-                  grabProfileData={grabProfileData}
-                  profileData={profileData}
-                  grabFriendsList={grabFriendsList}
-                  socket={socket}
-                />
-              )}
-            </div>
-
-            <div className={ProfileStyles.profile__friendsList}>
-              <h3>Friends List</h3>
-
-              <div className={ProfileStyles.profile__friendsListContainer}>
-                {friendsList.map((friend) => (
-                  <FriendsListRow key={friend._id} {...friend} />
-                ))}
-              </div>
-            </div>
+            <UserInfo
+              mode={mode}
+              profileData={profileData}
+              user={user}
+              grabProfileData={grabProfileData}
+              grabFriendsList={grabFriendsList}
+              socket={socket}
+            />
+            <FriendsList friendsList={friendsList} mode={mode} />
           </section>
 
           <main className={ProfileStyles.profile__feed}>
@@ -177,7 +144,15 @@ const Profile: React.FC<ProfileProps> = ({
               </div>
             )}
 
-            <h2 className={ProfileStyles.profile__feedHeader}>Posts</h2>
+            <h2
+              className={
+                mode === 'light'
+                  ? ProfileStyles.profile__feedHeader
+                  : ProfileStyles.profileDark__feedHeader
+              }
+            >
+              Posts
+            </h2>
             <section className={ProfileStyles.profile__postsSection}>
               {Array.isArray(posts) && posts.length > 0 ? (
                 posts
@@ -201,29 +176,14 @@ const Profile: React.FC<ProfileProps> = ({
             </section>
           </main>
 
-          {user._id === profileData._id &&
-            (friendRequests.length > 0 ? (
-              <section className={ProfileStyles.profile__friendRequests}>
-                <h3>Friend Requests</h3>
-
-                <div className={ProfileStyles.profile__requestList}>
-                  {Array.isArray(friendRequests) &&
-                    friendRequests.map((request) => (
-                      <FriendRequestRow
-                        key={request._id}
-                        {...request}
-                        socket={socket}
-                        user={user}
-                      />
-                    ))}
-                </div>
-              </section>
-            ) : (
-              <section className={ProfileStyles.profile__friendRequestsEmpty}>
-                <h3>Friend Requests</h3>
-                <p>No Friend Requests</p>
-              </section>
-            ))}
+          {user._id === profileData._id && (
+            <FriendRequests
+              friendRequests={friendRequests}
+              socket={socket}
+              user={user}
+              mode={mode}
+            />
+          )}
         </div>
       )}
     </div>

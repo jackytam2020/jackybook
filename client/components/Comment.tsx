@@ -17,12 +17,23 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 interface LikeCounterProps {
   likes: number;
   onClick: (event: React.MouseEvent<HTMLDivElement>) => void;
+  mode: string;
 }
 
-const LikeCounter: React.FC<LikeCounterProps> = ({ likes, onClick }) => {
+interface ModeRootState {
+  mode: string;
+}
+
+const LikeCounter: React.FC<LikeCounterProps> = ({ likes, onClick, mode }) => {
   return (
     <div onClick={onClick}>
-      <div className={commentStyles.commentContainer__likeCounter}>
+      <div
+        className={
+          mode === 'light'
+            ? commentStyles.commentContainer__likeCounter
+            : commentStyles.commentContainer__likeCounterDark
+        }
+      >
         <ThumbUpIcon color="primary" fontSize="small"></ThumbUpIcon>
         <p>{likes}</p>
       </div>
@@ -78,7 +89,9 @@ const Comment = ({
   const [showMoreIcon, setShowMoreIcon] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
+
   const user = useSelector((state: UserState) => state.user);
+  const mode = useSelector((state: ModeRootState) => state.mode);
 
   const grabCommentLikedList = async () => {
     const { data } = await axios.get(
@@ -100,7 +113,6 @@ const Comment = ({
       className={commentStyles.commentContainer}
       onMouseEnter={() => {
         setShowMoreIcon(true);
-        console.log(userID);
       }}
       onMouseLeave={() => {
         if (isEditDeleteOpen === false) setShowMoreIcon(false);
@@ -115,19 +127,36 @@ const Comment = ({
       </Link>
       <div className={commentStyles.commentContainer__right}>
         <div className={commentStyles.commentContainer__rightRow}>
-          <div className={commentStyles.commentContainer__commentBox}>
+          <div
+            className={
+              mode === 'light'
+                ? commentStyles.commentContainer__commentBox
+                : commentStyles.commentContainer__commentBoxDark
+            }
+          >
             <Link href={`/profile/${userID}`}>
               <p
                 className={commentStyles.commentContainer__user}
+                style={{
+                  color: mode === 'light' ? 'black' : 'white',
+                }}
               >{`${firstName} ${lastName}`}</p>
             </Link>
-            <p className={commentStyles.commentContainer__comment}>{comment}</p>
+            <p
+              className={commentStyles.commentContainer__comment}
+              style={{
+                color: mode === 'light' ? 'black' : 'white',
+              }}
+            >
+              {comment}
+            </p>
             {likes ? (
               <LikeCounter
                 likes={likes}
                 onClick={() => {
                   setIsModalOpen(true);
                 }}
+                mode={mode}
               />
             ) : null}
 
@@ -149,6 +178,10 @@ const Comment = ({
               }
             >
               <MoreHorizIcon
+                sx={{
+                  color: mode === 'light' ? 'black' : 'white',
+                  transition: '1s',
+                }}
                 onClick={() => {
                   setIsEditDeleteOpen(true);
                 }}
@@ -205,6 +238,9 @@ const Comment = ({
           ) : (
             <p
               className={commentStyles.commentContainer__like}
+              style={{
+                color: mode === 'light' ? 'black' : 'white',
+              }}
               onClick={() => {
                 pressLikeCommentButton(commentID);
                 handleNotifications(
@@ -220,7 +256,12 @@ const Comment = ({
               Like
             </p>
           )}
-          <p className={commentStyles.commentContainer__datePosted}>
+          <p
+            className={commentStyles.commentContainer__datePosted}
+            style={{
+              color: mode === 'light' ? 'black' : 'white',
+            }}
+          >
             {dayjs(datePosted).fromNow().includes('minute') ||
             dayjs(datePosted).fromNow().includes('second') ||
             dayjs(datePosted).fromNow().includes('hour')

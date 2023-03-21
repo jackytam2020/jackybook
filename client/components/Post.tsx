@@ -6,9 +6,10 @@ import ThumbUpOffAltOutlinedIcon from '@mui/icons-material/ThumbUpOffAltOutlined
 import InsertCommentOutlinedIcon from '@mui/icons-material/InsertCommentOutlined';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import axios from 'axios';
+import Link from 'next/link';
+
 import { useSelector } from 'react-redux';
 import { User } from '../state';
-import Link from 'next/link';
 import { Socket } from 'socket.io-client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -22,6 +23,10 @@ import { deletePost } from '../utils/posts/deletePost';
 
 interface UserState {
   user: User;
+}
+
+interface ModeRootState {
+  mode: string;
 }
 
 interface PostProps {
@@ -66,9 +71,15 @@ const Post: React.FC<PostProps> = ({
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [commentsList, setCommentsList] = useState<[]>([]);
   const [likedList, setLikedList] = useState<[]>([]);
-  const [backgroundColor, setBackgroundColor] = useState<string>('white');
 
   const user = useSelector((state: UserState) => state.user);
+  const mode = useSelector((state: ModeRootState) => state.mode);
+  const [backgroundColor, setBackgroundColor] = useState<string>(
+    mode === 'light' ? 'white' : 'rgb(58, 59, 61)'
+  );
+  const [textColor, setTextColor] = useState<string>(
+    mode === 'light' ? 'black' : 'white'
+  );
 
   const grabComments = async () => {
     const { data } = await axios.get(
@@ -110,7 +121,11 @@ const Post: React.FC<PostProps> = ({
       grabFeedPosts();
       grabComments();
       const timer = setTimeout(() => {
-        setBackgroundColor('white');
+        if (mode === 'light') {
+          setBackgroundColor('white');
+        } else if (mode === 'dark') {
+          setBackgroundColor('rgb(58, 59, 61)');
+        }
         setSelectedPostID('');
       }, 1000);
 
@@ -120,10 +135,21 @@ const Post: React.FC<PostProps> = ({
     }
   }, [selectedPostID, socket]);
 
+  useEffect(() => {
+    if (mode === 'light') {
+      setBackgroundColor('white');
+      setTextColor('black');
+    } else if (mode === 'dark') {
+      setBackgroundColor('rgb(58, 59, 61)');
+      setTextColor('white');
+    }
+  }, [mode]);
+
   dayjs.extend(relativeTime);
 
   return (
     <div
+      // className={mode === 'light' ? postStyles.post : postStyles.postDark}
       className={postStyles.post}
       id={_id}
       style={{ backgroundColor: backgroundColor }}
@@ -139,8 +165,9 @@ const Post: React.FC<PostProps> = ({
             <div>
               <p
                 className={postStyles.post__user}
+                style={{ color: textColor }}
               >{`${firstName} ${lastName}`}</p>
-              <p className={postStyles.post__date}>
+              <p className={postStyles.post__date} style={{ color: textColor }}>
                 {dayjs(createdAt).fromNow().includes('minute') ||
                 dayjs(createdAt).fromNow().includes('second') ||
                 dayjs(createdAt).fromNow().includes('hour')
@@ -155,11 +182,19 @@ const Post: React.FC<PostProps> = ({
           {loggedInUser === userID ? (
             <>
               <EditIcon
+                sx={{
+                  color: mode === 'light' ? 'black' : 'white',
+                  transition: '1s',
+                }}
                 onClick={() => {
                   setIsEditModalOpen(true);
                 }}
               />
               <DeleteIcon
+                sx={{
+                  color: mode === 'light' ? 'black' : 'white',
+                  transition: '1s',
+                }}
                 onClick={() => {
                   if (grabFeedPosts) {
                     deletePost(_id, grabFeedPosts);
@@ -180,7 +215,9 @@ const Post: React.FC<PostProps> = ({
         </div>
       </div>
 
-      <p className={postStyles.post__caption}>{description}</p>
+      <p className={postStyles.post__caption} style={{ color: textColor }}>
+        {description}
+      </p>
       {picturePath && (
         <>
           <img
@@ -197,6 +234,7 @@ const Post: React.FC<PostProps> = ({
           onClick={() => {
             setIsModalOpen(true);
           }}
+          style={{ color: textColor }}
         >{`${Object.keys(likes).length} Likes`}</p>
         <LikeModal
           open={isModalOpen}
@@ -208,6 +246,7 @@ const Post: React.FC<PostProps> = ({
         />
         <p
           className={postStyles.post__comments}
+          style={{ color: textColor }}
           onClick={() => {
             setIsCommentsOpen(!isCommentsOpen);
           }}
@@ -231,6 +270,10 @@ const Post: React.FC<PostProps> = ({
             ></ThumbUpAltIcon>
           ) : (
             <ThumbUpOffAltOutlinedIcon
+              sx={{
+                color: mode === 'light' ? 'black' : 'white',
+                transition: '1s',
+              }}
               onClick={() => {
                 if (grabProfileFeedPosts) {
                   pressLikeButton(_id, grabProfileFeedPosts, user);
@@ -242,7 +285,7 @@ const Post: React.FC<PostProps> = ({
             ></ThumbUpOffAltOutlinedIcon>
           )}
 
-          <p>Like</p>
+          <p style={{ color: textColor }}>Like</p>
         </div>
         <div
           className={postStyles.post__actionButton}
@@ -250,8 +293,13 @@ const Post: React.FC<PostProps> = ({
             setIsCommentsOpen(!isCommentsOpen);
           }}
         >
-          <InsertCommentOutlinedIcon></InsertCommentOutlinedIcon>
-          <p>Comment</p>
+          <InsertCommentOutlinedIcon
+            sx={{
+              color: mode === 'light' ? 'black' : 'white',
+              transition: '1s',
+            }}
+          ></InsertCommentOutlinedIcon>
+          <p style={{ color: textColor }}>Comment</p>
         </div>
       </div>
 

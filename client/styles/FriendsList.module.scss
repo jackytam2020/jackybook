@@ -1,0 +1,19 @@
+.friendsList {
+  background-color: white;
+  margin-top: 1rem;
+  border-radius: 10px;
+  padding: 1rem;
+  transition: 1s;
+
+  &__friendsListContainer {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+}
+
+.friendsListDark {
+  @extend .friendsList;
+  background-color: rgb(58, 59, 61);
+}

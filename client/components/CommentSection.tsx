@@ -20,6 +20,10 @@ interface CommentSectionProps {
   socket: Socket;
 }
 
+interface ModeRootState {
+  mode: string;
+}
+
 interface UserState {
   user: User;
 }
@@ -48,6 +52,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 }) => {
   const [newCommentValue, setNewCommentValue] = useState('');
   const user = useSelector((state: UserState) => state.user);
+  const mode = useSelector((state: ModeRootState) => state.mode);
 
   const postComment = async () => {
     setNewCommentValue('');
@@ -127,7 +132,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         />
         <div className={commentStyles.commentSection__inputHolder}>
           <input
-            className={commentStyles.commentSection__postInput}
+            className={
+              mode === 'light'
+                ? commentStyles.commentSection__postInput
+                : commentStyles.commentSection__postInputDark
+            }
             type="text"
             placeholder={`Write a comment...`}
             value={newCommentValue}

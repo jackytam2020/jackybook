@@ -21,6 +21,7 @@ interface LikedUserProps {
   loggedInUser: string;
   likedUserID: string;
   socket: Socket;
+  mode: string;
 }
 
 interface UserRootState {
@@ -35,6 +36,7 @@ const LikedUser: React.FC<LikedUserProps> = ({
   loggedInUser,
   likedUserID,
   socket,
+  mode,
 }) => {
   const [buttonStatus, setButtonStatus] = useState<string>('Add Friend');
   const user = useSelector((state: UserRootState) => state.user);
@@ -57,7 +59,11 @@ const LikedUser: React.FC<LikedUserProps> = ({
             src={`http://localhost:8080/assets/${picturePath}`}
             alt={picturePath}
           />
-          <p>{`${firstName} ${lastName}`}</p>
+          <p
+            style={{
+              color: mode === 'light' ? 'black' : 'white',
+            }}
+          >{`${firstName} ${lastName}`}</p>
         </div>
       </Link>
       {friends.includes(loggedInUser) || likedUserID === loggedInUser ? null : (
