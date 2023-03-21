@@ -8,6 +8,10 @@ import { Socket } from 'socket.io-client';
 
 import Comment from './Comment';
 import { handleNotifications } from '../utils/notifications/handleNotification';
+import {
+  UserRootState,
+  ModeRootState,
+} from '../utils/interfaces/ReduxStateProps';
 
 interface CommentSectionProps {
   isCommentsOpen: boolean;
@@ -18,14 +22,6 @@ interface CommentSectionProps {
   grabFeedPosts?: () => void;
   grabProfileFeedPosts?: () => void;
   socket: Socket;
-}
-
-interface ModeRootState {
-  mode: string;
-}
-
-interface UserState {
-  user: User;
 }
 
 interface Comment {
@@ -51,7 +47,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   socket,
 }) => {
   const [newCommentValue, setNewCommentValue] = useState('');
-  const user = useSelector((state: UserState) => state.user);
+  const user = useSelector((state: UserRootState) => state.user);
   const mode = useSelector((state: ModeRootState) => state.mode);
 
   const postComment = async () => {

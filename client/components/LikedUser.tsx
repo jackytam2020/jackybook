@@ -5,13 +5,12 @@ import { Socket } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
 import { Button } from '@mui/material';
-
+import { UserRootState } from '../utils/interfaces/ReduxStateProps';
 import {
   sendFriendRequest,
   removeFriendRequest,
 } from '../utils/friendRequest/friendRequest';
 
-import { User } from '../state';
 interface LikedUserProps {
   _id: string;
   picturePath: string;
@@ -22,10 +21,6 @@ interface LikedUserProps {
   likedUserID: string;
   socket: Socket;
   mode: string;
-}
-
-interface UserRootState {
-  user: User;
 }
 
 const LikedUser: React.FC<LikedUserProps> = ({

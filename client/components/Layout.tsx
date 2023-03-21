@@ -4,9 +4,9 @@ import layoutStyles from '../styles/Layout.module.scss';
 import { Socket } from 'socket.io-client';
 import axios from 'axios';
 
-import { User } from '../state';
 import { useSelector } from 'react-redux';
 import { NotificationProp } from '../utils/interfaces/notifications';
+import { UserRootState } from '../utils/interfaces/ReduxStateProps';
 import { useRouter } from 'next/router';
 
 import Nav from './Nav';
@@ -18,10 +18,6 @@ interface LayoutProps {
   children: React.ReactNode;
   socket: Socket;
   setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
-}
-
-interface UserRootState {
-  user: User;
 }
 
 const Layout: React.FunctionComponent<LayoutProps> = ({

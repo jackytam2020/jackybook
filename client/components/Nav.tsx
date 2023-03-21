@@ -15,9 +15,11 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../state';
 import { setLogout } from '../state/index';
+import { UserRootState } from '../utils/interfaces/ReduxStateProps';
 import { Socket } from 'socket.io-client';
 import { useRouter } from 'next/router';
 
@@ -30,11 +32,6 @@ import {
 import { NotificationProp } from '../utils/interfaces/notifications';
 import SearchResults from './SearchResults';
 import ModeToggle from './ModeToggle';
-// import MobileSearch from '../pages/MobileSearch';
-
-interface UserRootState {
-  user: User;
-}
 
 interface UsersRootState {
   users: User[];

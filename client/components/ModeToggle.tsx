@@ -5,13 +5,10 @@ import Image from 'next/image';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setMode } from '../state';
+import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 
 import DarkMode from '../assets/images/dark-mode.svg';
 import LightMode from '../assets/images/light-mode.svg';
-
-interface ModeRootState {
-  mode: string;
-}
 
 const ModeToggle = () => {
   const [lightModeState, setLightModeState] = useState(true);

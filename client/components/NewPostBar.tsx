@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import newPostStyles from '../styles/NewPostBar.module.scss';
+
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Dropzone from 'react-dropzone';
-import { useSelector } from 'react-redux';
 import axios from 'axios';
 
-import { User } from '../state';
+import { useSelector } from 'react-redux';
+import {
+  UserRootState,
+  ModeRootState,
+  TokenRootState,
+} from '../utils/interfaces/ReduxStateProps';
 
 interface MediaFile {
   path?: string;
@@ -17,18 +22,6 @@ interface MediaFile {
   size: number;
   type: string;
   webkitRelativePath: string;
-}
-
-interface UserRootState {
-  user: User;
-}
-
-interface ModeRootState {
-  mode: string;
-}
-
-interface TokenRootState {
-  token: string;
 }
 
 interface NewPostBarProps {

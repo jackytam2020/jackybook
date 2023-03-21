@@ -7,12 +7,15 @@ import InsertCommentOutlinedIcon from '@mui/icons-material/InsertCommentOutlined
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import axios from 'axios';
 import Link from 'next/link';
-
-import { useSelector } from 'react-redux';
-import { User } from '../state';
-import { Socket } from 'socket.io-client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
+import { useSelector } from 'react-redux';
+import { Socket } from 'socket.io-client';
+import {
+  UserRootState,
+  ModeRootState,
+} from '../utils/interfaces/ReduxStateProps';
 
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
@@ -20,14 +23,6 @@ import EditModal from './EditModal';
 import { handleNotifications } from '../utils/notifications/handleNotification';
 import { pressLikeButton } from '../utils/likes/pressLikeButton';
 import { deletePost } from '../utils/posts/deletePost';
-
-interface UserState {
-  user: User;
-}
-
-interface ModeRootState {
-  mode: string;
-}
 
 interface PostProps {
   _id: string;
@@ -72,7 +67,7 @@ const Post: React.FC<PostProps> = ({
   const [commentsList, setCommentsList] = useState<[]>([]);
   const [likedList, setLikedList] = useState<[]>([]);
 
-  const user = useSelector((state: UserState) => state.user);
+  const user = useSelector((state: UserRootState) => state.user);
   const mode = useSelector((state: ModeRootState) => state.mode);
   const [backgroundColor, setBackgroundColor] = useState<string>(
     mode === 'light' ? 'white' : 'rgb(58, 59, 61)'

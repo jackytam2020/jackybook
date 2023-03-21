@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../state';
 import { Socket } from 'socket.io-client';
+import { UserRootState } from '../utils/interfaces/ReduxStateProps';
 
 import Button from '@mui/material/Button';
 import { ToastContainer, toast } from 'react-toastify';
@@ -13,10 +14,6 @@ import {
   removeFriendRequest,
 } from '../utils/friendRequest/friendRequest';
 import { removeFriend } from '../utils/friends/removeFriend';
-
-interface UserState {
-  user: User;
-}
 
 interface FriendStatusProps {
   profileData: User;
@@ -31,7 +28,7 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
   socket,
   grabProfileData,
 }) => {
-  const user = useSelector((state: UserState) => state.user);
+  const user = useSelector((state: UserRootState) => state.user);
   const dispatch = useDispatch();
   const [buttonStatus, setButtonStatus] = useState<string>('Add Friend');
 

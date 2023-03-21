@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import notificationRowStyles from '../styles/NotificationRow.module.scss';
-import { scroller } from 'react-scroll';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { useRouter } from 'next/router';
-import { User } from '../state';
 import { useDispatch, useSelector } from 'react-redux';
+import { UserRootState } from '../utils/interfaces/ReduxStateProps';
 
 import { updateLoggedInUser } from '../utils/updateLoggedInUser';
-
-interface UserState {
-  user: User;
-}
 
 interface NotificationRowProp {
   senderID: string;
@@ -42,7 +37,7 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
   const [notificationType, setNotificationType] = useState('');
   const router = useRouter();
   const dispatch = useDispatch();
-  const user = useSelector<UserState, User>((state) => state.user);
+  const user = useSelector((state: UserRootState) => state.user);
 
   useEffect(() => {
     if (type === 'like') {

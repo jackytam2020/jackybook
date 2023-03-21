@@ -8,27 +8,19 @@ import { GetServerSidePropsContext } from 'next';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { User, PostsArray, setUser, setPosts } from '../../state';
+import {
+  UserRootState,
+  PostRootState,
+  ModeRootState,
+} from '../../utils/interfaces/ReduxStateProps';
 
 import { FriendRequestProps } from '../../utils/interfaces/FriendRequest';
 
 import NewPostBar from '../../components/NewPostBar';
 import Post from '../../components/Post';
-import FriendRequestRow from '../../components/FriendRequestRow';
 import FriendRequests from '../../components/FriendRequests';
 import UserInfo from '../../components/UserInfo';
 import FriendsList from '../../components/FriendsList';
-
-interface UserState {
-  user: User;
-}
-
-interface PostState {
-  posts: PostsArray;
-}
-
-interface ModeRootState {
-  mode: string;
-}
 
 interface ProfileProps {
   serverProfileData: User;
@@ -57,8 +49,8 @@ const Profile: React.FC<ProfileProps> = ({
     grabFriendsList();
   }, [router.asPath]);
 
-  const user = useSelector((state: UserState) => state.user);
-  const posts = useSelector((state: PostState) => state.posts);
+  const user = useSelector((state: UserRootState) => state.user);
+  const posts = useSelector((state: PostRootState) => state.posts);
   const mode = useSelector((state: ModeRootState) => state.mode);
 
   const [profileData, setProfileData] = useState<User>(serverProfileData);

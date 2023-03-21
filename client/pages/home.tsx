@@ -1,26 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import homeStyles from '../styles/Home.module.scss';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { setPosts } from '../state/index';
-import { User, PostsArray, setAllUsers } from '../state';
+import { User, setAllUsers } from '../state';
+import {
+  UserRootState,
+  PostRootState,
+  ModeRootState,
+} from '../utils/interfaces/ReduxStateProps';
 import { Socket } from 'socket.io-client';
 
 import NewPostBar from '../components/NewPostBar';
 import Post from '../components/Post';
-
-interface UserRootState {
-  user: User;
-}
-
-interface PostRootState {
-  posts: PostsArray;
-}
-
-interface ModeRootState {
-  mode: string;
-}
 
 interface HomeProp {
   socket: Socket;

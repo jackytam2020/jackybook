@@ -11,17 +11,13 @@ import {
   backspaceSearch,
   clearedSearch,
 } from '../utils/searchUsers/searchUsers';
+import {
+  UserRootState,
+  ModeRootState,
+} from '../utils/interfaces/ReduxStateProps';
 
 interface UsersRootState {
   users: User[];
-}
-
-interface UserRootState {
-  user: User;
-}
-
-interface ModeRootState {
-  mode: string;
 }
 
 interface MobileSearchProps {
