@@ -97,6 +97,16 @@ const Form: React.FC<Props> = ({ page }) => {
       theme: 'colored',
     });
 
+  const RegisterError = () =>
+    toast.error('Email already used by someone else', {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
+
   const registerUser = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const formData: File = new FormData();
@@ -107,18 +117,23 @@ const Form: React.FC<Props> = ({ page }) => {
     formData.append('email', registerValues.email);
     formData.append('location', registerValues.location);
     formData.append('occupation', registerValues.occupation);
-    formData.append('picture', registerValues.picture);
-    formData.append('picturePath', registerValues.picture.name);
 
-    const response = await axios.post(
-      'http://localhost:8080/auth/register',
-      formData
-    );
-    successfulSignUp();
+    if (registerValues.picture.path) {
+      formData.append('picture', registerValues.picture);
+      formData.append('picturePath', registerValues.picture.name);
+    } else {
+      formData.append('picturePath', 'default-profilepic.jpg');
+    }
 
-    setTimeout(() => {
-      router.push('/');
-    }, 1200);
+    try {
+      await axios.post('http://localhost:8080/auth/register', formData);
+      successfulSignUp();
+      setTimeout(() => {
+        router.push('/');
+      }, 1200);
+    } catch {
+      RegisterError();
+    }
   };
 
   const loginUser = async () => {
@@ -149,6 +164,8 @@ const Form: React.FC<Props> = ({ page }) => {
       loginUser();
     }
   };
+
+  console.log(registerValues.picture.path);
 
   return (
     <>
@@ -220,12 +237,14 @@ const Form: React.FC<Props> = ({ page }) => {
                 }}
                 sx={{ gridColumn: 'span 4' }}
               />
+
               <Box
                 gridColumn="span 4"
                 border={`1px solid black`}
                 borderRadius="5px"
                 p="1rem"
               >
+                <p style={{ paddingBottom: '1rem' }}>Upload Profile Picture</p>
                 <Dropzone
                   multiple={false}
                   onDrop={(acceptedFiles) => {
@@ -285,8 +304,7 @@ const Form: React.FC<Props> = ({ page }) => {
               registerValues.firstName !== '' &&
               registerValues.lastName !== '' &&
               registerValues.location !== '' &&
-              registerValues.occupation !== '' &&
-              registerValues.picture.path !== '' ? (
+              registerValues.occupation !== '' ? (
                 <Button
                   variant="contained"
                   sx={{ gridColumn: 'span 4' }}
