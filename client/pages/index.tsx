@@ -1,5 +1,4 @@
 import styles from '../styles/Login.module.scss';
-import { useSelector } from 'react-redux';
 import Form from '../components/Form';
 import Link from 'next/link';
 
@@ -8,8 +7,6 @@ interface ModeRootState {
 }
 
 const Login = () => {
-  const mode = useSelector((state: ModeRootState) => state.mode);
-
   return (
     <div className={styles.login}>
       <div className={styles.login__formSection}>
