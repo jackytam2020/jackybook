@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import editModalStyles from '../styles/EditModal.module.scss';
+import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 
 import { Button, Box, Modal, useMediaQuery } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -17,10 +18,6 @@ interface EditModalProps {
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => void;
   commentID?: string;
-}
-
-interface ModeRootState {
-  mode: string;
 }
 
 const EditModal: React.FC<EditModalProps> = ({

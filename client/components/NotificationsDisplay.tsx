@@ -1,6 +1,7 @@
 import React from 'react';
 import notificationStyles from '../styles/Notifications.module.scss';
 import { useSelector } from 'react-redux';
+import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 
 import NotificationRow from './NotificationRow';
 import { NotificationProp } from '../utils/interfaces/notifications';
@@ -12,10 +13,6 @@ interface NotificationsDisplayProp {
   isNotificationOpened: boolean;
   setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
   notificationRef: React.RefObject<HTMLDivElement>;
-}
-
-interface ModeRootState {
-  mode: string;
 }
 
 const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({

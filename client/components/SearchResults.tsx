@@ -1,17 +1,15 @@
 import React from 'react';
 import searchResultsStyles from '../styles/SearchResults.module.scss';
 import SearchResultRow from './SearchResultRow';
+
 import { User } from '../state';
 import { useSelector } from 'react-redux';
+import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 
 interface SearchResultsProps {
   filteredUsers: User[];
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-}
-
-interface ModeRootState {
-  mode: string;
 }
 
 const SearchResults: React.FC<SearchResultsProps> = ({

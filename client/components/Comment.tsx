@@ -3,24 +3,21 @@ import commentStyles from '../styles/Comment.module.scss';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Link from 'next/link';
-
-import LikeModal from './LikeModal';
-import EditModal from './EditModal';
 import axios from 'axios';
-import { handleNotifications } from '../utils/notifications/handleNotification';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
 import { Socket } from 'socket.io-client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
+import LikeModal from './LikeModal';
+import EditModal from './EditModal';
+import { handleNotifications } from '../utils/notifications/handleNotification';
+import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
+
 interface LikeCounterProps {
   likes: number;
   onClick: (event: React.MouseEvent<HTMLDivElement>) => void;
-  mode: string;
-}
-
-interface ModeRootState {
   mode: string;
 }
 

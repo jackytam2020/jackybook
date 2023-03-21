@@ -5,16 +5,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Modal, Box, useMediaQuery } from '@mui/material';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { User } from '../state';
+import {
+  UserRootState,
+  ModeRootState,
+} from '../utils/interfaces/ReduxStateProps';
 
 import { Socket } from 'socket.io-client';
 
 import LikedUser from './LikedUser';
 import { updateLoggedInUser } from '../utils/updateLoggedInUser';
-
-interface UserState {
-  user: User;
-}
 
 interface LikedUserProps {
   _id: string;
@@ -25,10 +24,6 @@ interface LikedUserProps {
   loggedInUser: string;
   likedUserID: string;
   socket: Socket;
-}
-
-interface ModeRootState {
-  mode: string;
 }
 
 interface LikeModalProps {
@@ -60,7 +55,7 @@ const LikeModal: React.FC<LikeModalProps> = ({
     updateLoggedInUser(user._id, dispatch);
   }, [open]);
 
-  const user = useSelector((state: UserState) => state.user);
+  const user = useSelector((state: UserRootState) => state.user);
   const mode = useSelector((state: ModeRootState) => state.mode);
   const dispatch = useDispatch();
 

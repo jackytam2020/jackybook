@@ -6,17 +6,13 @@ import { Socket } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import { User, setLogout } from '../state';
 import { NotificationProp } from '../utils/interfaces/notifications';
+import {
+  UserRootState,
+  ModeRootState,
+} from '../utils/interfaces/ReduxStateProps';
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Button } from '@mui/material';
-
-interface UserRootState {
-  user: User;
-}
-
-interface ModeRootState {
-  mode: string;
-}
 
 interface NavPopOutProps {
   isNavPopOutOpen: boolean;
