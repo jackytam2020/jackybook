@@ -1,0 +1,40 @@
+.userInfo {
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 1rem;
+  transition: 1s;
+
+  &__user {
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+  }
+
+  &__profilePic {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  &__locationAndJob {
+    width: 100%;
+    border-top: 1px solid lightgrey;
+    margin-top: 2rem;
+  }
+
+  &__locationBox,
+  &__occupationBox {
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+    margin-top: 1rem;
+  }
+}
+
+.userInfoDark {
+  @extend .userInfo;
+  background-color: rgb(58, 59, 61);
+  color: white;
+}

@@ -10,4 +10,5 @@ export interface FriendRequestProps {
   lastName: string;
   socket: Socket;
   user: User;
+  mode?: string;
 }

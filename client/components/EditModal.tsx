@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import editModalStyles from '../styles/EditModal.module.scss';
 
 import { Button, Box, Modal, useMediaQuery } from '@mui/material';
+import { useSelector } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
 
 interface EditModalProps {
@@ -18,6 +19,10 @@ interface EditModalProps {
   commentID?: string;
 }
 
+interface ModeRootState {
+  mode: string;
+}
+
 const EditModal: React.FC<EditModalProps> = ({
   open,
   setIsModalOpen,
@@ -30,13 +35,15 @@ const EditModal: React.FC<EditModalProps> = ({
   const [editValue, setEditValue] = useState<string>(value);
   const isMobile = useMediaQuery('(max-width:500px)');
 
+  const mode = useSelector((state: ModeRootState) => state.mode);
+
   const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: isMobile ? '90%' : 400,
-    bgcolor: 'background.paper',
+    backgroundColor: mode === 'light' ? 'background.paper' : 'rgb(58, 59, 61)',
     boxShadow: 24,
     borderRadius: 2,
     p: 2,
@@ -58,7 +65,13 @@ const EditModal: React.FC<EditModalProps> = ({
             }}
           ></CloseIcon>
           <div className={editModalStyles.editModal__header}>
-            <h2>{type === 'comment' ? 'Edit Comment' : 'Edit Post'}</h2>
+            <h2
+              style={{
+                color: mode === 'light' ? 'black' : 'white',
+              }}
+            >
+              {type === 'comment' ? 'Edit Comment' : 'Edit Post'}
+            </h2>
           </div>
           <textarea
             placeholder={editValue}
@@ -66,21 +79,38 @@ const EditModal: React.FC<EditModalProps> = ({
             onChange={(e) => {
               setEditValue(e.target.value);
             }}
-            className={editModalStyles.editModal__textField}
+            className={
+              mode === 'light'
+                ? editModalStyles.editModal__textField
+                : editModalStyles.editModal__textFieldDark
+            }
           ></textarea>
-          <Button
-            variant="contained"
-            className={editModalStyles.editModal__postButton}
-            onClick={() => {
-              if (type === 'post' && editPost) {
-                editPost(editValue);
-              } else if (type === 'comment' && editComment && commentID) {
-                editComment(editValue, commentID, setIsModalOpen);
-              }
-            }}
-          >
-            Post
-          </Button>
+          {editValue === '' || editValue === value ? (
+            <span
+              style={{
+                cursor: 'not-allowed',
+                gridColumn: 'span 4',
+              }}
+            >
+              <Button variant="contained" sx={{ width: '100%' }} disabled>
+                Submit
+              </Button>
+            </span>
+          ) : (
+            <Button
+              variant="contained"
+              className={editModalStyles.editModal__postButton}
+              onClick={() => {
+                if (type === 'post' && editPost) {
+                  editPost(editValue);
+                } else if (type === 'comment' && editComment && commentID) {
+                  editComment(editValue, commentID, setIsModalOpen);
+                }
+              }}
+            >
+              Post
+            </Button>
+          )}
         </Box>
       </Modal>
     </div>

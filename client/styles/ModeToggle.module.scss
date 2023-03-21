@@ -1,0 +1,62 @@
+@keyframes rotateIcons {
+  90% {
+    transform: rotate(370deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes onHoverAnimation {
+  50% {
+    transform: rotate(20deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.lightDarkToggle {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  &__lightMode {
+    height: 30px;
+    width: 30px;
+    opacity: 1;
+    animation: rotateIcons 1s;
+    transition: 1s;
+  }
+
+  &__lightMode:hover {
+    animation: onHoverAnimation 1s infinite linear;
+  }
+
+  &__lightModeHidden {
+    height: 30px;
+    width: 30px;
+    opacity: 0;
+    position: absolute;
+  }
+
+  &__darkMode {
+    height: 28px;
+    width: 28px;
+    opacity: 1;
+    animation: rotateIcons 1s;
+    transition: 1s;
+  }
+
+  &__darkMode:hover {
+    animation: onHoverAnimation 1s infinite linear;
+  }
+
+  &__darkModeHidden {
+    height: 30px;
+    width: 30px;
+    opacity: 0;
+    position: absolute;
+  }
+}

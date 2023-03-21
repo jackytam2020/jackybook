@@ -20,6 +20,7 @@ const FriendRequestRow: React.FC<FriendRequestProps> = ({
   lastName,
   socket,
   user,
+  mode,
 }) => {
   const dispatch = useDispatch();
   return (
@@ -33,7 +34,10 @@ const FriendRequestRow: React.FC<FriendRequestProps> = ({
           />
 
           <p
-            className={friendRequestRowStyles.requestRow__requestName}
+            style={{
+              color: mode === 'light' ? 'black' : 'white',
+              transition: '1s',
+            }}
           >{`${firstName} ${lastName}`}</p>
         </div>
       </Link>

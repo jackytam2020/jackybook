@@ -25,6 +25,12 @@
     margin-top: 1rem;
     resize: none;
   }
+  &__textFieldDark {
+    @extend .editModal__textField;
+    background-color: rgb(58, 59, 61);
+    color: white;
+  }
+
   &__textField:focus {
     outline: none;
   }

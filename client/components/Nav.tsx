@@ -29,6 +29,7 @@ import {
 
 import { NotificationProp } from '../utils/interfaces/notifications';
 import SearchResults from './SearchResults';
+import ModeToggle from './ModeToggle';
 // import MobileSearch from '../pages/MobileSearch';
 
 interface UserRootState {
@@ -174,6 +175,7 @@ const Nav: React.FC<NavProp> = ({
           </div>
           {user !== null && (
             <div className={navStyles.nav__right}>
+              <ModeToggle />
               <IconButton
                 size="large"
                 color="inherit"

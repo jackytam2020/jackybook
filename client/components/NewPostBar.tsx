@@ -23,6 +23,10 @@ interface UserRootState {
   user: User;
 }
 
+interface ModeRootState {
+  mode: string;
+}
+
 interface TokenRootState {
   token: string;
 }
@@ -50,10 +54,10 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     webkitRelativePath: '',
   });
   const [post, setPost] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('bikyb');
 
   const user = useSelector((state: UserRootState) => state.user);
   const token = useSelector((state: TokenRootState) => state.token);
+  const mode = useSelector((state: ModeRootState) => state.mode);
 
   const submitPost = async () => {
     const formData: File = new FormData();
@@ -87,7 +91,13 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
   };
 
   return (
-    <div className={newPostStyles.newPostBar}>
+    <div
+      className={
+        mode === 'light'
+          ? newPostStyles.newPostBar
+          : newPostStyles.newPostBarDark
+      }
+    >
       {user !== null && (
         <div className={newPostStyles.newPostBar__top}>
           <img
@@ -97,7 +107,11 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
           />
 
           <input
-            className={newPostStyles.newPostBar__postInput}
+            className={
+              mode === 'light'
+                ? newPostStyles.newPostBar__postInput
+                : newPostStyles.newPostBar__postInputDark
+            }
             onChange={(e) => {
               setPost(e.target.value);
             }}
