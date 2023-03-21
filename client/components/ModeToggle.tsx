@@ -9,8 +9,13 @@ import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 
 import DarkMode from '../assets/images/dark-mode.svg';
 import LightMode from '../assets/images/light-mode.svg';
+import LightModeDarkFill from '../assets/images/light-mode-black-fill.svg';
 
-const ModeToggle = () => {
+interface ModeToggleProps {
+  mobile?: boolean;
+}
+
+const ModeToggle: React.FC<ModeToggleProps> = ({ mobile }) => {
   const [lightModeState, setLightModeState] = useState(true);
   const [darkModeState, setDarkModeState] = useState(false);
   const dispatch = useDispatch();
@@ -20,6 +25,9 @@ const ModeToggle = () => {
     if (mode === 'dark') {
       setLightModeState(false);
       setDarkModeState(true);
+    } else if (mode === 'light') {
+      setLightModeState(true);
+      setDarkModeState(false);
     }
   }, [mode]);
 
@@ -37,7 +45,7 @@ const ModeToggle = () => {
       }}
     >
       <Image
-        src={LightMode}
+        src={mobile ? LightModeDarkFill : LightMode}
         className={
           lightModeState
             ? modeToggleStyles.lightDarkToggle__lightMode

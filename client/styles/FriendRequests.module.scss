@@ -1,3 +1,5 @@
+@use '../styles/partials/breakpoints' as *;
+
 .friendRequests {
   background-color: white;
   border-radius: 10px;
@@ -31,4 +33,10 @@
 
 .friendRequests::-webkit-scrollbar {
   display: none;
+}
+
+@include small() {
+  .friendRequestsEmpty {
+    height: 100px;
+  }
 }

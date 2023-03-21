@@ -172,7 +172,9 @@ const Nav: React.FC<NavProp> = ({
           </div>
           {user !== null && (
             <div className={navStyles.nav__right}>
-              <ModeToggle />
+              <div className={navStyles.nav__modeToggle}>
+                <ModeToggle />
+              </div>
               <IconButton
                 size="large"
                 color="inherit"
