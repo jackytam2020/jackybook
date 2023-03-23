@@ -90,7 +90,7 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
     >
       <img
         className={notificationRowStyles.notificationRow__profilePic}
-        src={`http://localhost:8080/assets/${senderPicturePath}`}
+        src={`${process.env.HOST}/assets/${senderPicturePath}`}
         alt={senderName}
       />
       <div className={notificationRowStyles.notificationRow__notification}>

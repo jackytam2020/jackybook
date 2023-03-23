@@ -52,14 +52,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
   const postComment = async () => {
     setNewCommentValue('');
-    const response = await axios.post(
-      `http://localhost:8080/posts/${postID}/addCommentToPost`,
-      {
-        userID: user._id,
-        comment: newCommentValue,
-        datePosted: new Date(),
-      }
-    );
+    await axios.post(`${process.env.HOST}/posts/${postID}/addCommentToPost`, {
+      userID: user._id,
+      comment: newCommentValue,
+      datePosted: new Date(),
+    });
     grabComments();
     handleNotifications(
       socket,
@@ -78,12 +75,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   const pressLikeCommentButton = async (commentID: string) => {
-    const response = await axios.patch(
-      `http://localhost:8080/posts/${commentID}/likeComment`,
-      {
-        userID: user._id,
-      }
-    );
+    await axios.patch(`${process.env.HOST}/posts/${commentID}/likeComment`, {
+      userID: user._id,
+    });
     grabComments();
   };
 
@@ -92,18 +86,16 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     commentID: string,
     setIsEditModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
-    const { data } = await axios.patch(
-      `http://localhost:8080/posts/${commentID}/editComment`,
-      { newComment: newComment }
-    );
+    await axios.patch(`${process.env.HOST}/posts/${commentID}/editComment`, {
+      newComment: newComment,
+    });
     setIsEditModalOpen(false);
     grabComments();
-    console.log(data);
   };
 
   const deleteComment = async (commentID: string) => {
-    const { data } = await axios.delete(
-      `http://localhost:8080/posts/${postID}/deleteComment/${commentID}`
+    await axios.delete(
+      `${process.env.HOST}/posts/${postID}/deleteComment/${commentID}`
     );
     grabComments();
     if (grabFeedPosts) {
@@ -123,7 +115,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       <div className={commentStyles.commentSection__newComment}>
         <img
           className={commentStyles.commentSection__profilePic}
-          src={`http://localhost:8080/assets/${user.picturePath}`}
+          src={`${process.env.HOST}/assets/${user.picturePath}`}
           alt={user.picturePath}
         />
         <div className={commentStyles.commentSection__inputHolder}>

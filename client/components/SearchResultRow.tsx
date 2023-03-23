@@ -34,7 +34,7 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
       >
         <img
           className={searchResultRowStyles.searchResultRow__profilePic}
-          src={`http://localhost:8080/assets/${picturePath}`}
+          src={`${process.env.HOST}/assets/${picturePath}`}
           alt={picturePath}
         />
         <p

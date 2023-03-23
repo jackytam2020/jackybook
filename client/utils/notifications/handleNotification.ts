@@ -24,7 +24,7 @@ export const handleNotifications = async (
     });
 
     await axios.post(
-      `http://localhost:8080/notifications/${user._id}/sendNotification/${receiverID}`,
+      `${process.env.HOST}/notifications/${user._id}/sendNotification/${receiverID}`,
       {
         type: type,
         senderPicturePath: user.picturePath,

@@ -78,7 +78,7 @@ const Post: React.FC<PostProps> = ({
 
   const grabComments = async () => {
     const { data } = await axios.get(
-      `http://localhost:8080/posts/${_id}/grabPostComments`
+      `${process.env.HOST}/posts/${_id}/grabPostComments`
     );
 
     setCommentsList(data.reverse());
@@ -86,14 +86,14 @@ const Post: React.FC<PostProps> = ({
 
   const grabPostLikedList = async () => {
     const { data } = await axios.get(
-      `http://localhost:8080/posts/${_id}/likedList`
+      `${process.env.HOST}/posts/${_id}/likedList`
     );
     setLikedList(data);
   };
 
   const editPost = async (editedDesc: string) => {
     const { data } = await axios.patch(
-      `http://localhost:8080/posts/${_id}/editPost`,
+      `${process.env.HOST}/posts/${_id}/editPost`,
       { newDescription: editedDesc }
     );
     setIsEditModalOpen(false);
@@ -154,7 +154,7 @@ const Post: React.FC<PostProps> = ({
           <div className={postStyles.post__topButtonsLeft}>
             <img
               className={postStyles.post__profilePic}
-              src={`http://localhost:8080/assets/${userPicturePath}`}
+              src={`${process.env.HOST}/assets/${userPicturePath}`}
               alt={userPicturePath}
             />
             <div>
@@ -217,7 +217,7 @@ const Post: React.FC<PostProps> = ({
         <>
           <img
             className={postStyles.post__image}
-            src={`http://localhost:8080/assets/${picturePath}`}
+            src={`${process.env.HOST}/assets/${picturePath}`}
             alt={picturePath}
           />
         </>

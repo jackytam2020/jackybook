@@ -16,7 +16,7 @@ export const sendFriendRequest = async (
 ) => {
   const { data } = await axios.post(
     //user is sender
-    `http://localhost:8080/users/${user._id}/sendFriendRequest/${receiverID}`,
+    `${process.env.HOST}/users/${user._id}/sendFriendRequest/${receiverID}`,
     {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -37,20 +37,26 @@ export const acceptFriendRequest = async (
   receiverID: string,
   dispatch: Function,
   socket: Socket,
-  user: User
+  user: User,
+  acceptFriendRequestError: () => void
 ) => {
-  await axios.patch(
-    `http://localhost:8080/users/${receiverID}/addFriend/${senderID}`
-  );
+  try {
+    await axios.patch(
+      `${process.env.HOST}/users/${receiverID}/addFriend/${senderID}`
+    );
 
-  dispatch(
-    setNewFriend({
-      newFriend: senderID,
-    })
-  );
+    dispatch(
+      setNewFriend({
+        newFriend: senderID,
+      })
+    );
 
-  removeFriendRequest(receiverID, senderID, dispatch);
-  handleNotifications(socket, user, senderID, 'acceptedRequest');
+    removeFriendRequest(receiverID, senderID, dispatch);
+    handleNotifications(socket, user, senderID, 'acceptedRequest');
+  } catch {
+    acceptFriendRequestError();
+    removeFriendRequest(receiverID, senderID, dispatch);
+  }
 };
 
 export const removeFriendRequest = async (
@@ -58,8 +64,8 @@ export const removeFriendRequest = async (
   senderID: string,
   dispatch?: Function
 ) => {
-  const response = await axios.delete(
-    `http://localhost:8080/users/${receiverID}/removeFriendRequest/${senderID}`
+  await axios.delete(
+    `${process.env.HOST}/users/${receiverID}/removeFriendRequest/${senderID}`
   );
 
   if (dispatch) {

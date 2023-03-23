@@ -39,7 +39,7 @@ const store = configureStore({
 export default function App({ Component, pageProps }: AppProps) {
   const [selectedPostID, setSelectedPostID] = useState<string>('');
 
-  const socket = io('http://localhost:8080');
+  const socket = io(`${process.env.HOST}`);
 
   return (
     <Provider store={store}>

@@ -6,7 +6,7 @@ export const updateLoggedInUser = async (
   dispatch: Function
 ) => {
   const { data } = await axios.get(
-    `http://localhost:8080/users/profile/${userID}`
+    `${process.env.HOST}/users/profile/${userID}`
   );
 
   dispatch(

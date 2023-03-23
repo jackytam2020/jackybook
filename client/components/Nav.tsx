@@ -193,7 +193,7 @@ const Nav: React.FC<NavProp> = ({
               >
                 <img
                   className={navStyles.nav__profilePic}
-                  src={`http://localhost:8080/assets/${user.picturePath}`}
+                  src={`${process.env.HOST}/assets/${user.picturePath}`}
                   alt={user.picturePath}
                 />
               </Link>

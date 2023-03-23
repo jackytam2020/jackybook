@@ -51,7 +51,7 @@ const LikedUser: React.FC<LikedUserProps> = ({
         <div className={likedUserListStyles.likedUser__user}>
           <img
             className={likedUserListStyles.likedUser__profilePic}
-            src={`http://localhost:8080/assets/${picturePath}`}
+            src={`${process.env.HOST}/assets/${picturePath}`}
             alt={picturePath}
           />
           <p

@@ -92,7 +92,7 @@ const Comment = ({
 
   const grabCommentLikedList = async () => {
     const { data } = await axios.get(
-      `http://localhost:8080/posts/${commentID}/likedCommentList`
+      `${process.env.HOST}/posts/${commentID}/likedCommentList`
     );
     setLikedList(data);
   };
@@ -118,7 +118,7 @@ const Comment = ({
       <Link href={`/profile/${userID}`}>
         <img
           className={commentStyles.commentContainer__profilePic}
-          src={`http://localhost:8080/assets/${userPicturePath}`}
+          src={`${process.env.HOST}/assets/${userPicturePath}`}
           alt={userPicturePath}
         />
       </Link>

@@ -21,7 +21,7 @@ const FriendsListRow: React.FC<FriendsRowProps> = ({
     <Link href={`/profile/${_id}`}>
       <div className={friendsListRowStyles.friendsRow}>
         <img
-          src={`http://localhost:8080/assets/${picturePath}`}
+          src={`${process.env.HOST}/assets/${picturePath}`}
           className={friendsListRowStyles.friendsRow__friendsPic}
           alt={picturePath}
         />

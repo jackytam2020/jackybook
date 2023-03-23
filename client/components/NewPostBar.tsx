@@ -59,7 +59,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     formData.append('picturePath', mediaFile.name);
     formData.append('picture', mediaFile);
 
-    const response = await axios.post('http://localhost:8080/posts', formData, {
+    await axios.post(`${process.env.HOST}/posts`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -91,12 +91,12 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
           : newPostStyles.newPostBarDark
       }
     >
-      {user !== null && (
+      {
         <div className={newPostStyles.newPostBar__top}>
           <img
             className={newPostStyles.newPostBar__profilePic}
-            src={`http://localhost:8080/assets/${user && user.picturePath}`}
-            alt={user && user.picturePath}
+            src={`${process.env.HOST}/assets/${user.picturePath}`}
+            alt={user.picturePath}
           />
 
           <input
@@ -113,7 +113,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
             value={post}
           ></input>
         </div>
-      )}
+      }
       <div className={newPostStyles.newPostBar__bottom}>
         <div className={newPostStyles.newPostBar__addMedia}>
           <Dropzone

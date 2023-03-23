@@ -126,7 +126,7 @@ const Form: React.FC<Props> = ({ page }) => {
     }
 
     try {
-      await axios.post('http://localhost:8080/auth/register', formData);
+      await axios.post(`${process.env.HOST}/auth/register`, formData);
       successfulSignUp();
       setTimeout(() => {
         router.push('/');
@@ -138,7 +138,7 @@ const Form: React.FC<Props> = ({ page }) => {
 
   const loginUser = async () => {
     try {
-      const { data } = await axios.post('http://localhost:8080/auth/login', {
+      const { data } = await axios.post(`${process.env.HOST}/auth/login`, {
         email: loginValues.email,
         password: loginValues.password,
       });
@@ -164,8 +164,6 @@ const Form: React.FC<Props> = ({ page }) => {
       loginUser();
     }
   };
-
-  console.log(registerValues.picture.path);
 
   return (
     <>

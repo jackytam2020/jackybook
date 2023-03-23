@@ -13,7 +13,7 @@ export const removeFriend = async (
 ) => {
   try {
     await axios.patch(
-      `http://localhost:8080/users/${userID}/deleteFriend/${friendID}`
+      `${process.env.HOST}/users/${userID}/deleteFriend/${friendID}`
     );
     updateLoggedInUser(user._id, dispatch);
 

@@ -35,14 +35,14 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
   //get request to get all notifications
   const getNotifications = async () => {
     const { data } = await axios.get(
-      `http://localhost:8080/notifications/${user._id}/grabNotifications`
+      `${process.env.HOST}/notifications/${user._id}/grabNotifications`
     );
     setNotifications(data);
   };
 
   const deleteNotifications = async () => {
     const { data } = await axios.delete(
-      `http://localhost:8080/notifications/${user._id}/deleteNotifications`
+      `${process.env.HOST}/notifications/${user._id}/deleteNotifications`
     );
     setNotifications(data);
   };

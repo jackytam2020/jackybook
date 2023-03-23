@@ -33,7 +33,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
     >
       <div className={userInfoStyles.userInfo__user}>
         <img
-          src={`http://localhost:8080/assets/${profileData.picturePath}`}
+          src={`${process.env.HOST}/assets/${profileData.picturePath}`}
           className={userInfoStyles.userInfo__profilePic}
           alt={profileData.picturePath}
         />

@@ -55,7 +55,7 @@ const NavPopOut: React.FC<NavPopOutProps> = ({
             <div className={navPopOutStyles.navPopOut__profileHolder}>
               <img
                 className={navPopOutStyles.navPopOut__profilePic}
-                src={`http://localhost:8080/assets/${user.picturePath}`}
+                src={`${process.env.HOST}/assets/${user.picturePath}`}
                 alt={user.picturePath}
               />
               <div>

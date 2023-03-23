@@ -6,6 +6,8 @@
   background-color: rgb(244, 244, 244);
   transition: 1s;
   padding-bottom: 5rem;
+  display: flex;
+  justify-content: center;
 
   a {
     text-decoration: none;
@@ -15,6 +17,7 @@
   &__profileContainer {
     display: grid;
     column-gap: 2rem;
+    max-width: 1920px;
   }
 
   &__left,

@@ -7,7 +7,7 @@ export const pressLikeButton = async (
   user: User
 ) => {
   const response = await axios.patch(
-    `http://localhost:8080/posts/${postID}/likePost`,
+    `${process.env.HOST}/posts/${postID}/likePost`,
     { userID: user._id }
   );
   grabFeedPosts();
