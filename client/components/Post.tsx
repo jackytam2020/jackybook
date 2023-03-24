@@ -20,6 +20,7 @@ import {
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
+import DeleteModal from './DeleteModal';
 import { handleNotifications } from '../utils/notifications/handleNotification';
 import { pressLikeButton } from '../utils/likes/pressLikeButton';
 import { deletePost } from '../utils/posts/deletePost';
@@ -62,8 +63,9 @@ const Post: React.FC<PostProps> = ({
   setSelectedPostID,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isLikedModalOpen, setIsLikedModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [commentsList, setCommentsList] = useState<[]>([]);
   const [likedList, setLikedList] = useState<[]>([]);
 
@@ -191,11 +193,7 @@ const Post: React.FC<PostProps> = ({
                   transition: '1s',
                 }}
                 onClick={() => {
-                  if (grabFeedPosts) {
-                    deletePost(_id, grabFeedPosts);
-                  } else if (grabProfileFeedPosts) {
-                    deletePost(_id, grabProfileFeedPosts);
-                  }
+                  setIsDeleteModalOpen(true);
                 }}
               />
             </>
@@ -206,6 +204,15 @@ const Post: React.FC<PostProps> = ({
             value={description}
             type={'post'}
             editPost={editPost}
+          />
+          <DeleteModal
+            open={isDeleteModalOpen}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            type={'post'}
+            grabFeedPosts={grabFeedPosts}
+            grabProfileFeedPosts={grabProfileFeedPosts}
+            deletePost={deletePost}
+            postID={_id}
           />
         </div>
       </div>
@@ -227,13 +234,13 @@ const Post: React.FC<PostProps> = ({
         <p
           className={postStyles.post__likes}
           onClick={() => {
-            setIsModalOpen(true);
+            setIsLikedModalOpen(true);
           }}
           style={{ color: textColor }}
         >{`${Object.keys(likes).length} Likes`}</p>
         <LikeModal
-          open={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
+          open={isLikedModalOpen}
+          setIsModalOpen={setIsLikedModalOpen}
           grabPostLikedList={grabPostLikedList}
           type={'post'}
           likedList={likedList}

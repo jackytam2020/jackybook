@@ -12,6 +12,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
+import DeleteModal from './DeleteModal';
 import { handleNotifications } from '../utils/notifications/handleNotification';
 import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 
@@ -81,10 +82,11 @@ const Comment = ({
   editComment,
   deleteComment,
 }: CommentProp) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isLikedModalOpen, setIsLikedModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [likedList, setLikedList] = useState<[]>([]);
   const [showMoreIcon, setShowMoreIcon] = useState<boolean>(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
 
   const user = useSelector((state: UserState) => state.user);
@@ -151,15 +153,15 @@ const Comment = ({
               <LikeCounter
                 likes={likes}
                 onClick={() => {
-                  setIsModalOpen(true);
+                  setIsLikedModalOpen(true);
                 }}
                 mode={mode}
               />
             ) : null}
 
             <LikeModal
-              open={isModalOpen}
-              setIsModalOpen={setIsModalOpen}
+              open={isLikedModalOpen}
+              setIsModalOpen={setIsLikedModalOpen}
               type={'comment'}
               likedList={likedList}
               grabCommentLikedList={grabCommentLikedList}
@@ -204,8 +206,8 @@ const Comment = ({
                 <p
                   className={commentStyles.commentContainer__deleteButton}
                   onClick={() => {
-                    deleteComment(commentID);
                     setIsEditDeleteOpen(false);
+                    setIsDeleteModalOpen(true);
                   }}
                 >
                   Delete
@@ -218,6 +220,13 @@ const Comment = ({
                 type={'comment'}
                 editComment={editComment}
                 commentID={commentID}
+              />
+              <DeleteModal
+                open={isDeleteModalOpen}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                type={'comment'}
+                commentID={commentID}
+                deleteComment={deleteComment}
               />
             </div>
           )}

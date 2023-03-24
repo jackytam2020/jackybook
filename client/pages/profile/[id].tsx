@@ -6,7 +6,7 @@ import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { useSelector, useDispatch } from 'react-redux';

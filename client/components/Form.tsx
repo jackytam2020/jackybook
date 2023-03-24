@@ -374,9 +374,7 @@ const Form: React.FC<Props> = ({ page }) => {
             </>
           )}
         </Box>
-        <ToastContainer
-        // toastStyle={{ backgroundColor: 'green', color: 'white' }}
-        />
+        <ToastContainer />
       </form>
     </>
   );

@@ -3,7 +3,6 @@ import commentStyles from '../styles/CommentSection.module.scss';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { User } from '../state';
 import { Socket } from 'socket.io-client';
 
 import Comment from './Comment';
@@ -15,7 +14,7 @@ import {
 
 interface CommentSectionProps {
   isCommentsOpen: boolean;
-  commentsList: [];
+  commentsList: Comment[];
   postID: string;
   userID: string;
   grabComments: () => void;
@@ -94,7 +93,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   const deleteComment = async (commentID: string) => {
-    await axios.delete(
+    const response = await axios.delete(
       `${process.env.HOST}/posts/${postID}/deleteComment/${commentID}`
     );
     grabComments();
