@@ -17,12 +17,13 @@ import notificationRoutes from './routes/notifications.js';
 import { newPost } from './controllers/postsController.js';
 import { register } from './controllers/auth.js';
 import { verifyToken } from './middleware/auth.js';
+import { connectDB } from './config/database.js';
 
 // MIDDLEWARE CONFIGURATIONS
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, './.env') });
 const app = express();
 app.use(express.json());
 app.use(helmet());
@@ -56,86 +57,91 @@ app.use('/notifications', notificationRoutes);
 
 //DATABASE CONNECTION SETUP
 const PORT = process.env.PORT || 3001;
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    const server = http.createServer(app);
-    const io = new Server(server, {
-      cors: {
-        origin: '*',
-        methods: ['GET', 'POST'],
-      },
-    });
+//connect to MongoDB Schema
+connectDB();
+// mongoose
+//   .connect(process.env.MONGO_URL, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then(() => {
+//     const server = http.createServer(app);
+//     const io = new Server(server, {
+//       cors: {
+//         origin: '*',
+//         methods: ['GET', 'POST'],
+//       },
+//     });
 
-    let onlineUsers = [];
+//     let onlineUsers = [];
 
-    const addNewUser = (userID, socketID) => {
-      !onlineUsers.some((user) => user.userID === userID) &&
-        onlineUsers.push({
-          userID,
-          socketID,
-        });
-    };
+//     const addNewUser = (userID, socketID) => {
+//       !onlineUsers.some((user) => user.userID === userID) &&
+//         onlineUsers.push({
+//           userID,
+//           socketID,
+//         });
+//     };
 
-    const removeUser = (socketID) => {
-      onlineUsers = onlineUsers.filter((user) => user.socketID !== socketID);
-    };
+//     const removeUser = (socketID) => {
+//       onlineUsers = onlineUsers.filter((user) => user.socketID !== socketID);
+//     };
 
-    const getUser = (userID) => {
-      return onlineUsers.find((user) => user.userID === userID);
-    };
-    io.on('connection', (socket) => {
-      console.log(`a user connected ${socket.id}`);
+//     const getUser = (userID) => {
+//       return onlineUsers.find((user) => user.userID === userID);
+//     };
+//     io.on('connection', (socket) => {
+//       console.log(`a user connected ${socket.id}`);
 
-      // handle socket events here
-      socket.on('newUser', (userID) => {
-        addNewUser(userID, socket.id);
-        console.log('new user');
-      });
+//       // handle socket events here
+//       socket.on('newUser', (userID) => {
+//         addNewUser(userID, socket.id);
+//         console.log('new user');
+//       });
 
-      socket.on(
-        'sendNotification',
-        ({
-          senderName,
-          senderID,
-          senderPicturePath,
-          comment,
-          receiverID,
-          postID,
-          type,
-          createdAt,
-        }) => {
-          const receiver = getUser(receiverID);
-          if (receiver) {
-            io.to(receiver.socketID).emit('getNotification', {
-              senderName,
-              senderID,
-              senderPicturePath,
-              comment,
-              postID,
-              type,
-              createdAt,
-            });
-          }
-        }
-      );
+//       socket.on(
+//         'sendNotification',
+//         ({
+//           senderName,
+//           senderID,
+//           senderPicturePath,
+//           comment,
+//           receiverID,
+//           postID,
+//           type,
+//           createdAt,
+//         }) => {
+//           const receiver = getUser(receiverID);
+//           if (receiver) {
+//             io.to(receiver.socketID).emit('getNotification', {
+//               senderName,
+//               senderID,
+//               senderPicturePath,
+//               comment,
+//               postID,
+//               type,
+//               createdAt,
+//             });
+//           }
+//         }
+//       );
 
-      socket.on('logout', () => {
-        removeUser(socket.id);
-        console.log('a user logged out', onlineUsers);
-      });
+//       socket.on('logout', () => {
+//         removeUser(socket.id);
+//         console.log('a user logged out', onlineUsers);
+//       });
 
-      socket.on('disconnect', () => {
-        removeUser(socket.id);
-        console.log('a user disconnected');
-      });
-    });
-    server.listen(PORT, () => {
-      console.log(`Server Port: ${PORT}`);
-    });
-    // app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
-  })
-  .catch((error) => console.log(`${PORT} did not connect`));
+//       socket.on('disconnect', () => {
+//         removeUser(socket.id);
+//         console.log('a user disconnected');
+//       });
+//     });
+//     server.listen(PORT, () => {
+//       console.log(`Server Port: ${PORT}`);
+//     });
+//     // app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+//   })
+//   .catch((error) => console.log(`${PORT} did not connect`));
+app.listen(PORT, () => {
+  console.log(`server is up and running on http://localhost:${PORT}`);
+});
