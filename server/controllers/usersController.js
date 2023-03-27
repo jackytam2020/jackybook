@@ -1,7 +1,5 @@
-import express from 'express';
 import User from '../models/Users.js';
 import FriendRequest from '../models/FriendRequests.js';
-import axios from 'axios';
 
 export const grabProfile = async (req, res) => {
   try {
