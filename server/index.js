@@ -138,4 +138,4 @@ mongoose
     });
     // app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
   })
-  .catch((error) => console.log(`${process.env.MONGO_URL} did not connect`));
+  .catch((error) => console.log(`${PORT} did not connect`));
