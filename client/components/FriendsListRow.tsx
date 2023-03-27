@@ -7,6 +7,7 @@ interface FriendsRowProps {
   firstName: string;
   lastName: string;
   picturePath: string;
+  mode: string;
 }
 
 const FriendsListRow: React.FC<FriendsRowProps> = ({
@@ -14,17 +15,21 @@ const FriendsListRow: React.FC<FriendsRowProps> = ({
   firstName,
   lastName,
   picturePath,
+  mode,
 }) => {
   return (
     <Link href={`/profile/${_id}`}>
       <div className={friendsListRowStyles.friendsRow}>
         <img
-          src={`http://localhost:8080/assets/${picturePath}`}
+          src={`${process.env.HOST}/assets/${picturePath}`}
           className={friendsListRowStyles.friendsRow__friendsPic}
           alt={picturePath}
         />
         <p
-          className={friendsListRowStyles.friendsRow__friendsName}
+          style={{
+            color: mode === 'light' ? 'black' : 'white',
+            transition: '1s',
+          }}
         >{`${firstName} ${lastName}`}</p>
       </div>
     </Link>

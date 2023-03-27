@@ -6,6 +6,9 @@ const nextConfig = {
       'Cache-Control': 'no-cache',
     },
   },
+  env: {
+    HOST: 'http://localhost:8080',
+  },
 };
 
 module.exports = nextConfig;

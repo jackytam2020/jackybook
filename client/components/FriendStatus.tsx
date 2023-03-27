@@ -1,67 +1,97 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { User, PostsArray } from '../state';
-import { useDispatch } from 'react-redux';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { User } from '../state';
+import { Socket } from 'socket.io-client';
+import { UserRootState } from '../utils/interfaces/ReduxStateProps';
 
-import { FriendRequestProps } from '../pages/profile/[id]';
+import Button from '@mui/material/Button';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   sendFriendRequest,
-  removeFriend,
+  acceptFriendRequest,
   removeFriendRequest,
-} from '../pages/profile/[id]';
-
-interface UserState {
-  user: User;
-}
+} from '../utils/friendRequest/friendRequest';
+import { removeFriend } from '../utils/friends/removeFriend';
 
 interface FriendStatusProps {
   profileData: User;
-  friendRequests: FriendRequestProps[];
+  grabFriendsList: () => void;
+  socket: Socket;
+  grabProfileData: () => void;
 }
 
 const FriendStatus: React.FC<FriendStatusProps> = ({
   profileData,
-  friendRequests,
+  grabFriendsList,
+  socket,
+  grabProfileData,
 }) => {
-  const user = useSelector<UserState, User>((state) => state.user);
+  const user = useSelector((state: UserRootState) => state.user);
   const dispatch = useDispatch();
+  const [buttonStatus, setButtonStatus] = useState<string>('Add Friend');
+
+  useEffect(() => {
+    if (profileData.friends.includes(user._id)) {
+      setButtonStatus('Remove Friend');
+    } else if (
+      !profileData.friends.includes(user._id) &&
+      user.friendRequests.includes(profileData._id)
+    ) {
+      setButtonStatus('Cancel Request');
+    } else if (
+      !user.friendRequests.includes(profileData._id) &&
+      !profileData.friendRequests.includes(user._id)
+    ) {
+      setButtonStatus('Add Friend');
+    } else if (profileData.friendRequests.includes(user._id)) {
+      setButtonStatus('Accept Friend Request');
+    }
+  }, [user.friendRequests, profileData, user.friends]);
+
+  const removeFriendError = () =>
+    toast.error(`${profileData.firstName} is no longer on your friend's list`, {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
   return (
     <div style={{ marginTop: '1rem' }}>
-      {profileData.friends.includes(user._id) && (
-        <Button
-          variant="outlined"
-          onClick={() => {
-            removeFriend(user._id, profileData._id, dispatch);
-          }}
-        >
-          Remove Friend
-        </Button>
-      )}
-      {friendRequests.some((request) =>
-        request.userID.includes(profileData._id)
-      ) ? (
-        <Button variant="contained">Accept Friend Request</Button>
-      ) : (
-        !profileData.friends.includes(user._id) && (
-          <Button
-            variant="contained"
-            onClick={() => {
-              if (user.friendRequests.includes(profileData._id)) {
-                //run delete friend request function
-                removeFriendRequest(profileData._id, user._id, dispatch);
-              } else {
-                sendFriendRequest(user, profileData._id, dispatch);
-              }
-            }}
-          >
-            {user.friendRequests.includes(profileData._id)
-              ? 'Cancel Request'
-              : 'Send Friend Request'}
-          </Button>
-        )
-      )}
+      <Button
+        variant={buttonStatus === 'Remove Friend' ? 'outlined' : 'contained'}
+        onClick={() => {
+          if (buttonStatus === 'Remove Friend') {
+            removeFriend(
+              user._id,
+              profileData._id,
+              grabFriendsList,
+              dispatch,
+              grabProfileData,
+              user,
+              removeFriendError
+            );
+          } else if (buttonStatus === 'Add Friend') {
+            sendFriendRequest(user, profileData._id, dispatch, socket);
+          } else if (buttonStatus === 'Cancel Request') {
+            removeFriendRequest(profileData._id, user._id, dispatch);
+          } else if (buttonStatus === 'Accept Friend Request') {
+            acceptFriendRequest(
+              profileData._id,
+              user._id,
+              dispatch,
+              socket,
+              user
+            );
+          }
+        }}
+      >
+        {buttonStatus}
+        <ToastContainer />
+      </Button>
     </div>
   );
 };

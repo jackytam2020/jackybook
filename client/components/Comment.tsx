@@ -3,20 +3,35 @@ import commentStyles from '../styles/Comment.module.scss';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Link from 'next/link';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { User } from '../state';
+import { Socket } from 'socket.io-client';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
-import axios from 'axios';
+import DeleteModal from './DeleteModal';
+import { handleNotifications } from '../utils/notifications/handleNotification';
+import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 
 interface LikeCounterProps {
   likes: number;
   onClick: (event: React.MouseEvent<HTMLDivElement>) => void;
+  mode: string;
 }
 
-const LikeCounter: React.FC<LikeCounterProps> = ({ likes, onClick }) => {
+const LikeCounter: React.FC<LikeCounterProps> = ({ likes, onClick, mode }) => {
   return (
     <div onClick={onClick}>
-      <div className={commentStyles.commentContainer__likeCounter}>
+      <div
+        className={
+          mode === 'light'
+            ? commentStyles.commentContainer__likeCounter
+            : commentStyles.commentContainer__likeCounterDark
+        }
+      >
         <ThumbUpIcon color="primary" fontSize="small"></ThumbUpIcon>
         <p>{likes}</p>
       </div>
@@ -36,15 +51,18 @@ interface CommentProp {
   loggedInUser: string;
   userPicturePath: string;
   userID: string;
-  // isEditDeleteOpen: boolean;
-  // setIsEditDeleteOpen: (arg0: boolean) => void;
-  // editDeleteMenuRef: React.RefObject<HTMLInputElement>;
+  postID: string;
   editComment: (
     commentID: string,
     editValue: string,
-    setIsModalOpen: Function
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => void;
   deleteComment: (commentID: string) => void;
+  socket: Socket;
+}
+
+interface UserState {
+  user: User;
 }
 
 const Comment = ({
@@ -59,21 +77,24 @@ const Comment = ({
   loggedInUser,
   userPicturePath,
   userID,
-  // isEditDeleteOpen,
-  // setIsEditDeleteOpen,
-  // editDeleteMenuRef,
+  postID,
+  socket,
   editComment,
   deleteComment,
 }: CommentProp) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isLikedModalOpen, setIsLikedModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [likedList, setLikedList] = useState<[]>([]);
   const [showMoreIcon, setShowMoreIcon] = useState<boolean>(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
+
+  const user = useSelector((state: UserState) => state.user);
+  const mode = useSelector((state: ModeRootState) => state.mode);
 
   const grabCommentLikedList = async () => {
     const { data } = await axios.get(
-      `http://localhost:8080/posts/${commentID}/likedCommentList`
+      `${process.env.HOST}/posts/${commentID}/likedCommentList`
     );
     setLikedList(data);
   };
@@ -84,12 +105,13 @@ const Comment = ({
     }
   }, [isEditDeleteOpen]);
 
+  dayjs.extend(relativeTime);
+
   return (
     <div
       className={commentStyles.commentContainer}
       onMouseEnter={() => {
         setShowMoreIcon(true);
-        console.log(userID);
       }}
       onMouseLeave={() => {
         if (isEditDeleteOpen === false) setShowMoreIcon(false);
@@ -98,34 +120,52 @@ const Comment = ({
       <Link href={`/profile/${userID}`}>
         <img
           className={commentStyles.commentContainer__profilePic}
-          src={`http://localhost:8080/assets/${userPicturePath}`}
+          src={`${process.env.HOST}/assets/${userPicturePath}`}
           alt={userPicturePath}
         />
       </Link>
       <div className={commentStyles.commentContainer__right}>
         <div className={commentStyles.commentContainer__rightRow}>
-          <div className={commentStyles.commentContainer__commentBox}>
+          <div
+            className={
+              mode === 'light'
+                ? commentStyles.commentContainer__commentBox
+                : commentStyles.commentContainer__commentBoxDark
+            }
+          >
             <Link href={`/profile/${userID}`}>
               <p
                 className={commentStyles.commentContainer__user}
+                style={{
+                  color: mode === 'light' ? 'black' : 'white',
+                }}
               >{`${firstName} ${lastName}`}</p>
             </Link>
-            <p className={commentStyles.commentContainer__comment}>{comment}</p>
+            <p
+              className={commentStyles.commentContainer__comment}
+              style={{
+                color: mode === 'light' ? 'black' : 'white',
+              }}
+            >
+              {comment}
+            </p>
             {likes ? (
               <LikeCounter
                 likes={likes}
                 onClick={() => {
-                  setIsModalOpen(true);
+                  setIsLikedModalOpen(true);
                 }}
+                mode={mode}
               />
             ) : null}
 
             <LikeModal
-              open={isModalOpen}
-              setIsModalOpen={setIsModalOpen}
+              open={isLikedModalOpen}
+              setIsModalOpen={setIsLikedModalOpen}
               type={'comment'}
               likedList={likedList}
               grabCommentLikedList={grabCommentLikedList}
+              socket={socket}
             />
           </div>
           {userID === loggedInUser && (
@@ -137,6 +177,10 @@ const Comment = ({
               }
             >
               <MoreHorizIcon
+                sx={{
+                  color: mode === 'light' ? 'black' : 'white',
+                  transition: '1s',
+                }}
                 onClick={() => {
                   setIsEditDeleteOpen(true);
                 }}
@@ -162,8 +206,8 @@ const Comment = ({
                 <p
                   className={commentStyles.commentContainer__deleteButton}
                   onClick={() => {
-                    deleteComment(commentID);
                     setIsEditDeleteOpen(false);
+                    setIsDeleteModalOpen(true);
                   }}
                 >
                   Delete
@@ -176,6 +220,13 @@ const Comment = ({
                 type={'comment'}
                 editComment={editComment}
                 commentID={commentID}
+              />
+              <DeleteModal
+                open={isDeleteModalOpen}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                type={'comment'}
+                commentID={commentID}
+                deleteComment={deleteComment}
               />
             </div>
           )}
@@ -193,15 +244,35 @@ const Comment = ({
           ) : (
             <p
               className={commentStyles.commentContainer__like}
+              style={{
+                color: mode === 'light' ? 'black' : 'white',
+              }}
               onClick={() => {
                 pressLikeCommentButton(commentID);
+                handleNotifications(
+                  socket,
+                  user,
+                  userID,
+                  'likedComment',
+                  postID,
+                  comment
+                );
               }}
             >
               Like
             </p>
           )}
-          <p className={commentStyles.commentContainer__datePosted}>
-            {datePosted}
+          <p
+            className={commentStyles.commentContainer__datePosted}
+            style={{
+              color: mode === 'light' ? 'black' : 'white',
+            }}
+          >
+            {dayjs(datePosted).fromNow().includes('minute') ||
+            dayjs(datePosted).fromNow().includes('second') ||
+            dayjs(datePosted).fromNow().includes('hour')
+              ? dayjs(datePosted).fromNow()
+              : dayjs(datePosted).format('MM/DD/YYYY')}
           </p>
         </div>
       </div>

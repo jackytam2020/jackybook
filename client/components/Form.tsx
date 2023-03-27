@@ -1,15 +1,20 @@
-import React, { useState, FormEvent } from 'react';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import Typography from '@mui/material/Typography';
+import React, { useState } from 'react';
+import {
+  TextField,
+  Box,
+  Button,
+  useMediaQuery,
+  Typography,
+} from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import axios from 'axios';
+
 import Dropzone from 'react-dropzone';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../state/index';
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Picture {
   path?: string;
@@ -72,7 +77,38 @@ const Form: React.FC<Props> = ({ page }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const registerUser = async () => {
+  const successfulSignUp = () =>
+    toast.success('Account Signed Up', {
+      position: 'bottom-right',
+      autoClose: 1000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
+
+  const loginError = () =>
+    toast.error('Incorrect Email or Password', {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
+
+  const RegisterError = () =>
+    toast.error('Email already used by someone else', {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
+
+  const registerUser = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
     const formData: File = new FormData();
 
     formData.append('firstName', registerValues.firstName);
@@ -81,41 +117,49 @@ const Form: React.FC<Props> = ({ page }) => {
     formData.append('email', registerValues.email);
     formData.append('location', registerValues.location);
     formData.append('occupation', registerValues.occupation);
-    formData.append('picture', registerValues.picture);
-    formData.append('picturePath', registerValues.picture.name);
 
-    const response = await axios.post(
-      'http://localhost:8080/auth/register',
-      formData
-    );
+    if (registerValues.picture.path) {
+      formData.append('picture', registerValues.picture);
+      formData.append('picturePath', registerValues.picture.name);
+    } else {
+      formData.append('picturePath', 'default-profilepic.jpg');
+    }
 
-    console.log(response);
-    console.log(registerValues.picture);
+    try {
+      await axios.post(`${process.env.HOST}/auth/register`, formData);
+      successfulSignUp();
+      setTimeout(() => {
+        router.push('/');
+      }, 1200);
+    } catch {
+      RegisterError();
+    }
   };
 
   const loginUser = async () => {
-    const response = await axios.post('http://localhost:8080/auth/login', {
-      email: loginValues.email,
-      password: loginValues.password,
-    });
+    try {
+      const { data } = await axios.post(`${process.env.HOST}/auth/login`, {
+        email: loginValues.email,
+        password: loginValues.password,
+      });
 
-    if (response) {
       dispatch(
         setLogin({
-          user: response.data.user,
-          token: response.data.token,
+          user: data.user,
+          token: data.token,
         })
       );
+      router.push('/home');
+    } catch {
+      loginError();
     }
-
-    router.push('/home');
   };
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     if (page === 'register') {
-      registerUser();
+      registerUser(e);
     } else if (page === 'login') {
       loginUser();
     }
@@ -134,7 +178,9 @@ const Form: React.FC<Props> = ({ page }) => {
           gap="30px"
           gridTemplateColumns="repeat(4, minmax(0,1fr))"
           sx={{
-            '& > div': { gridColumn: isNonMobile ? undefined : 'span 4' },
+            '& > div': {
+              gridColumn: isNonMobile ? undefined : 'span 4',
+            },
           }}
           paddingTop="1rem"
           paddingBottom="1rem"
@@ -189,26 +235,17 @@ const Form: React.FC<Props> = ({ page }) => {
                 }}
                 sx={{ gridColumn: 'span 4' }}
               />
+
               <Box
                 gridColumn="span 4"
                 border={`1px solid black`}
                 borderRadius="5px"
                 p="1rem"
               >
+                <p style={{ paddingBottom: '1rem' }}>Upload Profile Picture</p>
                 <Dropzone
                   multiple={false}
                   onDrop={(acceptedFiles) => {
-                    // const file = acceptedFiles[0];
-
-                    // const inComingPicture = {
-                    //   path: URL.createObjectURL(file),
-                    //   lastModified: file.lastModified,
-                    //   lastModifiedDate: file.lastModifiedDate,
-                    //   name: file.name,
-                    //   size: file.size,
-                    //   type: file.type,
-                    //   webkitRelativePath: file.webkitRelativePath,
-                    // };
                     setRegisterValues({
                       ...registerValues,
                       picture: acceptedFiles[0],
@@ -260,13 +297,31 @@ const Form: React.FC<Props> = ({ page }) => {
                 }}
                 sx={{ gridColumn: 'span 4' }}
               />
-              <Button
-                variant="contained"
-                sx={{ gridColumn: 'span 4' }}
-                type="submit"
-              >
-                Submit
-              </Button>
+              {registerValues.email !== '' &&
+              registerValues.password !== '' &&
+              registerValues.firstName !== '' &&
+              registerValues.lastName !== '' &&
+              registerValues.location !== '' &&
+              registerValues.occupation !== '' ? (
+                <Button
+                  variant="contained"
+                  sx={{ gridColumn: 'span 4' }}
+                  type="submit"
+                >
+                  Submit
+                </Button>
+              ) : (
+                <span
+                  style={{
+                    cursor: 'not-allowed',
+                    gridColumn: 'span 4',
+                  }}
+                >
+                  <Button variant="contained" sx={{ width: '100%' }} disabled>
+                    Submit
+                  </Button>
+                </span>
+              )}
             </>
           )}
           {page === 'login' && (
@@ -296,16 +351,30 @@ const Form: React.FC<Props> = ({ page }) => {
                 }}
                 sx={{ gridColumn: 'span 4' }}
               />
-              <Button
-                variant="contained"
-                sx={{ gridColumn: 'span 4' }}
-                type="submit"
-              >
-                Login
-              </Button>
+              {loginValues.email && loginValues.password !== '' ? (
+                <Button
+                  variant="contained"
+                  sx={{ gridColumn: 'span 4' }}
+                  type="submit"
+                >
+                  Login
+                </Button>
+              ) : (
+                <span
+                  style={{
+                    cursor: 'not-allowed',
+                    gridColumn: 'span 4',
+                  }}
+                >
+                  <Button variant="contained" disabled sx={{ width: '100%' }}>
+                    Login
+                  </Button>
+                </span>
+              )}
             </>
           )}
         </Box>
+        <ToastContainer />
       </form>
     </>
   );

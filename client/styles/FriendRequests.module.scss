@@ -1,0 +1,42 @@
+@use '../styles/partials/breakpoints' as *;
+
+.friendRequests {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1rem;
+  max-height: 300px;
+  margin-top: 2rem;
+  overflow-y: scroll;
+  transition: 1s;
+}
+
+.friendRequestsDark {
+  @extend .friendRequests;
+  background-color: rgb(58, 59, 61);
+  color: white;
+}
+
+.friendRequestsEmpty {
+  background-color: white;
+  height: 200px;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 2rem;
+  transition: 1s;
+}
+
+.friendRequestsEmptyDark {
+  @extend .friendRequestsEmpty;
+  background-color: rgb(58, 59, 61);
+  color: white;
+}
+
+.friendRequests::-webkit-scrollbar {
+  display: none;
+}
+
+@include small() {
+  .friendRequestsEmpty {
+    height: 100px;
+  }
+}

@@ -2,6 +2,7 @@ import express from 'express';
 import {
   grabFeedPosts,
   grabPostsFromProfile,
+  grabSinglePost,
   likePost,
   likedList,
   deletePost,
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.get('/:id/grabFeedPosts', grabFeedPosts);
 router.get('/:id/grabPostsFromProfile', grabPostsFromProfile);
+router.get('/:postID/grabSinglePost', grabSinglePost);
 router.get('/:postID/likedList', likedList);
 router.get('/:postID/grabPostComments', grabPostComments);
 router.get('/:commentID/likedCommentList', likedCommentList);

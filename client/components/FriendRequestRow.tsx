@@ -1,49 +1,73 @@
 import React from 'react';
 import Link from 'next/link';
+import friendRequestRowStyles from '../styles/friendRequestRow.module.scss';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
-import friendRequestRowStyles from '../styles/friendRequestRow.module.scss';
-import { FriendRequestProps } from '../pages/profile/[id]';
-
+import { FriendRequestProps } from '../utils/interfaces/FriendRequest';
 import {
   acceptFriendRequest,
   removeFriendRequest,
-} from '../pages/profile/[id]';
-import { useDispatch } from 'react-redux';
+} from '../utils/friendRequest/friendRequest';
 
 const FriendRequestRow: React.FC<FriendRequestProps> = ({
   userID,
-  targetID,
+  receiverID,
   picturePath,
   firstName,
   lastName,
+  socket,
+  user,
+  mode,
 }) => {
   const dispatch = useDispatch();
+
+  const acceptFriendRequestError = () =>
+    toast.error(`${firstName} is already in your friends list`, {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
   return (
     <div className={friendRequestRowStyles.requestRow}>
       <Link href={`/profile/${userID}`}>
         <div className={friendRequestRowStyles.requestRow__requestUser}>
           <img
-            src={`http://localhost:8080/assets/${picturePath}`}
+            src={`${process.env.HOST}/assets/${picturePath}`}
             className={friendRequestRowStyles.requestRow__requestPic}
             alt={picturePath}
           />
 
           <p
-            className={friendRequestRowStyles.requestRow__requestName}
+            style={{
+              color: mode === 'light' ? 'black' : 'white',
+              transition: '1s',
+            }}
           >{`${firstName} ${lastName}`}</p>
         </div>
       </Link>
       <div className={friendRequestRowStyles.requestRow__requestActions}>
         <CheckOutlinedIcon
           onClick={() => {
-            acceptFriendRequest(userID, targetID, dispatch);
+            acceptFriendRequest(
+              userID,
+              receiverID,
+              dispatch,
+              socket,
+              user,
+              acceptFriendRequestError
+            );
           }}
         ></CheckOutlinedIcon>
         <CancelOutlinedIcon
           onClick={() => {
-            removeFriendRequest(targetID, userID, dispatch);
+            removeFriendRequest(receiverID, userID, dispatch);
           }}
         ></CancelOutlinedIcon>
       </div>

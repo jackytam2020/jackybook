@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import newPostStyles from '../styles/NewPostBar.module.scss';
+
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Dropzone from 'react-dropzone';
-import { useSelector } from 'react-redux';
 import axios from 'axios';
 
-//type imports
-import { User } from '../state';
+import { useSelector } from 'react-redux';
+import {
+  UserRootState,
+  ModeRootState,
+  TokenRootState,
+} from '../utils/interfaces/ReduxStateProps';
 
 interface MediaFile {
   path?: string;
@@ -18,14 +22,6 @@ interface MediaFile {
   size: number;
   type: string;
   webkitRelativePath: string;
-}
-
-interface UserState {
-  user: User;
-}
-
-interface TokenState {
-  token: string;
 }
 
 interface NewPostBarProps {
@@ -52,8 +48,9 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
   });
   const [post, setPost] = useState<string>('');
 
-  const user = useSelector<UserState, User>((state) => state.user);
-  const token = useSelector<TokenState, string>((state) => state.token);
+  const user = useSelector((state: UserRootState) => state.user);
+  const token = useSelector((state: TokenRootState) => state.token);
+  const mode = useSelector((state: ModeRootState) => state.mode);
 
   const submitPost = async () => {
     const formData: File = new FormData();
@@ -62,7 +59,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     formData.append('picturePath', mediaFile.name);
     formData.append('picture', mediaFile);
 
-    const response = await axios.post('http://localhost:8080/posts', formData, {
+    await axios.post(`${process.env.HOST}/posts`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -84,20 +81,30 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     } else if (grabProfileFeedPosts) {
       grabProfileFeedPosts();
     }
-    console.log(response);
   };
 
   return (
-    <div className={newPostStyles.newPostBar}>
-      {user !== null && (
+    <div
+      className={
+        mode === 'light'
+          ? newPostStyles.newPostBar
+          : newPostStyles.newPostBarDark
+      }
+    >
+      {
         <div className={newPostStyles.newPostBar__top}>
           <img
             className={newPostStyles.newPostBar__profilePic}
-            src={`http://localhost:8080/assets/${user && user.picturePath}`}
-            alt={user && user.picturePath}
+            src={`${process.env.HOST}/assets/${user.picturePath}`}
+            alt={user.picturePath}
           />
+
           <input
-            className={newPostStyles.newPostBar__postInput}
+            className={
+              mode === 'light'
+                ? newPostStyles.newPostBar__postInput
+                : newPostStyles.newPostBar__postInputDark
+            }
             onChange={(e) => {
               setPost(e.target.value);
             }}
@@ -106,7 +113,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
             value={post}
           ></input>
         </div>
-      )}
+      }
       <div className={newPostStyles.newPostBar__bottom}>
         <div className={newPostStyles.newPostBar__addMedia}>
           <Dropzone
@@ -123,7 +130,6 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
                 ) : (
                   <div>
                     <Typography>{mediaFile.name}</Typography>
-                    {/* <AddPhotoAlternateIcon /> */}
                   </div>
                 )}
               </div>
@@ -133,14 +139,26 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
             Photo/Video
           </Typography>
         </div>
-        <Button
-          variant="contained"
-          onClick={() => {
-            submitPost();
-          }}
-        >
-          Post
-        </Button>
+        {post.length > 0 ? (
+          <Button
+            variant="contained"
+            onClick={() => {
+              submitPost();
+            }}
+          >
+            Post
+          </Button>
+        ) : (
+          <span style={{ cursor: 'not-allowed' }}>
+            <Button
+              disabled
+              variant="contained"
+              className={newPostStyles.newPostBar__disabledButton}
+            >
+              Post
+            </Button>
+          </span>
+        )}
       </div>
     </div>
   );

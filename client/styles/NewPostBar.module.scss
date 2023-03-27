@@ -3,6 +3,7 @@
   background-color: white;
   border-radius: 10px;
   padding: 1rem 1rem;
+  transition: 1s;
 
   &__top {
     display: flex;
@@ -11,6 +12,7 @@
     padding-bottom: 1rem;
     border-bottom: 1px solid lightgray;
   }
+
   &__profilePic {
     width: 50px;
     height: 50px;
@@ -23,8 +25,20 @@
     border: none;
     background-color: #f2f2f2;
     padding-left: 1rem;
-    width: 100%;
+    flex: 1;
     border-radius: 20px;
+    transition: 1s;
+    outline: none;
+  }
+
+  &__postInputDark {
+    @extend .newPostBar__postInput;
+    background-color: rgb(118, 119, 124);
+    color: rgb(212, 215, 221);
+  }
+
+  &__postInputDark::placeholder {
+    color: rgb(212, 215, 221);
   }
 
   &__bottom {
@@ -37,4 +51,9 @@
     align-items: center;
     cursor: pointer;
   }
+}
+
+.newPostBarDark {
+  @extend .newPostBar;
+  background-color: rgb(58, 59, 61);
 }

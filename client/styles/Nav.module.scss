@@ -1,27 +1,14 @@
+@use '../styles/partials/breakpoints' as *;
+
 .nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 
   a {
     text-decoration: none;
     color: white;
-  }
-
-  &__searchContainer {
-    position: relative;
-  }
-  &___searchIcon {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-  }
-  &__search {
-    margin-left: 2rem;
-    height: 40px;
-    border: none;
-    border-radius: 5px;
   }
   &__right,
   &__left {
@@ -41,5 +28,53 @@
     border-radius: 50%;
     object-fit: cover;
     cursor: pointer;
+  }
+}
+
+@include small() {
+  .nav {
+    &__searchInput {
+      display: none;
+    }
+    &__mobileSearchIcon {
+      display: flex;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      padding: 0.3rem;
+      margin-left: 1rem;
+      cursor: pointer;
+    }
+    &__profilePicHolder,
+    &__logoutButton,
+    &__modeToggle {
+      display: none;
+    }
+
+    &__hamMenuIcon {
+      display: block;
+      align-items: center;
+      display: flex;
+    }
+  }
+}
+@include medium() {
+  .nav {
+    &__mobileSearchIcon {
+      display: none;
+    }
+    &__hamMenuIcon {
+      display: none;
+    }
+  }
+}
+@include large() {
+  .nav {
+    &__mobileSearchIcon {
+      display: none;
+    }
+    &__hamMenuIcon {
+      display: none;
+    }
   }
 }

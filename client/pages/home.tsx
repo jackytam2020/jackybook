@@ -1,112 +1,113 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import homeStyles from '../styles/Home.module.scss';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { User } from '../state';
-import { useDispatch } from 'react-redux';
+import Head from 'next/head';
+import { useSelector, useDispatch } from 'react-redux';
 import { setPosts } from '../state/index';
-import { PostsArray } from '../state';
+import { User, setAllUsers } from '../state';
+import {
+  UserRootState,
+  PostRootState,
+  ModeRootState,
+} from '../utils/interfaces/ReduxStateProps';
+import { Socket } from 'socket.io-client';
 
 import NewPostBar from '../components/NewPostBar';
 import Post from '../components/Post';
 
-interface UserState {
-  user: User;
+interface HomeProp {
+  socket: Socket;
+  selectedPostID: string;
+  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
+  users: User[];
 }
 
-interface PostState {
-  posts: PostsArray;
-}
-
-export const pressLikeButton = async (
-  postID: string,
-  grabFeedPosts: () => void,
-  user: User
-) => {
-  const response = await axios.patch(
-    `http://localhost:8080/posts/${postID}/likePost`,
-    { userID: user._id }
-  );
-  grabFeedPosts();
-  console.log(response);
-};
-
-export const deletePost = async (postID: string, grabFeedPosts: () => void) => {
-  const response = await axios.delete(
-    `http://localhost:8080/posts/${postID}/deletePost`
-  );
-  console.log(response);
-  grabFeedPosts();
-};
-
-const home = () => {
-  const user = useSelector<UserState, User>((state) => state.user);
-  const posts = useSelector<PostState, PostsArray>((state) => state.posts);
+const home: React.FC<HomeProp> = ({
+  socket,
+  selectedPostID,
+  setSelectedPostID,
+  users,
+}) => {
+  const user = useSelector((state: UserRootState) => state.user);
+  const posts = useSelector((state: PostRootState) => state.posts);
+  const mode = useSelector((state: ModeRootState) => state.mode);
   const dispatch = useDispatch();
 
   const grabFeedPosts = async () => {
     const { data } = await axios.get(
-      `http://localhost:8080/posts/${user._id}/grabFeedPosts`
+      `${process.env.HOST}/posts/${user._id}/grabFeedPosts`
     );
     dispatch(
       setPosts({
         posts: data.reverse(),
       })
     );
-
-    console.log(data);
   };
 
   useEffect(() => {
     grabFeedPosts();
+
+    //grab all users from database and assign it to redux state
+    dispatch(
+      setAllUsers({
+        users: users,
+      })
+    );
   }, []);
 
-  // const [isEditDeleteOpen, setIsEditDeleteOpen] = useState<boolean>(false);
-  // let editDeleteMenuRef = useRef<HTMLInputElement>(null);
+  const isConnected = useRef(true);
 
-  // //close edit delete comment menu by clicking anywhere on the homepage
-  // useEffect(() => {
-  //   const handleDocumentClick = (event: MouseEvent) => {
-  //     if (
-  //       editDeleteMenuRef.current &&
-  //       !editDeleteMenuRef.current.contains(event.target as Node)
-  //     ) {
-  //       setIsEditDeleteOpen(false);
-  //     }
-  //   };
-
-  //   document.addEventListener('mousedown', handleDocumentClick);
-
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleDocumentClick);
-  //   };
-  // }, [editDeleteMenuRef]);
+  //add new online user to socket
+  useEffect(() => {
+    if (isConnected.current) {
+      isConnected.current = false;
+      if (user) {
+        socket?.emit('newUser', user._id);
+      }
+    }
+  }, [socket, user]);
 
   return (
-    <div className={homeStyles.home}>
-      <main className={homeStyles.home__container}>
-        <article>
-          <NewPostBar grabFeedPosts={grabFeedPosts} />
-        </article>
-        <section className={homeStyles.home__postsSection}>
-          {Array.isArray(posts) &&
-            posts.map((post) => (
-              <Post
-                key={post._id}
-                {...post}
-                deletePost={deletePost}
-                pressLikeButton={pressLikeButton}
-                loggedInUser={user._id}
-                grabFeedPosts={grabFeedPosts}
-                // isEditDeleteOpen={isEditDeleteOpen}
-                // setIsEditDeleteOpen={setIsEditDeleteOpen}
-                // editDeleteMenuRef={editDeleteMenuRef}
-              />
-            ))}
-        </section>
-      </main>
-    </div>
+    <>
+      <Head>
+        <title>Jackybook</title>
+      </Head>
+      <div className={mode === 'light' ? homeStyles.home : homeStyles.homeDark}>
+        <main className={homeStyles.home__container}>
+          <article>
+            <NewPostBar grabFeedPosts={grabFeedPosts} />
+          </article>
+          <section className={homeStyles.home__postsSection}>
+            {Array.isArray(posts) && posts.length > 0 ? (
+              posts.map((post) => (
+                <Post
+                  key={post._id}
+                  {...post}
+                  loggedInUser={user._id}
+                  grabFeedPosts={grabFeedPosts}
+                  socket={socket}
+                  selectedPostID={selectedPostID}
+                  setSelectedPostID={setSelectedPostID}
+                />
+              ))
+            ) : (
+              <p style={{ color: 'grey' }}>No posts to show</p>
+            )}
+          </section>
+        </main>
+      </div>
+    </>
   );
 };
 
 export default home;
+
+//grab all users and send it home page as prop
+export const getServerSideProps = async () => {
+  const { data } = await axios.get(`${process.env.HOST}/users`);
+  return {
+    props: {
+      users: data,
+    },
+  };
+};

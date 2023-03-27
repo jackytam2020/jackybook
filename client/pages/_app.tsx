@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useRef } from 'react';
 import '../styles/globals.scss';
 import type { AppProps } from 'next/app';
 import authReducer from '../state';
@@ -13,12 +14,17 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import sessionStorage from 'redux-persist/lib/storage/session';
 import { PersistGate } from 'redux-persist/integration/react';
-import { useRouter } from 'next/router';
+import { io } from 'socket.io-client';
 import Layout from '../components/Layout';
 
-const persistConfig = { timeout: 100, key: 'root', storage, version: 1 };
+const persistConfig = {
+  timeout: 100,
+  key: 'root',
+  storage: sessionStorage,
+  version: 1,
+};
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
   reducer: persistedReducer,
@@ -30,22 +36,28 @@ const store = configureStore({
     }),
 });
 
-// const store = configureStore({ reducer: authReducer });
-
 export default function App({ Component, pageProps }: AppProps) {
-  // const mode = useSelector((state) => state.mode);
-  const router = useRouter();
+  const [selectedPostID, setSelectedPostID] = useState<string>('');
+
+  const socket = io(`${process.env.HOST}`);
 
   return (
     <Provider store={store}>
-      <PersistGate
-        loading={<div>loading...</div>}
-        persistor={persistStore(store)}
-      >
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </PersistGate>
+      {socket && (
+        <PersistGate
+          loading={<div>loading...</div>}
+          persistor={persistStore(store)}
+        >
+          <Layout socket={socket} setSelectedPostID={setSelectedPostID}>
+            <Component
+              {...pageProps}
+              socket={socket}
+              selectedPostID={selectedPostID}
+              setSelectedPostID={setSelectedPostID}
+            />
+          </Layout>
+        </PersistGate>
+      )}
     </Provider>
   );
 }

@@ -1,32 +1,21 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import CloseIcon from '@mui/icons-material/Close';
 import editModalStyles from '../styles/EditModal.module.scss';
+import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  borderRadius: 2,
-  p: 2,
-};
+import { Button, Box, Modal, useMediaQuery } from '@mui/material';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface EditModalProps {
   open: boolean;
-  setIsModalOpen: (arg0: boolean) => void;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   value: string;
   editPost?: (editValue: string) => void;
   type: string;
   editComment?: (
     commentID: string,
     editValue: string,
-    setIsModalOpen: Function
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => void;
   commentID?: string;
 }
@@ -41,6 +30,22 @@ const EditModal: React.FC<EditModalProps> = ({
   commentID,
 }) => {
   const [editValue, setEditValue] = useState<string>(value);
+  const isMobile = useMediaQuery('(max-width:500px)');
+
+  const mode = useSelector((state: ModeRootState) => state.mode);
+
+  const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '90%' : 400,
+    backgroundColor: mode === 'light' ? 'background.paper' : 'rgb(58, 59, 61)',
+    boxShadow: 24,
+    borderRadius: 2,
+    p: 2,
+  };
+
   return (
     <div className={editModalStyles.editModal}>
       <Modal
@@ -57,7 +62,13 @@ const EditModal: React.FC<EditModalProps> = ({
             }}
           ></CloseIcon>
           <div className={editModalStyles.editModal__header}>
-            <h2>{type === 'comment' ? 'Edit Comment' : 'Edit Post'}</h2>
+            <h2
+              style={{
+                color: mode === 'light' ? 'black' : 'white',
+              }}
+            >
+              {type === 'comment' ? 'Edit Comment' : 'Edit Post'}
+            </h2>
           </div>
           <textarea
             placeholder={editValue}
@@ -65,21 +76,38 @@ const EditModal: React.FC<EditModalProps> = ({
             onChange={(e) => {
               setEditValue(e.target.value);
             }}
-            className={editModalStyles.editModal__textField}
+            className={
+              mode === 'light'
+                ? editModalStyles.editModal__textField
+                : editModalStyles.editModal__textFieldDark
+            }
           ></textarea>
-          <Button
-            variant="contained"
-            className={editModalStyles.editModal__postButton}
-            onClick={() => {
-              if (type === 'post' && editPost) {
-                editPost(editValue);
-              } else if (type === 'comment' && editComment && commentID) {
-                editComment(editValue, commentID, setIsModalOpen);
-              }
-            }}
-          >
-            Post
-          </Button>
+          {editValue === '' || editValue === value ? (
+            <span
+              style={{
+                cursor: 'not-allowed',
+                gridColumn: 'span 4',
+              }}
+            >
+              <Button variant="contained" sx={{ width: '100%' }} disabled>
+                Submit
+              </Button>
+            </span>
+          ) : (
+            <Button
+              variant="contained"
+              className={editModalStyles.editModal__postButton}
+              onClick={() => {
+                if (type === 'post' && editPost) {
+                  editPost(editValue);
+                } else if (type === 'comment' && editComment && commentID) {
+                  editComment(editValue, commentID, setIsModalOpen);
+                }
+              }}
+            >
+              Post
+            </Button>
+          )}
         </Box>
       </Modal>
     </div>

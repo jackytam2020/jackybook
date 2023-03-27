@@ -1,7 +1,13 @@
+@use '../styles/partials/breakpoints' as *;
+
 .profile {
   width: 100%;
   min-height: 100vh;
   background-color: rgb(244, 244, 244);
+  transition: 1s;
+  padding-bottom: 5rem;
+  display: flex;
+  justify-content: center;
 
   a {
     text-decoration: none;
@@ -10,75 +16,74 @@
 
   &__profileContainer {
     display: grid;
-    padding-left: 15%;
-    padding-right: 15%;
-    grid-template-columns: 1.5fr 3fr 1.5fr;
     column-gap: 2rem;
+    max-width: 1920px;
   }
 
   &__left,
-  &__friendRequests,
-  &__friendRequestsEmpty,
   &__feed {
     margin-top: 2rem;
   }
-  &__userSection {
-    width: 100%;
-    background-color: white;
-    border-radius: 10px;
-    padding: 1rem;
-  }
-  &__user {
-    display: flex;
-    align-items: center;
-    column-gap: 1rem;
-  }
-  &__profilePic {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 50%;
-  }
-  &__userInfo {
-    width: 100%;
-    border-top: 1px solid lightgrey;
-    margin-top: 2rem;
-  }
-  &__locationBox,
-  &__occupationBox {
-    display: flex;
-    align-items: center;
-    column-gap: 1rem;
-    margin-top: 1rem;
-  }
-  &__friendRequests {
-    background-color: white;
-    border-radius: 10px;
-    padding: 1rem;
-  }
-  &__friendRequestsEmpty {
-    background-color: white;
-    height: 200px;
-    border-radius: 10px;
-    padding: 1rem;
+  &__feedHeader {
+    transition: 1s;
   }
 
-  &__friendsList {
-    background-color: white;
-    margin-top: 1rem;
-    border-radius: 10px;
-    padding: 1rem;
-  }
-  &__friendsListContainer {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    row-gap: 1rem;
-  }
   &__postsSection {
     padding-top: 2rem;
     display: flex;
     flex-direction: column;
     row-gap: 2rem;
+  }
+}
+
+.profileDark {
+  @extend .profile;
+  background-color: rgb(28, 30, 33);
+
+  &__feedHeader {
+    color: white;
+  }
+}
+
+@include small() {
+  .profile {
+    &__profileContainer {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      grid-template-columns: 1fr;
+    }
+
+    &__left {
+      order: 0;
+    }
+
+    &__feed {
+      order: 2;
+    }
+    &__friendRequests {
+      order: 1;
+    }
+    &__friendRequestsEmpty {
+      background-color: white;
+      height: 100px;
+    }
+  }
+}
+@include medium() {
+  .profile {
+    &__profileContainer {
+      padding-left: 5%;
+      padding-right: 5%;
+      grid-template-columns: 1.5fr 3fr 1.5fr;
+    }
+  }
+}
+@include large() {
+  .profile {
+    &__profileContainer {
+      padding-left: 15%;
+      padding-right: 15%;
+      grid-template-columns: 1.5fr 3fr 1.5fr;
+    }
   }
 }

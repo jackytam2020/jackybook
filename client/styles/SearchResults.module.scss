@@ -1,0 +1,32 @@
+@use '../styles/partials/breakpoints' as *;
+
+.searchResults {
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  z-index: 1;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  padding: 0.5rem;
+  color: black;
+}
+
+.searchResultsDark {
+  @extend .searchResults;
+  background-color: rgb(58, 59, 61);
+  color: white;
+}
+
+.searchResultsEmpty {
+  display: none;
+}
+
+@include small() {
+  .searchResults {
+    position: relative;
+    row-gap: 1rem;
+  }
+}

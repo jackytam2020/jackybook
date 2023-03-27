@@ -3,27 +3,27 @@ import commentStyles from '../styles/CommentSection.module.scss';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { User } from '../state';
+import { Socket } from 'socket.io-client';
 
 import Comment from './Comment';
+import { handleNotifications } from '../utils/notifications/handleNotification';
+import {
+  UserRootState,
+  ModeRootState,
+} from '../utils/interfaces/ReduxStateProps';
 
 interface CommentSectionProps {
   isCommentsOpen: boolean;
-  commentsList: [];
+  commentsList: Comment[];
   postID: string;
+  userID: string;
   grabComments: () => void;
   grabFeedPosts?: () => void;
   grabProfileFeedPosts?: () => void;
-  // isEditDeleteOpen: boolean;
-  // setIsEditDeleteOpen: (arg0: boolean) => void;
-  // editDeleteMenuRef: React.RefObject<HTMLInputElement>;
+  socket: Socket;
 }
 
-interface UserState {
-  user: User;
-}
-
-export interface Comment {
+interface Comment {
   _id: string;
   likes: number;
   likesList: string[];
@@ -39,28 +39,32 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   isCommentsOpen,
   commentsList,
   postID,
+  userID,
   grabComments,
-  // isEditDeleteOpen,
-  // setIsEditDeleteOpen,
-  // editDeleteMenuRef,
   grabFeedPosts,
   grabProfileFeedPosts,
+  socket,
 }) => {
   const [newCommentValue, setNewCommentValue] = useState('');
-  const user = useSelector<UserState, User>((state) => state.user);
+  const user = useSelector((state: UserRootState) => state.user);
+  const mode = useSelector((state: ModeRootState) => state.mode);
 
   const postComment = async () => {
     setNewCommentValue('');
-    const response = await axios.post(
-      `http://localhost:8080/posts/${postID}/addCommentToPost`,
-      {
-        userID: user._id,
-        comment: newCommentValue,
-        datePosted: new Date(),
-      }
-    );
-    console.log(response);
+    await axios.post(`${process.env.HOST}/posts/${postID}/addCommentToPost`, {
+      userID: user._id,
+      comment: newCommentValue,
+      datePosted: new Date(),
+    });
     grabComments();
+    handleNotifications(
+      socket,
+      user,
+      userID,
+      'comment',
+      postID,
+      newCommentValue
+    );
 
     if (grabFeedPosts) {
       grabFeedPosts();
@@ -70,33 +74,27 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   const pressLikeCommentButton = async (commentID: string) => {
-    const response = await axios.patch(
-      `http://localhost:8080/posts/${commentID}/likeComment`,
-      {
-        userID: user._id,
-      }
-    );
+    await axios.patch(`${process.env.HOST}/posts/${commentID}/likeComment`, {
+      userID: user._id,
+    });
     grabComments();
-    console.log(response);
   };
 
   const editComment = async (
     newComment: string,
     commentID: string,
-    setIsEditModalOpen: Function
+    setIsEditModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
-    const { data } = await axios.patch(
-      `http://localhost:8080/posts/${commentID}/editComment`,
-      { newComment: newComment }
-    );
+    await axios.patch(`${process.env.HOST}/posts/${commentID}/editComment`, {
+      newComment: newComment,
+    });
     setIsEditModalOpen(false);
     grabComments();
-    console.log(data);
   };
 
   const deleteComment = async (commentID: string) => {
-    const { data } = await axios.delete(
-      `http://localhost:8080/posts/${postID}/deleteComment/${commentID}`
+    const response = await axios.delete(
+      `${process.env.HOST}/posts/${postID}/deleteComment/${commentID}`
     );
     grabComments();
     if (grabFeedPosts) {
@@ -104,7 +102,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     } else if (grabProfileFeedPosts) {
       grabProfileFeedPosts();
     }
-    console.log(data);
   };
   return (
     <div
@@ -117,12 +114,16 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       <div className={commentStyles.commentSection__newComment}>
         <img
           className={commentStyles.commentSection__profilePic}
-          src={`http://localhost:8080/assets/${user.picturePath}`}
+          src={`${process.env.HOST}/assets/${user.picturePath}`}
           alt={user.picturePath}
         />
         <div className={commentStyles.commentSection__inputHolder}>
           <input
-            className={commentStyles.commentSection__postInput}
+            className={
+              mode === 'light'
+                ? commentStyles.commentSection__postInput
+                : commentStyles.commentSection__postInputDark
+            }
             type="text"
             placeholder={`Write a comment...`}
             value={newCommentValue}
@@ -130,13 +131,21 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               setNewCommentValue(e.target.value);
             }}
           ></input>
-          <SendIcon
-            className={commentStyles.commentSection__sendIcon}
-            color="primary"
-            onClick={() => {
-              postComment();
-            }}
-          ></SendIcon>
+          {newCommentValue.length > 0 ? (
+            <SendIcon
+              className={commentStyles.commentSection__sendIcon}
+              color="primary"
+              onClick={() => {
+                postComment();
+              }}
+            ></SendIcon>
+          ) : (
+            <SendIcon
+              className={commentStyles.commentSection__sendIcon}
+              sx={{ cursor: 'not-allowed' }}
+              color="disabled"
+            ></SendIcon>
+          )}
         </div>
       </div>
 
@@ -156,11 +165,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               loggedInUser={user._id}
               pressLikeCommentButton={pressLikeCommentButton}
               userID={comment.userID}
-              // isEditDeleteOpen={isEditDeleteOpen}
-              // setIsEditDeleteOpen={setIsEditDeleteOpen}
-              // editDeleteMenuRef={editDeleteMenuRef}
               editComment={editComment}
               deleteComment={deleteComment}
+              socket={socket}
+              postID={postID}
             />
           ))}
       </section>

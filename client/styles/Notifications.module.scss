@@ -1,0 +1,74 @@
+@use '../styles/partials/breakpoints' as *;
+
+.notificationDisplay {
+  min-height: 200px;
+  background-color: white;
+  position: absolute;
+  z-index: 3;
+  right: 20px;
+  top: -10px;
+  border-radius: 10px;
+
+  &__notificationList {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    padding: 0 0.5rem;
+    padding-bottom: 1rem;
+  }
+  &__headers {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 1rem;
+    padding: 0 1rem;
+  }
+  &__markRead {
+    color: rgb(25, 118, 210);
+    cursor: pointer;
+  }
+}
+
+.notificationDisplayDark {
+  @extend .notificationDisplay;
+  background-color: rgb(58, 59, 61);
+
+  h2,
+  .notificationDisplay__emptyNotificationUI {
+    color: white;
+  }
+}
+
+.notificationDisplayClosed {
+  display: none;
+}
+
+@include small() {
+  .notificationDisplay {
+    width: 90%;
+    right: 20;
+
+    &__headers {
+      margin-top: 1rem;
+      padding: 0 0.5rem;
+    }
+  }
+}
+
+@include medium() {
+  .notificationDisplay {
+    width: 400px;
+    &__emptyNotificationUI {
+      padding-left: 0.5rem;
+    }
+  }
+}
+
+@include large() {
+  .notificationDisplay {
+    width: 400px;
+    &__emptyNotificationUI {
+      padding-left: 0.5rem;
+    }
+  }
+}
