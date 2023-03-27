@@ -59,6 +59,81 @@ app.use('/notifications', notificationRoutes);
 const PORT = process.env.PORT || 3001;
 //connect to MongoDB Schema
 connectDB();
+
+//socket functions
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+});
+let onlineUsers = [];
+
+const addNewUser = (userID, socketID) => {
+  !onlineUsers.some((user) => user.userID === userID) &&
+    onlineUsers.push({
+      userID,
+      socketID,
+    });
+};
+
+const removeUser = (socketID) => {
+  onlineUsers = onlineUsers.filter((user) => user.socketID !== socketID);
+};
+
+const getUser = (userID) => {
+  return onlineUsers.find((user) => user.userID === userID);
+};
+io.on('connection', (socket) => {
+  console.log(`a user connected ${socket.id}`);
+
+  // handle socket events here
+  socket.on('newUser', (userID) => {
+    addNewUser(userID, socket.id);
+    console.log('new user');
+  });
+
+  socket.on(
+    'sendNotification',
+    ({
+      senderName,
+      senderID,
+      senderPicturePath,
+      comment,
+      receiverID,
+      postID,
+      type,
+      createdAt,
+    }) => {
+      const receiver = getUser(receiverID);
+      if (receiver) {
+        io.to(receiver.socketID).emit('getNotification', {
+          senderName,
+          senderID,
+          senderPicturePath,
+          comment,
+          postID,
+          type,
+          createdAt,
+        });
+      }
+    }
+  );
+
+  socket.on('logout', () => {
+    removeUser(socket.id);
+    console.log('a user logged out', onlineUsers);
+  });
+
+  socket.on('disconnect', () => {
+    removeUser(socket.id);
+    console.log('a user disconnected');
+  });
+});
+server.listen(PORT, () => {
+  console.log(`Server Port: ${PORT}`);
+});
 // mongoose
 //   .connect(process.env.MONGO_URL, {
 //     useNewUrlParser: true,
@@ -142,6 +217,6 @@ connectDB();
 //     // app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 //   })
 //   .catch((error) => console.log(`${PORT} did not connect`));
-app.listen(PORT, () => {
-  console.log(`server is up and running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`server is up and running on http://localhost:${PORT}`);
+// });
