@@ -81,7 +81,7 @@ export const removeFriendRequest = async (req, res) => {
       }
     );
 
-    await FriendRequest.deleteOne({ senderID: senderID });
+    await FriendRequest.deleteOne({ userID: senderID });
     res.status(200).json({
       message:
         'Deleted friend request and updated the friendRequests array in the User collection',
