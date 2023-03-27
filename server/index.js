@@ -62,80 +62,80 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    // const server = http.createServer(app);
-    // const io = new Server(server, {
-    //   cors: {
-    //     origin: '*',
-    //     methods: ['GET', 'POST'],
-    //   },
-    // });
+    const server = http.createServer(app);
+    const io = new Server(server, {
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+      },
+    });
 
-    // let onlineUsers = [];
+    let onlineUsers = [];
 
-    // const addNewUser = (userID, socketID) => {
-    //   !onlineUsers.some((user) => user.userID === userID) &&
-    //     onlineUsers.push({
-    //       userID,
-    //       socketID,
-    //     });
-    // };
+    const addNewUser = (userID, socketID) => {
+      !onlineUsers.some((user) => user.userID === userID) &&
+        onlineUsers.push({
+          userID,
+          socketID,
+        });
+    };
 
-    // const removeUser = (socketID) => {
-    //   onlineUsers = onlineUsers.filter((user) => user.socketID !== socketID);
-    // };
+    const removeUser = (socketID) => {
+      onlineUsers = onlineUsers.filter((user) => user.socketID !== socketID);
+    };
 
-    // const getUser = (userID) => {
-    //   return onlineUsers.find((user) => user.userID === userID);
-    // };
-    // io.on('connection', (socket) => {
-    //   console.log(`a user connected ${socket.id}`);
+    const getUser = (userID) => {
+      return onlineUsers.find((user) => user.userID === userID);
+    };
+    io.on('connection', (socket) => {
+      console.log(`a user connected ${socket.id}`);
 
-    //   // handle socket events here
-    //   socket.on('newUser', (userID) => {
-    //     addNewUser(userID, socket.id);
-    //     console.log('new user');
-    //   });
+      // handle socket events here
+      socket.on('newUser', (userID) => {
+        addNewUser(userID, socket.id);
+        console.log('new user');
+      });
 
-    //   socket.on(
-    //     'sendNotification',
-    //     ({
-    //       senderName,
-    //       senderID,
-    //       senderPicturePath,
-    //       comment,
-    //       receiverID,
-    //       postID,
-    //       type,
-    //       createdAt,
-    //     }) => {
-    //       const receiver = getUser(receiverID);
-    //       if (receiver) {
-    //         io.to(receiver.socketID).emit('getNotification', {
-    //           senderName,
-    //           senderID,
-    //           senderPicturePath,
-    //           comment,
-    //           postID,
-    //           type,
-    //           createdAt,
-    //         });
-    //       }
-    //     }
-    //   );
+      socket.on(
+        'sendNotification',
+        ({
+          senderName,
+          senderID,
+          senderPicturePath,
+          comment,
+          receiverID,
+          postID,
+          type,
+          createdAt,
+        }) => {
+          const receiver = getUser(receiverID);
+          if (receiver) {
+            io.to(receiver.socketID).emit('getNotification', {
+              senderName,
+              senderID,
+              senderPicturePath,
+              comment,
+              postID,
+              type,
+              createdAt,
+            });
+          }
+        }
+      );
 
-    //   socket.on('logout', () => {
-    //     removeUser(socket.id);
-    //     console.log('a user logged out', onlineUsers);
-    //   });
+      socket.on('logout', () => {
+        removeUser(socket.id);
+        console.log('a user logged out', onlineUsers);
+      });
 
-    //   socket.on('disconnect', () => {
-    //     removeUser(socket.id);
-    //     console.log('a user disconnected');
-    //   });
-    // });
-    // server.listen(PORT, () => {
-    //   console.log(`Server Port: ${PORT}`);
-    // });
-    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+      socket.on('disconnect', () => {
+        removeUser(socket.id);
+        console.log('a user disconnected');
+      });
+    });
+    server.listen(PORT, () => {
+      console.log(`Server Port: ${PORT}`);
+    });
+    // app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
   })
   .catch((error) => console.log(`${PORT} did not connect`));
