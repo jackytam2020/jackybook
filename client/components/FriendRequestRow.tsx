@@ -22,6 +22,9 @@ const FriendRequestRow: React.FC<FriendRequestProps> = ({
   socket,
   user,
   mode,
+  grabProfileData,
+  grabFriendsList,
+  grabFriendRequests,
 }) => {
   const dispatch = useDispatch();
 
@@ -61,13 +64,21 @@ const FriendRequestRow: React.FC<FriendRequestProps> = ({
               dispatch,
               socket,
               user,
-              acceptFriendRequestError
+              acceptFriendRequestError,
+              grabProfileData,
+              grabFriendsList,
+              grabFriendRequests
             );
           }}
         ></CheckOutlinedIcon>
         <CancelOutlinedIcon
           onClick={() => {
-            removeFriendRequest(receiverID, userID, dispatch);
+            removeFriendRequest(
+              receiverID,
+              userID,
+              dispatch,
+              grabFriendRequests
+            );
           }}
         ></CancelOutlinedIcon>
       </div>

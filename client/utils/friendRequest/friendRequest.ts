@@ -38,7 +38,10 @@ export const acceptFriendRequest = async (
   dispatch: Function,
   socket: Socket,
   user: User,
-  acceptFriendRequestError: () => void
+  acceptFriendRequestError?: () => void,
+  grabProfileData?: () => void,
+  grabFriendsList?: () => void,
+  grabFriendRequests?: () => void
 ) => {
   try {
     await axios.patch(
@@ -51,10 +54,12 @@ export const acceptFriendRequest = async (
       })
     );
 
-    removeFriendRequest(receiverID, senderID, dispatch);
+    removeFriendRequest(receiverID, senderID, dispatch, grabFriendRequests);
     handleNotifications(socket, user, senderID, 'acceptedRequest');
+    if (grabProfileData) grabProfileData();
+    if (grabFriendsList) grabFriendsList();
   } catch {
-    acceptFriendRequestError();
+    if (acceptFriendRequestError) acceptFriendRequestError();
     removeFriendRequest(receiverID, senderID, dispatch);
   }
 };
@@ -62,11 +67,14 @@ export const acceptFriendRequest = async (
 export const removeFriendRequest = async (
   receiverID: string,
   senderID: string,
-  dispatch?: Function
+  dispatch?: Function,
+  grabFriendRequests?: () => void
 ) => {
   await axios.delete(
     `${process.env.HOST}/users/${receiverID}/removeFriendRequest/${senderID}`
   );
+
+  if (grabFriendRequests) grabFriendRequests();
 
   if (dispatch) {
     dispatch(

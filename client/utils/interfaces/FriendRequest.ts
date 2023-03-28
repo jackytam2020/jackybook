@@ -11,4 +11,7 @@ export interface FriendRequestProps {
   socket: Socket;
   user: User;
   mode?: string;
+  grabProfileData: () => void;
+  grabFriendsList: () => void;
+  grabFriendRequests: () => void;
 }

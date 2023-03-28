@@ -31,6 +31,8 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
   const [mobileSearchIsOpen, setMobileSearchIsOpen] = useState(false);
   const [isNavPopOutOpen, setIsNavPopOutOpen] = useState(false);
   const user = useSelector((state: UserRootState) => state.user);
+  const router = useRouter();
+  const path = router.asPath;
 
   //get request to get all notifications
   const getNotifications = async () => {
@@ -49,10 +51,10 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
 
   //call function to get notifications on component mount
   useEffect(() => {
-    if (user) {
+    if (router.asPath === '/home') {
       getNotifications();
     }
-  }, [user]);
+  }, [router.asPath]);
 
   const notificationRef = useRef<HTMLDivElement>(null);
 
@@ -63,9 +65,6 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
       }
     });
   }, []);
-
-  const router = useRouter();
-  const path = router.asPath;
 
   return (
     <div className={layoutStyles.layout}>

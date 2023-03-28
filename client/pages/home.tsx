@@ -65,7 +65,7 @@ const home: React.FC<HomeProp> = ({
         socket?.emit('newUser', user._id);
       }
     }
-  }, [socket, user]);
+  }, [socket]);
 
   return (
     <>

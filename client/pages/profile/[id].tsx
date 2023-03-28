@@ -10,14 +10,19 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { User, PostsArray, setUser, setPosts } from '../../state';
+import { User, PostsArray, setPosts } from '../../state';
 import {
   UserRootState,
   PostRootState,
   ModeRootState,
 } from '../../utils/interfaces/ReduxStateProps';
 
+import { updateLoggedInUser } from '../../utils/updateLoggedInUser';
 import { FriendRequestProps } from '../../utils/interfaces/FriendRequest';
+import {
+  acceptFriendRequest,
+  removeFriendRequest,
+} from '../../utils/friendRequest/friendRequest';
 
 import NewPostBar from '../../components/NewPostBar';
 import Post from '../../components/Post';
@@ -40,6 +45,15 @@ const Profile: React.FC<ProfileProps> = ({
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const posts = useSelector((state: PostRootState) => state.posts);
+  const mode = useSelector((state: ModeRootState) => state.mode);
+  const user = useSelector((state: UserRootState) => state.user);
+
+  const [profileData, setProfileData] = useState<User>(serverProfileData);
+  const [friendsList, setFriendsList] = useState<User[]>(serverFriendsData);
+  const [friendRequests, setFriendRequests] = useState<FriendRequestProps[]>(
+    []
+  );
 
   useEffect(() => {
     dispatch(
@@ -50,17 +64,11 @@ const Profile: React.FC<ProfileProps> = ({
     grabFriendRequests();
     grabProfileData();
     grabFriendsList();
+    //if the current profile page is the logged in user, update the redux user state
+    if (router.query.id === user._id) {
+      updateLoggedInUser(user._id, dispatch);
+    }
   }, [router.asPath]);
-
-  const user = useSelector((state: UserRootState) => state.user);
-  const posts = useSelector((state: PostRootState) => state.posts);
-  const mode = useSelector((state: ModeRootState) => state.mode);
-
-  const [profileData, setProfileData] = useState<User>(serverProfileData);
-  const [friendsList, setFriendsList] = useState<User[]>(serverFriendsData);
-  const [friendRequests, setFriendRequests] = useState<FriendRequestProps[]>(
-    []
-  );
 
   //the current page's profile - client side http requests
   const grabProfileData = async () => {
@@ -94,23 +102,6 @@ const Profile: React.FC<ProfileProps> = ({
     );
     setFriendRequests(data);
   };
-
-  useEffect(() => {
-    if (user) {
-      grabFriendRequests();
-      grabProfileData();
-      grabFriendsList();
-
-      //if the current profile page is the logged in user, update the redux user state
-      if (router.query.id === user._id) {
-        dispatch(
-          setUser({
-            user: profileData,
-          })
-        );
-      }
-    }
-  }, [user]);
 
   return (
     <>
@@ -182,6 +173,9 @@ const Profile: React.FC<ProfileProps> = ({
                 socket={socket}
                 user={user}
                 mode={mode}
+                grabProfileData={grabProfileData}
+                grabFriendsList={grabFriendsList}
+                grabFriendRequests={grabFriendRequests}
               />
             )}
             <ToastContainer />

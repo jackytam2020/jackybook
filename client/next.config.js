@@ -7,7 +7,7 @@ const nextConfig = {
     },
   },
   env: {
-    HOST: 'http://localhost:8080',
+    HOST: 'https://jackybook-api.onrender.com',
   },
 };
 

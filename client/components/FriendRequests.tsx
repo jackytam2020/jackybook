@@ -11,6 +11,9 @@ interface FriendRequestsProps {
   user: User;
   mode: string;
   friendRequests: FriendRequestProps[];
+  grabFriendsList: () => void;
+  grabFriendRequests: () => void;
+  grabProfileData: () => void;
 }
 
 const FriendRequests: React.FC<FriendRequestsProps> = ({
@@ -18,6 +21,9 @@ const FriendRequests: React.FC<FriendRequestsProps> = ({
   socket,
   user,
   mode,
+  grabFriendsList,
+  grabFriendRequests,
+  grabProfileData,
 }) => {
   return (
     <>
@@ -40,6 +46,9 @@ const FriendRequests: React.FC<FriendRequestsProps> = ({
                   socket={socket}
                   user={user}
                   mode={mode}
+                  grabProfileData={grabProfileData}
+                  grabFriendsList={grabFriendsList}
+                  grabFriendRequests={grabFriendRequests}
                 />
               ))}
           </div>

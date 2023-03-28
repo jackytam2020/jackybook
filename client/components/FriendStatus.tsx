@@ -59,6 +59,15 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
       draggable: true,
       theme: 'colored',
     });
+  const acceptFriendRequestError = () =>
+    toast.error(`${profileData.firstName} is already in your friends list`, {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
   return (
     <div style={{ marginTop: '1rem' }}>
       <Button
@@ -84,7 +93,10 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
               user._id,
               dispatch,
               socket,
-              user
+              user,
+              acceptFriendRequestError,
+              grabProfileData,
+              grabFriendsList
             );
           }
         }}
