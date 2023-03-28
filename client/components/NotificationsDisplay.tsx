@@ -9,7 +9,6 @@ import { NotificationProp } from '../utils/interfaces/notifications';
 interface NotificationsDisplayProp {
   notifications: NotificationProp[];
   deleteNotifications: () => void;
-  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
   isNotificationOpened: boolean;
   setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
   notificationRef: React.RefObject<HTMLDivElement>;
@@ -18,7 +17,6 @@ interface NotificationsDisplayProp {
 const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({
   notifications,
   deleteNotifications,
-  setSelectedPostID,
   isNotificationOpened,
   notificationRef,
   setIsNotificationOpened,
@@ -68,7 +66,6 @@ const NotificationsDisplay: React.FC<NotificationsDisplayProp> = ({
                 <NotificationRow
                   key={notification._id}
                   {...notification}
-                  setSelectedPostID={setSelectedPostID}
                   setIsNotificationOpened={setIsNotificationOpened}
                   mode={mode}
                 />

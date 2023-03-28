@@ -17,7 +17,6 @@ interface NotificationRowProp {
   comment: string;
   createdAt: string;
   postID: string;
-  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
   setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
   mode: string;
 }
@@ -30,7 +29,6 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
   comment,
   createdAt,
   postID,
-  setSelectedPostID,
   setIsNotificationOpened,
   mode,
 }) => {
@@ -53,9 +51,6 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
     }
   }, [type, comment]);
 
-  var Scroll = require('react-scroll');
-  var scroller = Scroll.scroller;
-
   dayjs.extend(relativeTime);
 
   return (
@@ -75,15 +70,7 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
           type === 'comment' ||
           type === 'likedComment'
         ) {
-          router.push('/home');
-          setSelectedPostID(postID);
-          let offset = -100;
-          scroller.scrollTo(postID, {
-            duration: 1000,
-            delay: 100,
-            smooth: true,
-            offset: offset,
-          });
+          router.push(`/fromNotifications/${postID}`);
         }
         setIsNotificationOpened(false);
       }}

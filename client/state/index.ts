@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { Socket } from 'socket.io-client';
 
 export interface User {
   firstName: string;
@@ -15,21 +16,26 @@ export interface User {
   _id: string;
 }
 
-interface Post {
-  comments: string[];
-  createdAt: string;
-  description: string;
+export interface PostProps {
+  _id: string;
   firstName: string;
   lastName: string;
-  likes: { [key: string]: boolean };
-  location: string;
+  createdAt: string;
+  description: string;
   picturePath: string;
-  updatedAt: string;
+  likes: object;
+  comments: object;
   userID: string;
+  loggedInUser: string;
+  userPicturePath: string;
+  grabFeedPosts?: () => void;
+  grabProfileFeedPosts?: () => void;
+  socket: Socket;
+  fromNotification?: boolean;
 }
 
 export interface PostsArray {
-  posts: Post[];
+  posts: PostProps[];
 }
 
 type InitialState = {

@@ -17,17 +17,10 @@ import Post from '../components/Post';
 
 interface HomeProp {
   socket: Socket;
-  selectedPostID: string;
-  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
   users: User[];
 }
 
-const home: React.FC<HomeProp> = ({
-  socket,
-  selectedPostID,
-  setSelectedPostID,
-  users,
-}) => {
+const home: React.FC<HomeProp> = ({ socket, users }) => {
   const user = useSelector((state: UserRootState) => state.user);
   const posts = useSelector((state: PostRootState) => state.posts);
   const mode = useSelector((state: ModeRootState) => state.mode);
@@ -86,8 +79,6 @@ const home: React.FC<HomeProp> = ({
                   loggedInUser={user._id}
                   grabFeedPosts={grabFeedPosts}
                   socket={socket}
-                  selectedPostID={selectedPostID}
-                  setSelectedPostID={setSelectedPostID}
                 />
               ))
             ) : (

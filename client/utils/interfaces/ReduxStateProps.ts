@@ -15,3 +15,7 @@ export interface ModeRootState {
 export interface TokenRootState {
   token: string;
 }
+
+export interface SelectedPostRootState {
+  selectedPost: string;
+}

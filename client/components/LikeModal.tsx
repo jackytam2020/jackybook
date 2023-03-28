@@ -47,9 +47,9 @@ const LikeModal: React.FC<LikeModalProps> = ({
   socket,
 }) => {
   useEffect(() => {
-    if (type === 'post' && grabPostLikedList) {
+    if (type === 'post' && grabPostLikedList && open) {
       grabPostLikedList();
-    } else if (type === 'comment' && grabCommentLikedList) {
+    } else if (type === 'comment' && grabCommentLikedList && open) {
       grabCommentLikedList();
     }
     //update logged in user data whenever modal opens

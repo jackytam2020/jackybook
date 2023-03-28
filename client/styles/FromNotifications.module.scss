@@ -1,0 +1,61 @@
+@use '../styles/partials/breakpoints' as *;
+
+.fromNotifications {
+  width: 100%;
+  min-height: 100vh;
+  background-color: rgb(244, 244, 244);
+  transition: 1s;
+  padding-bottom: 5rem;
+  display: flex;
+  justify-content: center;
+
+  &__container {
+    max-width: 1000px;
+    height: 200px;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__backOption {
+    display: flex;
+    margin-top: 1rem;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__header {
+    margin-bottom: 1rem;
+  }
+}
+
+@include small() {
+  .fromNotifications {
+    &__container {
+      width: 90%;
+    }
+  }
+}
+@include medium() {
+  .fromNotifications {
+    &__container {
+      width: 50%;
+    }
+  }
+}
+@include large() {
+  .fromNotifications {
+    &__container {
+      width: 35%;
+    }
+  }
+}
+
+.fromNotificationsDark {
+  @extend .fromNotifications;
+  background-color: rgb(28, 30, 33);
+  h3,
+  p {
+    color: white;
+  }
+}

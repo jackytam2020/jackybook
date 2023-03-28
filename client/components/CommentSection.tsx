@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import commentStyles from '../styles/CommentSection.module.scss';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
@@ -49,6 +49,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const user = useSelector((state: UserRootState) => state.user);
   const mode = useSelector((state: ModeRootState) => state.mode);
 
+  useEffect(() => {
+    if (isCommentsOpen) grabComments();
+  }, [isCommentsOpen]);
+
   const postComment = async () => {
     setNewCommentValue('');
     await axios.post(`${process.env.HOST}/posts/${postID}/addCommentToPost`, {
@@ -93,7 +97,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   const deleteComment = async (commentID: string) => {
-    const response = await axios.delete(
+    await axios.delete(
       `${process.env.HOST}/posts/${postID}/deleteComment/${commentID}`
     );
     grabComments();

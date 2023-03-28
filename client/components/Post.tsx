@@ -9,13 +9,16 @@ import axios from 'axios';
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useRouter } from 'next/router';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Socket } from 'socket.io-client';
 import {
   UserRootState,
   ModeRootState,
+  SelectedPostRootState,
 } from '../utils/interfaces/ReduxStateProps';
+import { PostProps } from '../state';
 
 import CommentSection from './CommentSection';
 import LikeModal from './LikeModal';
@@ -24,25 +27,6 @@ import DeleteModal from './DeleteModal';
 import { handleNotifications } from '../utils/notifications/handleNotification';
 import { pressLikeButton } from '../utils/likes/pressLikeButton';
 import { deletePost } from '../utils/posts/deletePost';
-
-interface PostProps {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  createdAt: string;
-  description: string;
-  picturePath: string;
-  likes: object;
-  comments: object;
-  userID: string;
-  loggedInUser: string;
-  userPicturePath: string;
-  grabFeedPosts?: () => void;
-  grabProfileFeedPosts?: () => void;
-  socket: Socket;
-  selectedPostID: string;
-  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
-}
 
 const Post: React.FC<PostProps> = ({
   _id,
@@ -59,8 +43,7 @@ const Post: React.FC<PostProps> = ({
   grabFeedPosts,
   grabProfileFeedPosts,
   socket,
-  selectedPostID,
-  setSelectedPostID,
+  fromNotification,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [isLikedModalOpen, setIsLikedModalOpen] = useState<boolean>(false);
@@ -71,12 +54,14 @@ const Post: React.FC<PostProps> = ({
 
   const user = useSelector((state: UserRootState) => state.user);
   const mode = useSelector((state: ModeRootState) => state.mode);
+
   const [backgroundColor, setBackgroundColor] = useState<string>(
     mode === 'light' ? 'white' : 'rgb(58, 59, 61)'
   );
   const [textColor, setTextColor] = useState<string>(
     mode === 'light' ? 'black' : 'white'
   );
+  const router = useRouter();
 
   const grabComments = async () => {
     const { data } = await axios.get(
@@ -94,10 +79,9 @@ const Post: React.FC<PostProps> = ({
   };
 
   const editPost = async (editedDesc: string) => {
-    const { data } = await axios.patch(
-      `${process.env.HOST}/posts/${_id}/editPost`,
-      { newDescription: editedDesc }
-    );
+    await axios.patch(`${process.env.HOST}/posts/${_id}/editPost`, {
+      newDescription: editedDesc,
+    });
     setIsEditModalOpen(false);
 
     if (grabFeedPosts) {
@@ -107,50 +91,38 @@ const Post: React.FC<PostProps> = ({
     }
   };
 
-  useEffect(() => {
-    grabComments();
-  }, []);
-
   //mark the post that was selected from the notifications menu and load the new content
-  useEffect(() => {
-    if (selectedPostID === _id && grabFeedPosts) {
-      setBackgroundColor('#78B6E5');
-      grabFeedPosts();
-      grabComments();
-      const timer = setTimeout(() => {
-        if (mode === 'light') {
-          setBackgroundColor('white');
-        } else if (mode === 'dark') {
-          setBackgroundColor('rgb(58, 59, 61)');
-        }
-        setSelectedPostID('');
-      }, 1000);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [selectedPostID, socket]);
 
   useEffect(() => {
     if (mode === 'light') {
-      setBackgroundColor('white');
-      setTextColor('black');
+      if (fromNotification) {
+        setBackgroundColor('#78B6E5');
+        setTimeout(() => {
+          setBackgroundColor('white');
+          setTextColor('black');
+        }, 1000);
+      } else {
+        setBackgroundColor('white');
+        setTextColor('black');
+      }
     } else if (mode === 'dark') {
-      setBackgroundColor('rgb(58, 59, 61)');
-      setTextColor('white');
+      if (fromNotification) {
+        setBackgroundColor('#78B6E5');
+        setTimeout(() => {
+          setBackgroundColor('rgb(58, 59, 61)');
+          setTextColor('white');
+        }, 1000);
+      } else {
+        setBackgroundColor('rgb(58, 59, 61)');
+        setTextColor('white');
+      }
     }
-  }, [mode]);
+  }, [mode, router.asPath]);
 
   dayjs.extend(relativeTime);
 
   return (
-    <div
-      // className={mode === 'light' ? postStyles.post : postStyles.postDark}
-      className={postStyles.post}
-      id={_id}
-      style={{ backgroundColor: backgroundColor }}
-    >
+    <div className={postStyles.post} style={{ backgroundColor }}>
       <div className={postStyles.post__topButtons}>
         <Link href={`/profile/${userID}`}>
           <div className={postStyles.post__topButtonsLeft}>

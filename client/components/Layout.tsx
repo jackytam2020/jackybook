@@ -17,14 +17,9 @@ import NavPopOut from './NavPopOut';
 interface LayoutProps {
   children: React.ReactNode;
   socket: Socket;
-  setSelectedPostID: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Layout: React.FunctionComponent<LayoutProps> = ({
-  children,
-  socket,
-  setSelectedPostID,
-}) => {
+const Layout: React.FunctionComponent<LayoutProps> = ({ children, socket }) => {
   const [notifications, setNotifications] = useState<NotificationProp[]>([]);
   const [isNotificationOpened, setIsNotificationOpened] =
     useState<boolean>(false);
@@ -95,7 +90,6 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
           isNotificationOpened={isNotificationOpened}
           setIsNotificationOpened={setIsNotificationOpened}
           deleteNotifications={deleteNotifications}
-          setSelectedPostID={setSelectedPostID}
           notificationRef={notificationRef}
         />
         <main>{children}</main>

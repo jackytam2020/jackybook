@@ -19,10 +19,6 @@ import {
 
 import { updateLoggedInUser } from '../../utils/updateLoggedInUser';
 import { FriendRequestProps } from '../../utils/interfaces/FriendRequest';
-import {
-  acceptFriendRequest,
-  removeFriendRequest,
-} from '../../utils/friendRequest/friendRequest';
 
 import NewPostBar from '../../components/NewPostBar';
 import Post from '../../components/Post';
@@ -82,7 +78,6 @@ const Profile: React.FC<ProfileProps> = ({
       `${process.env.HOST}/users/profile/${router.query.id}`
     );
     setProfileData(data[0]);
-    console.log(data);
   };
 
   const grabFriendsList = async () => {
@@ -90,7 +85,6 @@ const Profile: React.FC<ProfileProps> = ({
       `${process.env.HOST}/users/friends/${router.query.id}`
     );
     setFriendsList(data);
-    console.log(data);
   };
 
   const grabProfileFeedPosts = async () => {
