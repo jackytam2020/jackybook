@@ -48,13 +48,18 @@ export const acceptFriendRequest = async (
       `${process.env.HOST}/users/${receiverID}/addFriend/${senderID}`
     );
 
-    dispatch(
+    await dispatch(
       setNewFriend({
         newFriend: senderID,
       })
     );
 
-    removeFriendRequest(receiverID, senderID, dispatch, grabFriendRequests);
+    await removeFriendRequest(
+      receiverID,
+      senderID,
+      dispatch,
+      grabFriendRequests
+    );
     handleNotifications(socket, user, senderID, 'acceptedRequest');
     if (grabProfileData) grabProfileData();
     if (grabFriendsList) grabFriendsList();
@@ -74,13 +79,12 @@ export const removeFriendRequest = async (
     `${process.env.HOST}/users/${receiverID}/removeFriendRequest/${senderID}`
   );
 
-  if (grabFriendRequests) grabFriendRequests();
-
   if (dispatch) {
-    dispatch(
+    await dispatch(
       setRemoveFriendRequest({
         userID: receiverID,
       })
     );
   }
+  if (grabFriendRequests) grabFriendRequests();
 };

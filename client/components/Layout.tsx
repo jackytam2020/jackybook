@@ -51,8 +51,8 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
 
   //call function to get notifications on component mount
   useEffect(() => {
-    if (router.asPath === '/home') {
-      getNotifications();
+    if (router.asPath === '/home' || router.asPath.includes('/profile')) {
+      if (user) getNotifications();
     }
   }, [router.asPath]);
 

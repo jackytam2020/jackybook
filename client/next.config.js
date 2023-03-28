@@ -7,8 +7,9 @@ const nextConfig = {
     },
   },
   env: {
-    HOST: 'https://jackybook-api.onrender.com',
+    HOST: 'http://localhost:8080',
   },
 };
 
 module.exports = nextConfig;
+// HOST: 'https://jackybook-api.onrender.com',

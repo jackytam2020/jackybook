@@ -15,9 +15,9 @@ export const removeFriend = async (
     await axios.patch(
       `${process.env.HOST}/users/${userID}/deleteFriend/${friendID}`
     );
-    updateLoggedInUser(user._id, dispatch);
+    await updateLoggedInUser(user._id, dispatch);
 
-    dispatch(
+    await dispatch(
       setRemoveFriend({
         friendID: friendID,
       })

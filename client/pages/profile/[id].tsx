@@ -56,6 +56,16 @@ const Profile: React.FC<ProfileProps> = ({
   );
 
   useEffect(() => {
+    //if the current profile page is the logged in user, update the redux user state
+    if (user) {
+      if (router.query.id === user._id) {
+        updateLoggedInUser(user._id, dispatch);
+      }
+    } else if (!user) {
+      router.push('/');
+      return;
+    }
+
     dispatch(
       setPosts({
         posts: serverPostData,
@@ -64,10 +74,6 @@ const Profile: React.FC<ProfileProps> = ({
     grabFriendRequests();
     grabProfileData();
     grabFriendsList();
-    //if the current profile page is the logged in user, update the redux user state
-    if (router.query.id === user._id) {
-      updateLoggedInUser(user._id, dispatch);
-    }
   }, [router.asPath]);
 
   //the current page's profile - client side http requests
@@ -76,6 +82,7 @@ const Profile: React.FC<ProfileProps> = ({
       `${process.env.HOST}/users/profile/${router.query.id}`
     );
     setProfileData(data[0]);
+    console.log(data);
   };
 
   const grabFriendsList = async () => {
@@ -83,6 +90,7 @@ const Profile: React.FC<ProfileProps> = ({
       `${process.env.HOST}/users/friends/${router.query.id}`
     );
     setFriendsList(data);
+    console.log(data);
   };
 
   const grabProfileFeedPosts = async () => {

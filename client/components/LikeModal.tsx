@@ -21,6 +21,7 @@ interface LikedUserProps {
   firstName: string;
   lastName: string;
   friends: string[];
+  friendRequests: string[];
   loggedInUser: string;
   likedUserID: string;
   socket: Socket;
