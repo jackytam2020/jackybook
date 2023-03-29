@@ -1,6 +1,8 @@
 import React from 'react';
 import navPopOutStyles from '../styles/NavPopOut.module.scss';
 import Link from 'next/link';
+import Image from 'next/image';
+
 import { Socket } from 'socket.io-client';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -53,10 +55,12 @@ const NavPopOut: React.FC<NavPopOutProps> = ({
             }}
           >
             <div className={navPopOutStyles.navPopOut__profileHolder}>
-              <img
+              <Image
                 className={navPopOutStyles.navPopOut__profilePic}
                 src={`${process.env.HOST}/assets/${user.picturePath}`}
                 alt={user.picturePath}
+                width="64"
+                height="64"
               />
               <div>
                 <h3>{`${user.firstName} ${user.lastName}`}</h3>

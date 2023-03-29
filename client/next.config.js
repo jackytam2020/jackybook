@@ -9,7 +9,14 @@ const nextConfig = {
   env: {
     HOST: 'https://jackybook-api.onrender.com',
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'jackybook-api.onrender.com',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;
-// HOST: 'https://jackybook-api.onrender.com',

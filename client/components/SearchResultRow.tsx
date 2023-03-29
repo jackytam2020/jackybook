@@ -1,6 +1,7 @@
 import React from 'react';
 import searchResultRowStyles from '../styles/SearchResultRow.module.scss';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface SearchResultRowProps {
   _id: string;
@@ -32,10 +33,12 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
           }
         }}
       >
-        <img
+        <Image
           className={searchResultRowStyles.searchResultRow__profilePic}
           src={`${process.env.HOST}/assets/${picturePath}`}
           alt={picturePath}
+          width="50"
+          height="50"
         />
         <p
           style={{

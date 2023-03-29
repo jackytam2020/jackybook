@@ -5,6 +5,8 @@ import { Socket } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
 import { Button } from '@mui/material';
+import Image from 'next/image';
+
 import { UserRootState } from '../utils/interfaces/ReduxStateProps';
 import {
   sendFriendRequest,
@@ -59,10 +61,12 @@ const LikedUser: React.FC<LikedUserProps> = ({
     <div className={likedUserListStyles.likedUser}>
       <Link href={`/profile/${likedUserID}`}>
         <div className={likedUserListStyles.likedUser__user}>
-          <img
+          <Image
             className={likedUserListStyles.likedUser__profilePic}
             src={`${process.env.HOST}/assets/${picturePath}`}
             alt={picturePath}
+            width="30"
+            height="30"
           />
           <p
             style={{

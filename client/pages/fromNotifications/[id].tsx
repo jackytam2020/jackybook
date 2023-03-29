@@ -2,6 +2,7 @@ import React from 'react';
 import fromNotificationsStyles from '../../styles/FromNotifications.module.scss';
 import axios from 'axios';
 import { Socket } from 'socket.io-client';
+import Head from 'next/head';
 
 import { GetServerSidePropsContext } from 'next';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -25,34 +26,41 @@ const fromNotifications: React.FC<fromNotificationsProps> = ({
   const mode = useSelector((state: ModeRootState) => state.mode);
 
   return (
-    <div
-      className={
-        mode === 'light'
-          ? fromNotificationsStyles.fromNotifications
-          : fromNotificationsStyles.fromNotificationsDark
-      }
-    >
-      <main className={fromNotificationsStyles.fromNotifications__container}>
-        <h3 className={fromNotificationsStyles.fromNotifications__header}>
-          From Notifications
-        </h3>
-        <Post {...selectedPost} fromNotification={true} socket={socket} />
-        <div className={fromNotificationsStyles.fromNotifications__backOption}>
-          <ArrowBackIosIcon
-            sx={{
-              color: mode === 'light' ? 'black' : 'white',
-            }}
-          ></ArrowBackIosIcon>
-          <p
-            onClick={() => {
-              router.push('/home');
-            }}
+    <>
+      <Head>
+        <title>Jackybook</title>
+      </Head>
+      <div
+        className={
+          mode === 'light'
+            ? fromNotificationsStyles.fromNotifications
+            : fromNotificationsStyles.fromNotificationsDark
+        }
+      >
+        <main className={fromNotificationsStyles.fromNotifications__container}>
+          <h3 className={fromNotificationsStyles.fromNotifications__header}>
+            From Notifications
+          </h3>
+          <Post {...selectedPost} fromNotification={true} socket={socket} />
+          <div
+            className={fromNotificationsStyles.fromNotifications__backOption}
           >
-            Go back
-          </p>
-        </div>
-      </main>
-    </div>
+            <ArrowBackIosIcon
+              sx={{
+                color: mode === 'light' ? 'black' : 'white',
+              }}
+            ></ArrowBackIosIcon>
+            <p
+              onClick={() => {
+                router.push('/home');
+              }}
+            >
+              Go back
+            </p>
+          </div>
+        </main>
+      </div>
+    </>
   );
 };
 

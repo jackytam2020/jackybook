@@ -4,6 +4,7 @@ import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Socket } from 'socket.io-client';
+import Image from 'next/image';
 
 import Comment from './Comment';
 import { handleNotifications } from '../utils/notifications/handleNotification';
@@ -116,10 +117,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       }
     >
       <div className={commentStyles.commentSection__newComment}>
-        <img
+        <Image
           className={commentStyles.commentSection__profilePic}
           src={`${process.env.HOST}/assets/${user.picturePath}`}
           alt={user.picturePath}
+          width="40"
+          height="40"
         />
         <div className={commentStyles.commentSection__inputHolder}>
           <input

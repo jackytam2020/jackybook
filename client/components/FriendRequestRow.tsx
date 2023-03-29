@@ -3,6 +3,7 @@ import Link from 'next/link';
 import friendRequestRowStyles from '../styles/friendRequestRow.module.scss';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
 
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -41,10 +42,12 @@ const FriendRequestRow: React.FC<FriendRequestProps> = ({
     <div className={friendRequestRowStyles.requestRow}>
       <Link href={`/profile/${userID}`}>
         <div className={friendRequestRowStyles.requestRow__requestUser}>
-          <img
+          <Image
             src={`${process.env.HOST}/assets/${picturePath}`}
             className={friendRequestRowStyles.requestRow__requestPic}
             alt={picturePath}
+            width="30"
+            height="30"
           />
 
           <p

@@ -1,6 +1,7 @@
 import React from 'react';
 import userInfoStyles from '../styles/UserInfo.module.scss';
 import FriendStatus from './FriendStatus';
+import Image from 'next/image';
 
 import { User } from '../state';
 import { Socket } from 'socket.io-client';
@@ -32,10 +33,12 @@ const UserInfo: React.FC<UserInfoProps> = ({
       }
     >
       <div className={userInfoStyles.userInfo__user}>
-        <img
+        <Image
           src={`${process.env.HOST}/assets/${profileData.picturePath}`}
           className={userInfoStyles.userInfo__profilePic}
           alt={profileData.picturePath}
+          width="150"
+          height="150"
         />
         <div className={userInfoStyles.userInfo__nameFriends}>
           <h2

@@ -9,6 +9,7 @@ import { User } from '../state';
 import { Socket } from 'socket.io-client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import Image from 'next/image';
 
 import LikeModal from './LikeModal';
 import EditModal from './EditModal';
@@ -118,10 +119,12 @@ const Comment = ({
       }}
     >
       <Link href={`/profile/${userID}`}>
-        <img
+        <Image
           className={commentStyles.commentContainer__profilePic}
           src={`${process.env.HOST}/assets/${userPicturePath}`}
           alt={userPicturePath}
+          width="40"
+          height="40"
         />
       </Link>
       <div className={commentStyles.commentContainer__right}>

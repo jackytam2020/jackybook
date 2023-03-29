@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import newPostStyles from '../styles/NewPostBar.module.scss';
+import Image from 'next/image';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import Typography from '@mui/material/Typography';
@@ -93,10 +94,12 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     >
       {
         <div className={newPostStyles.newPostBar__top}>
-          <img
+          <Image
             className={newPostStyles.newPostBar__profilePic}
             src={`${process.env.HOST}/assets/${user && user.picturePath}`}
             alt={user && user.picturePath}
+            width="50"
+            height="50"
           />
 
           <input

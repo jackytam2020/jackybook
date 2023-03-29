@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import notificationRowStyles from '../styles/NotificationRow.module.scss';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import Image from 'next/image';
 
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -75,10 +76,12 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
         setIsNotificationOpened(false);
       }}
     >
-      <img
+      <Image
         className={notificationRowStyles.notificationRow__profilePic}
         src={`${process.env.HOST}/assets/${senderPicturePath}`}
         alt={senderName}
+        width="50"
+        height="50"
       />
       <div className={notificationRowStyles.notificationRow__notification}>
         <p>{notificationType}</p>

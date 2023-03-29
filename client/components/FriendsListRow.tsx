@@ -2,6 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import friendsListRowStyles from '../styles/FriendsListRow.module.scss';
 
+import Image from 'next/image';
+
 interface FriendsRowProps {
   _id: string;
   firstName: string;
@@ -20,10 +22,12 @@ const FriendsListRow: React.FC<FriendsRowProps> = ({
   return (
     <Link href={`/profile/${_id}`}>
       <div className={friendsListRowStyles.friendsRow}>
-        <img
+        <Image
           src={`${process.env.HOST}/assets/${picturePath}`}
           className={friendsListRowStyles.friendsRow__friendsPic}
           alt={picturePath}
+          width="30"
+          height="30"
         />
         <p
           style={{

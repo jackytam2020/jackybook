@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import postStyles from '../styles/Post.module.scss';
+
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpOffAltOutlinedIcon from '@mui/icons-material/ThumbUpOffAltOutlined';
 import InsertCommentOutlinedIcon from '@mui/icons-material/InsertCommentOutlined';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+
 import axios from 'axios';
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { Socket } from 'socket.io-client';
+import { useSelector } from 'react-redux';
 import {
   UserRootState,
   ModeRootState,
-  SelectedPostRootState,
 } from '../utils/interfaces/ReduxStateProps';
 import { PostProps } from '../state';
 
@@ -126,10 +127,12 @@ const Post: React.FC<PostProps> = ({
       <div className={postStyles.post__topButtons}>
         <Link href={`/profile/${userID}`}>
           <div className={postStyles.post__topButtonsLeft}>
-            <img
-              className={postStyles.post__profilePic}
+            <Image
               src={`${process.env.HOST}/assets/${userPicturePath}`}
+              className={postStyles.post__profilePic}
               alt={userPicturePath}
+              width="40"
+              height="40"
             />
             <div>
               <p
@@ -194,10 +197,14 @@ const Post: React.FC<PostProps> = ({
       </p>
       {picturePath && (
         <>
-          <img
+          <Image
             className={postStyles.post__image}
             src={`${process.env.HOST}/assets/${picturePath}`}
             alt={picturePath}
+            sizes="100vw"
+            style={{ width: '100%', height: 'auto' }}
+            width="0"
+            height="0"
           />
         </>
       )}

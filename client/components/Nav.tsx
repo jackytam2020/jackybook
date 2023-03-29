@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import navStyles from '../styles/Nav.module.scss';
 import Link from 'next/link';
+import Image from 'next/image';
 import { styled, alpha } from '@mui/material/styles';
 import {
   Typography,
@@ -191,10 +192,12 @@ const Nav: React.FC<NavProp> = ({
                 href={`/profile/${user._id}`}
                 className={navStyles.nav__profilePicHolder}
               >
-                <img
+                <Image
                   className={navStyles.nav__profilePic}
                   src={`${process.env.HOST}/assets/${user.picturePath}`}
                   alt={user.picturePath}
+                  height="32"
+                  width="32"
                 />
               </Link>
               <Link href={'/'} className={navStyles.nav__logoutButton}>

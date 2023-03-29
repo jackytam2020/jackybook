@@ -13,9 +13,6 @@
     justify-content: space-between;
   }
   &__profilePic {
-    width: 40px;
-    height: 40px;
-    background-color: beige;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -42,11 +39,9 @@
     padding-top: 1rem;
   }
   &__image {
-    width: 100%;
-    height: auto;
-    max-height: 500px;
     object-fit: cover;
     padding-top: 1rem;
+    max-height: 500px;
   }
   &__postStats {
     display: flex;
