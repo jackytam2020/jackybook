@@ -7,13 +7,13 @@ const nextConfig = {
     },
   },
   env: {
-    HOST: 'https://jackybook-api.onrender.com',
+    HOST: `https://${process.env.SERVER}`,
   },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'jackybook-api.onrender.com',
+        hostname: process.env.SERVER,
       },
     ],
   },
