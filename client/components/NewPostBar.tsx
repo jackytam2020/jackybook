@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import newPostStyles from '../styles/NewPostBar.module.scss';
-import Image from 'next/image';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+
+import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
+import Image from 'next/image';
 
 import { useSelector } from 'react-redux';
 import {
@@ -48,6 +50,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     webkitRelativePath: '',
   });
   const [post, setPost] = useState<string>('');
+  const [previewImage, setPreviewImage] = useState<string>('');
 
   const user = useSelector((state: UserRootState) => state.user);
   const token = useSelector((state: TokenRootState) => state.token);
@@ -67,6 +70,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     });
 
     setPost('');
+    setPreviewImage('');
     setMediaFile({
       path: '',
       lastModified: 0,
@@ -118,50 +122,85 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
         </div>
       }
       <div className={newPostStyles.newPostBar__bottom}>
+        {previewImage !== '' && (
+          <div className={newPostStyles.newPostBar__imagePreview}>
+            <div
+              className={newPostStyles.newPostBar__deleteIconContainer}
+              onClick={() => {
+                setPreviewImage('');
+                setMediaFile({
+                  path: '',
+                  lastModified: 0,
+                  lastModifiedDate: new Date(),
+                  name: '',
+                  size: 0,
+                  type: '',
+                  webkitRelativePath: '',
+                });
+              }}
+            >
+              <CloseIcon
+                className={newPostStyles.newPostBar__deleteIcon}
+                sx={{ color: 'white' }}
+              ></CloseIcon>
+            </div>
+            <Image
+              src={previewImage}
+              alt={previewImage}
+              width="0"
+              height="0"
+              style={{
+                width: '100%',
+                height: 'auto',
+                objectFit: 'cover',
+              }}
+            />
+          </div>
+        )}
         <div className={newPostStyles.newPostBar__addMedia}>
           <Dropzone
             multiple={false}
             onDrop={(acceptedFiles) => {
               setMediaFile(acceptedFiles[0]);
+              setPreviewImage(URL.createObjectURL(acceptedFiles[0]));
             }}
           >
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()}>
                 <input {...getInputProps()} name="picture" />
                 {!mediaFile.name ? (
-                  <AddPhotoAlternateIcon fontSize="large" color="primary" />
-                ) : (
-                  <div>
-                    <Typography>{mediaFile.name}</Typography>
+                  <div className={newPostStyles.newPostBar__addPhotoButton}>
+                    <AddPhotoAlternateIcon fontSize="large" color="primary" />
+                    <Typography variant="body1" color={'gray'}>
+                      Add Photo
+                    </Typography>
                   </div>
-                )}
+                ) : null}
               </div>
             )}
           </Dropzone>
-          <Typography variant="body1" color={'gray'}>
-            Photo/Video
-          </Typography>
-        </div>
-        {post.length > 0 ? (
-          <Button
-            variant="contained"
-            onClick={() => {
-              submitPost();
-            }}
-          >
-            Post
-          </Button>
-        ) : (
-          <span style={{ cursor: 'not-allowed' }}>
+
+          {post.length > 0 ? (
             <Button
-              disabled
               variant="contained"
-              className={newPostStyles.newPostBar__disabledButton}
+              onClick={() => {
+                submitPost();
+              }}
             >
               Post
             </Button>
-          </span>
-        )}
+          ) : (
+            <span style={{ cursor: 'not-allowed' }}>
+              <Button
+                disabled
+                variant="contained"
+                className={newPostStyles.newPostBar__disabledButton}
+              >
+                Post
+              </Button>
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

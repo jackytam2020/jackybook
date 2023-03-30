@@ -11,6 +11,25 @@
     column-gap: 1rem;
   }
 
+  &__profilePicContainer {
+    position: relative;
+  }
+
+  &__iconContainer {
+    display: flex;
+    border-radius: 50%;
+    background-color: lightgrey;
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    bottom: 0px;
+    right: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    cursor: pointer;
+  }
+
   &__profilePic {
     object-fit: cover;
     border-radius: 50%;

@@ -39,14 +39,35 @@
   }
 
   &__bottom {
-    display: flex;
-    justify-content: space-between;
     padding-top: 1rem;
   }
   &__addMedia {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     cursor: pointer;
+  }
+  &__imagePreview {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  &__deleteIconContainer {
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    background-color: black;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: -10px;
+    top: -10px;
+    cursor: pointer;
+  }
+  &__addPhotoButton {
+    display: flex;
+    align-items: center;
+    color: white;
   }
 }
 

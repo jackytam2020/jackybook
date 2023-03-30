@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import userInfoStyles from '../styles/UserInfo.module.scss';
 import FriendStatus from './FriendStatus';
 import Image from 'next/image';
@@ -8,6 +8,9 @@ import { Socket } from 'socket.io-client';
 
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+
+import UploadProfilePicModal from './UploadProfilePicModal';
 
 interface UserInfoProps {
   mode: string;
@@ -26,6 +29,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
   grabFriendsList,
   socket,
 }) => {
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState<boolean>(false);
   return (
     <div
       className={
@@ -33,13 +37,25 @@ const UserInfo: React.FC<UserInfoProps> = ({
       }
     >
       <div className={userInfoStyles.userInfo__user}>
-        <Image
-          src={`${process.env.HOST}/assets/${profileData.picturePath}`}
-          className={userInfoStyles.userInfo__profilePic}
-          alt={profileData.picturePath}
-          width="150"
-          height="150"
-        />
+        <div className={userInfoStyles.userInfo__profilePicContainer}>
+          <Image
+            src={`${process.env.HOST}/assets/${profileData.picturePath}`}
+            className={userInfoStyles.userInfo__profilePic}
+            alt={profileData.picturePath}
+            width="150"
+            height="150"
+          />
+          {profileData._id === user._id && (
+            <div className={userInfoStyles.userInfo__iconContainer}>
+              <AddAPhotoIcon
+                className={userInfoStyles.userInfo__addPhotoIcon}
+                onClick={() => {
+                  setIsUploadModalOpen(true);
+                }}
+              ></AddAPhotoIcon>
+            </div>
+          )}
+        </div>
         <div className={userInfoStyles.userInfo__nameFriends}>
           <h2
             className={userInfoStyles.userInfo__name}
@@ -71,6 +87,12 @@ const UserInfo: React.FC<UserInfoProps> = ({
           socket={socket}
         />
       )}
+      <UploadProfilePicModal
+        open={isUploadModalOpen}
+        setIsUploadModalOpen={setIsUploadModalOpen}
+        user={user}
+        grabProfileData={grabProfileData}
+      />
     </div>
   );
 };
