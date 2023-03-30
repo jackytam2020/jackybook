@@ -44,6 +44,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
             alt={profileData.picturePath}
             width="150"
             height="150"
+            priority={true}
           />
           {profileData._id === user._id && (
             <div className={userInfoStyles.userInfo__iconContainer}>

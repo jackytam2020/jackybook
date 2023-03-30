@@ -136,7 +136,13 @@ const UploadProfilePicModal: React.FC<UploadProfilePicModalProps> = ({
 
           {mediaFile.path === '' ? (
             <>
-              <p className={uploadModalStyles.uploadModal__instructions}>
+              <p
+                className={
+                  mode === 'light'
+                    ? uploadModalStyles.uploadModal__instructions
+                    : uploadModalStyles.uploadModal__instructionsDark
+                }
+              >
                 Drag and drop or click Upload Photo
               </p>
               <Button

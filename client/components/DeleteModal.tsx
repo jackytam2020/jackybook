@@ -73,7 +73,11 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
             </h2>
           </div>
           <p
-            className={deleteModalStyles.deleteModal__message}
+            className={
+              mode === 'light'
+                ? deleteModalStyles.deleteModal__message
+                : deleteModalStyles.deleteModal__messageDark
+            }
           >{`Are you sure you want to delete this ${
             type === 'comment' ? 'comment?' : 'post?'
           }`}</p>
