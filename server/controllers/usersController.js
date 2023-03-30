@@ -25,6 +25,27 @@ export const grabAllUsers = async (req, res) => {
   }
 };
 
+export const addNewProfilePicture = async (req, res) => {
+  try {
+    const { picturePath } = req.body;
+    const userID = await User.findById(req.params.id);
+
+    await User.findOneAndUpdate(
+      {
+        _id: userID,
+      },
+      {
+        $set: {
+          picturePath: picturePath,
+        },
+      }
+    );
+    res.status(200).json({ message: 'Profile picture uploaded' });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
+
 export const grabUserFriends = (req, res) => {
   try {
     User.find({ _id: req.params.id }, 'friends', function (err, result) {

@@ -19,6 +19,7 @@ import notificationRoutes from './routes/notifications.js';
 //controller imports
 import { newPost } from './controllers/postsController.js';
 import { register } from './controllers/auth.js';
+import { addNewProfilePicture } from './controllers/usersController.js';
 
 //middleware imports
 import { verifyToken } from './middleware/auth.js';
@@ -56,6 +57,11 @@ const upload = multer({ storage: storage });
 
 app.post('/auth/register', upload.single('picture'), register);
 app.post('/posts', verifyToken, upload.single('picture'), newPost);
+app.patch(
+  '/:id/addNewProfilePicture',
+  upload.single('picture'),
+  addNewProfilePicture
+);
 
 //ROUTES
 app.use('/auth', authRoutes);
