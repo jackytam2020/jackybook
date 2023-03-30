@@ -7,13 +7,13 @@ const nextConfig = {
     },
   },
   env: {
-    HOST: `https://${process.env.SERVER}`,
+    HOST: process.env.SERVER,
   },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: process.env.SERVER,
+        hostname: process.env.IMAGE_SERVER,
         port: '',
         pathname: '/assets/**',
       },
