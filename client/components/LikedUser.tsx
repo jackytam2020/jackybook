@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import likedUserListStyles from '../styles/LikedUserList.module.scss';
 
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
 import { Button } from '@mui/material';
@@ -23,7 +23,7 @@ interface LikedUserProps {
   friendRequests: string[];
   loggedInUser: string;
   likedUserID: string;
-  socket: Socket;
+  // socket: Socket;
   mode: string;
 }
 
@@ -35,11 +35,10 @@ const LikedUser: React.FC<LikedUserProps> = ({
   friendRequests,
   loggedInUser,
   likedUserID,
-  socket,
+  // socket,
   mode,
 }) => {
   const [buttonStatus, setButtonStatus] = useState<string>('Add Friend');
-  const [friendList, setFriendList] = useState(friends);
   const user = useSelector((state: UserRootState) => state.user);
   const dispatch = useDispatch();
 
@@ -81,17 +80,11 @@ const LikedUser: React.FC<LikedUserProps> = ({
           variant="contained"
           onClick={() => {
             if (buttonStatus === 'Add Friend') {
-              sendFriendRequest(user, likedUserID, dispatch, socket);
+              sendFriendRequest(user, likedUserID, dispatch);
             } else if (buttonStatus === 'Cancel Request') {
               removeFriendRequest(likedUserID, user._id, dispatch);
             } else if (buttonStatus === 'Accept Friend Request') {
-              acceptFriendRequest(
-                likedUserID,
-                user._id,
-                dispatch,
-                socket,
-                user
-              );
+              acceptFriendRequest(likedUserID, user._id, dispatch, user);
             }
           }}
         >

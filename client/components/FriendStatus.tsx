@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../state';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import { UserRootState } from '../utils/interfaces/ReduxStateProps';
 
 import Button from '@mui/material/Button';
@@ -18,14 +18,14 @@ import { removeFriend } from '../utils/friends/removeFriend';
 interface FriendStatusProps {
   profileData: User;
   grabFriendsList: () => void;
-  socket: Socket;
+  // socket: Socket;
   grabProfileData: () => void;
 }
 
 const FriendStatus: React.FC<FriendStatusProps> = ({
   profileData,
   grabFriendsList,
-  socket,
+  // socket,
   grabProfileData,
 }) => {
   const user = useSelector((state: UserRootState) => state.user);
@@ -84,7 +84,7 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
               removeFriendError
             );
           } else if (buttonStatus === 'Add Friend') {
-            sendFriendRequest(user, profileData._id, dispatch, socket);
+            sendFriendRequest(user, profileData._id, dispatch);
           } else if (buttonStatus === 'Cancel Request') {
             removeFriendRequest(profileData._id, user._id, dispatch);
           } else if (buttonStatus === 'Accept Friend Request') {
@@ -92,7 +92,6 @@ const FriendStatus: React.FC<FriendStatusProps> = ({
               profileData._id,
               user._id,
               dispatch,
-              socket,
               user,
               acceptFriendRequestError,
               grabProfileData,

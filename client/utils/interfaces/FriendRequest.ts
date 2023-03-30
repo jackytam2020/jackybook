@@ -1,5 +1,5 @@
 import { User } from '../../state';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 
 export interface FriendRequestProps {
   _id: string;
@@ -8,7 +8,7 @@ export interface FriendRequestProps {
   picturePath: string;
   firstName: string;
   lastName: string;
-  socket: Socket;
+  // socket: Socket;
   user: User;
   mode?: string;
   grabProfileData: () => void;

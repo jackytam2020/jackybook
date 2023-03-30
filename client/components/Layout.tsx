@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import layoutStyles from '../styles/Layout.module.scss';
 
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import axios from 'axios';
 
 import { useSelector } from 'react-redux';
@@ -16,10 +16,10 @@ import NavPopOut from './NavPopOut';
 
 interface LayoutProps {
   children: React.ReactNode;
-  socket: Socket;
+  // socket: Socket;
 }
 
-const Layout: React.FunctionComponent<LayoutProps> = ({ children, socket }) => {
+const Layout: React.FunctionComponent<LayoutProps> = ({ children }) => {
   const [notifications, setNotifications] = useState<NotificationProp[]>([]);
   const [isNotificationOpened, setIsNotificationOpened] =
     useState<boolean>(false);
@@ -71,16 +71,17 @@ const Layout: React.FunctionComponent<LayoutProps> = ({ children, socket }) => {
         isNavPopOutOpen={isNavPopOutOpen}
         setIsNavPopOutOpen={setIsNavPopOutOpen}
         setNotifications={setNotifications}
-        socket={socket}
+        // socket={socket}
       />
       <div style={{ display: path === '/MobileSearch' ? 'none' : 'block' }}>
         <Nav
-          socket={socket}
+          // socket={socket}
           notifications={notifications}
           setNotifications={setNotifications}
           setIsNotificationOpened={setIsNotificationOpened}
           setMobileSearchIsOpen={setMobileSearchIsOpen}
           setIsNavPopOutOpen={setIsNavPopOutOpen}
+          getNotifications={getNotifications}
         />
       </div>
 

@@ -10,7 +10,7 @@ import {
   ModeRootState,
 } from '../utils/interfaces/ReduxStateProps';
 
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 
 import LikedUser from './LikedUser';
 import { updateLoggedInUser } from '../utils/updateLoggedInUser';
@@ -24,7 +24,7 @@ interface LikedUserProps {
   friendRequests: string[];
   loggedInUser: string;
   likedUserID: string;
-  socket: Socket;
+  // socket: Socket;
 }
 
 interface LikeModalProps {
@@ -34,7 +34,7 @@ interface LikeModalProps {
   grabCommentLikedList?: () => void;
   type: string;
   likedList: Array<LikedUserProps>;
-  socket: Socket;
+  // socket: Socket;
 }
 
 const LikeModal: React.FC<LikeModalProps> = ({
@@ -44,7 +44,7 @@ const LikeModal: React.FC<LikeModalProps> = ({
   likedList,
   type,
   grabCommentLikedList,
-  socket,
+  // socket,
 }) => {
   useEffect(() => {
     if (type === 'post' && grabPostLikedList && open) {
@@ -102,7 +102,7 @@ const LikeModal: React.FC<LikeModalProps> = ({
                     {...likedUser}
                     likedUserID={likedUser._id}
                     loggedInUser={user._id}
-                    socket={socket}
+                    // socket={socket}
                     mode={mode}
                   />
                 ))}

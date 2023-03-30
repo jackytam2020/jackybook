@@ -4,15 +4,15 @@ import {
   setNewFriend,
   setRemoveFriendRequest,
 } from '../../state';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import { handleNotifications } from '../notifications/handleNotification';
 
 export const sendFriendRequest = async (
   user: User,
   receiverID: string,
-  dispatch: Function,
-  socket: Socket
+  dispatch: Function
+  // socket: Socket
 ) => {
   const { data } = await axios.post(
     //user is sender
@@ -29,14 +29,14 @@ export const sendFriendRequest = async (
     })
   );
 
-  handleNotifications(socket, user, receiverID, 'friendRequest');
+  handleNotifications(user, receiverID, 'friendRequest');
 };
 
 export const acceptFriendRequest = async (
   senderID: string,
   receiverID: string,
   dispatch: Function,
-  socket: Socket,
+  // socket: Socket,
   user: User,
   acceptFriendRequestError?: () => void,
   grabProfileData?: () => void,
@@ -60,12 +60,18 @@ export const acceptFriendRequest = async (
       dispatch,
       grabFriendRequests
     );
-    handleNotifications(socket, user, senderID, 'acceptedRequest');
+    handleNotifications(user, senderID, 'acceptedRequest');
     if (grabProfileData) grabProfileData();
     if (grabFriendsList) grabFriendsList();
   } catch {
+    removeFriendRequest(
+      receiverID,
+      senderID,
+      dispatch,
+      grabFriendRequests,
+      grabFriendsList
+    );
     if (acceptFriendRequestError) acceptFriendRequestError();
-    removeFriendRequest(receiverID, senderID, dispatch);
   }
 };
 
@@ -73,7 +79,8 @@ export const removeFriendRequest = async (
   receiverID: string,
   senderID: string,
   dispatch?: Function,
-  grabFriendRequests?: () => void
+  grabFriendRequests?: () => void,
+  grabFriendsList?: () => void
 ) => {
   await axios.delete(
     `${process.env.HOST}/users/${receiverID}/removeFriendRequest/${senderID}`
@@ -87,4 +94,5 @@ export const removeFriendRequest = async (
     );
   }
   if (grabFriendRequests) grabFriendRequests();
+  if (grabFriendsList) grabFriendsList();
 };

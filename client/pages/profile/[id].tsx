@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProfileStyles from '../../styles/Profile.module.scss';
 
 import { useRouter } from 'next/router';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -30,14 +30,14 @@ interface ProfileProps {
   serverProfileData: User;
   serverFriendsData: User[];
   serverPostData: PostsArray;
-  socket: Socket;
+  // socket: Socket;
 }
 
 const Profile: React.FC<ProfileProps> = ({
   serverProfileData,
   serverFriendsData,
   serverPostData,
-  socket,
+  // socket,
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -124,7 +124,7 @@ const Profile: React.FC<ProfileProps> = ({
                 user={user}
                 grabProfileData={grabProfileData}
                 grabFriendsList={grabFriendsList}
-                socket={socket}
+                // socket={socket}
               />
               <FriendsList friendsList={friendsList} mode={mode} />
             </section>
@@ -156,7 +156,7 @@ const Profile: React.FC<ProfileProps> = ({
                         {...post}
                         loggedInUser={user._id}
                         grabProfileFeedPosts={grabProfileFeedPosts}
-                        socket={socket}
+                        // socket={socket}
                       />
                     ))
                 ) : (
@@ -172,7 +172,7 @@ const Profile: React.FC<ProfileProps> = ({
             {user._id === profileData._id && (
               <FriendRequests
                 friendRequests={friendRequests}
-                socket={socket}
+                // socket={socket}
                 user={user}
                 mode={mode}
                 grabProfileData={grabProfileData}

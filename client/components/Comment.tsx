@@ -6,7 +6,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { User } from '../state';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Image from 'next/image';
@@ -59,7 +59,7 @@ interface CommentProp {
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   ) => void;
   deleteComment: (commentID: string) => void;
-  socket: Socket;
+  // socket: Socket;
 }
 
 interface UserState {
@@ -79,7 +79,7 @@ const Comment = ({
   userPicturePath,
   userID,
   postID,
-  socket,
+  // socket,
   editComment,
   deleteComment,
 }: CommentProp) => {
@@ -168,7 +168,7 @@ const Comment = ({
               type={'comment'}
               likedList={likedList}
               grabCommentLikedList={grabCommentLikedList}
-              socket={socket}
+              // socket={socket}
             />
           </div>
           {userID === loggedInUser && (
@@ -253,7 +253,6 @@ const Comment = ({
               onClick={() => {
                 pressLikeCommentButton(commentID);
                 handleNotifications(
-                  socket,
                   user,
                   userID,
                   'likedComment',

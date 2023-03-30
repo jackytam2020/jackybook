@@ -10,17 +10,17 @@ import {
   PostRootState,
   ModeRootState,
 } from '../utils/interfaces/ReduxStateProps';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 
 import NewPostBar from '../components/NewPostBar';
 import Post from '../components/Post';
 
 interface HomeProp {
-  socket: Socket;
+  // socket: Socket;
   users: User[];
 }
 
-const home: React.FC<HomeProp> = ({ socket, users }) => {
+const home: React.FC<HomeProp> = ({ users }) => {
   const user = useSelector((state: UserRootState) => state.user);
   const posts = useSelector((state: PostRootState) => state.posts);
   const mode = useSelector((state: ModeRootState) => state.mode);
@@ -51,14 +51,14 @@ const home: React.FC<HomeProp> = ({ socket, users }) => {
   const isConnected = useRef(true);
 
   //add new online user to socket
-  useEffect(() => {
-    if (isConnected.current) {
-      isConnected.current = false;
-      if (user) {
-        socket?.emit('newUser', user._id);
-      }
-    }
-  }, [socket]);
+  // useEffect(() => {
+  //   if (isConnected.current) {
+  //     isConnected.current = false;
+  //     if (user) {
+  //       socket?.emit('newUser', user._id);
+  //     }
+  //   }
+  // }, [socket]);
 
   return (
     <>
@@ -78,7 +78,7 @@ const home: React.FC<HomeProp> = ({ socket, users }) => {
                   {...post}
                   loggedInUser={user._id}
                   grabFeedPosts={grabFeedPosts}
-                  socket={socket}
+                  // socket={socket}
                 />
               ))
             ) : (

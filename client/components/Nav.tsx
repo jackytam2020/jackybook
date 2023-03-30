@@ -21,7 +21,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../state';
 import { setLogout } from '../state/index';
 import { UserRootState } from '../utils/interfaces/ReduxStateProps';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import { useRouter } from 'next/router';
 
 import {
@@ -39,12 +39,13 @@ interface UsersRootState {
 }
 
 interface NavProp {
-  socket: Socket;
+  // socket: Socket;
   notifications: NotificationProp[];
   setNotifications: React.Dispatch<React.SetStateAction<NotificationProp[]>>;
   setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
   setMobileSearchIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsNavPopOutOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  getNotifications: () => void;
 }
 
 const Search = styled('div')(({ theme }) => ({
@@ -89,12 +90,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Nav: React.FC<NavProp> = ({
-  socket,
+  // socket,
   notifications,
   setNotifications,
   setIsNotificationOpened,
   setMobileSearchIsOpen,
   setIsNavPopOutOpen,
+  getNotifications,
 }) => {
   const user = useSelector((state: UserRootState) => state.user);
   let users = useSelector((state: UsersRootState) => state.users);
@@ -105,11 +107,11 @@ const Nav: React.FC<NavProp> = ({
   const dispatch = useDispatch();
 
   //get real time updated notifications / socket array should be empty at first
-  useEffect(() => {
-    socket.on('getNotification', (data) => {
-      setNotifications((prev) => [...prev, data]);
-    });
-  }, [socket]);
+  // useEffect(() => {
+  //   socket.on('getNotification', (data) => {
+  //     setNotifications((prev) => [...prev, data]);
+  //   });
+  // }, [socket]);
 
   useEffect(() => {
     searchUser(setFilteredUsers, users, searchQuery);
@@ -181,6 +183,7 @@ const Nav: React.FC<NavProp> = ({
                 color="inherit"
                 onClick={() => {
                   setIsNotificationOpened(true);
+                  getNotifications();
                 }}
               >
                 <Badge badgeContent={notifications.length} color="error">
@@ -206,7 +209,7 @@ const Nav: React.FC<NavProp> = ({
                   variant="outlined"
                   onClick={() => {
                     dispatch(setLogout());
-                    socket.emit('logout');
+                    // socket.emit('logout');
                     setNotifications([]);
                   }}
                 >

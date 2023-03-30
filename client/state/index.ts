@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 
 export interface User {
   firstName: string;
@@ -30,7 +30,7 @@ export interface PostProps {
   userPicturePath: string;
   grabFeedPosts?: () => void;
   grabProfileFeedPosts?: () => void;
-  socket: Socket;
+  // socket: Socket;
   fromNotification?: boolean;
 }
 

@@ -16,7 +16,7 @@ import {
 } from 'redux-persist';
 import sessionStorage from 'redux-persist/lib/storage/session';
 import { PersistGate } from 'redux-persist/integration/react';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 import Layout from '../components/Layout';
 
 const persistConfig = {
@@ -37,20 +37,18 @@ const store = configureStore({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const socket = io(`${process.env.HOST}`);
+  // const socket = io(`${process.env.HOST}`);
 
   return (
     <Provider store={store}>
-      {socket && (
-        <PersistGate
-          loading={<div>loading...</div>}
-          persistor={persistStore(store)}
-        >
-          <Layout socket={socket}>
-            <Component {...pageProps} socket={socket} />
-          </Layout>
-        </PersistGate>
-      )}
+      <PersistGate
+        loading={<div>loading...</div>}
+        persistor={persistStore(store)}
+      >
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </PersistGate>
     </Provider>
   );
 }

@@ -3,7 +3,7 @@ import navPopOutStyles from '../styles/NavPopOut.module.scss';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setLogout } from '../state';
@@ -20,14 +20,14 @@ import ModeToggle from './ModeToggle';
 
 interface NavPopOutProps {
   isNavPopOutOpen: boolean;
-  socket: Socket;
+  // socket: Socket;
   setNotifications: React.Dispatch<React.SetStateAction<NotificationProp[]>>;
   setIsNavPopOutOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const NavPopOut: React.FC<NavPopOutProps> = ({
   isNavPopOutOpen,
-  socket,
+  // socket,
   setNotifications,
   setIsNavPopOutOpen,
 }) => {
@@ -90,7 +90,7 @@ const NavPopOut: React.FC<NavPopOutProps> = ({
           onClick={() => {
             setIsNavPopOutOpen(false);
             dispatch(setLogout());
-            socket.emit('logout');
+            // socket.emit('logout');
             setNotifications([]);
           }}
         >

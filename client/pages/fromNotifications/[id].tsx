@@ -1,7 +1,7 @@
 import React from 'react';
 import fromNotificationsStyles from '../../styles/FromNotifications.module.scss';
 import axios from 'axios';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import Head from 'next/head';
 
 import { GetServerSidePropsContext } from 'next';
@@ -15,12 +15,12 @@ import Post from '../../components/Post';
 
 interface fromNotificationsProps {
   selectedPost: PostProps;
-  socket: Socket;
+  // socket: Socket;
 }
 
 const fromNotifications: React.FC<fromNotificationsProps> = ({
   selectedPost,
-  socket,
+  // socket,
 }) => {
   const router = useRouter();
   const mode = useSelector((state: ModeRootState) => state.mode);
@@ -41,7 +41,7 @@ const fromNotifications: React.FC<fromNotificationsProps> = ({
           <h3 className={fromNotificationsStyles.fromNotifications__header}>
             From Notifications
           </h3>
-          <Post {...selectedPost} fromNotification={true} socket={socket} />
+          <Post {...selectedPost} fromNotification={true} />
           <div
             className={fromNotificationsStyles.fromNotifications__backOption}
           >

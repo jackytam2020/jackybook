@@ -3,7 +3,7 @@ import commentStyles from '../styles/CommentSection.module.scss';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import Image from 'next/image';
 
 import Comment from './Comment';
@@ -21,7 +21,7 @@ interface CommentSectionProps {
   grabComments: () => void;
   grabFeedPosts?: () => void;
   grabProfileFeedPosts?: () => void;
-  socket: Socket;
+  // socket: Socket;
 }
 
 interface Comment {
@@ -44,7 +44,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   grabComments,
   grabFeedPosts,
   grabProfileFeedPosts,
-  socket,
+  // socket,
 }) => {
   const [newCommentValue, setNewCommentValue] = useState('');
   const user = useSelector((state: UserRootState) => state.user);
@@ -62,14 +62,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       datePosted: new Date(),
     });
     grabComments();
-    handleNotifications(
-      socket,
-      user,
-      userID,
-      'comment',
-      postID,
-      newCommentValue
-    );
+    handleNotifications(user, userID, 'comment', postID, newCommentValue);
 
     if (grabFeedPosts) {
       grabFeedPosts();
@@ -174,7 +167,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               userID={comment.userID}
               editComment={editComment}
               deleteComment={deleteComment}
-              socket={socket}
+              // socket={socket}
               postID={postID}
             />
           ))}

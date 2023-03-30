@@ -2,12 +2,12 @@ import React from 'react';
 import friendRequestStyles from '../styles/FriendRequests.module.scss';
 import FriendRequestRow from './FriendRequestRow';
 
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import { User } from '../state';
 import { FriendRequestProps } from '../utils/interfaces/FriendRequest';
 
 interface FriendRequestsProps {
-  socket: Socket;
+  // socket: Socket;
   user: User;
   mode: string;
   friendRequests: FriendRequestProps[];
@@ -18,7 +18,7 @@ interface FriendRequestsProps {
 
 const FriendRequests: React.FC<FriendRequestsProps> = ({
   friendRequests,
-  socket,
+  // socket,
   user,
   mode,
   grabFriendsList,
@@ -43,7 +43,7 @@ const FriendRequests: React.FC<FriendRequestsProps> = ({
                 <FriendRequestRow
                   key={request._id}
                   {...request}
-                  socket={socket}
+                  // socket={socket}
                   user={user}
                   mode={mode}
                   grabProfileData={grabProfileData}

@@ -4,7 +4,7 @@ import FriendStatus from './FriendStatus';
 import Image from 'next/image';
 
 import { User } from '../state';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
@@ -18,7 +18,7 @@ interface UserInfoProps {
   user: User;
   grabProfileData: () => void;
   grabFriendsList: () => void;
-  socket: Socket;
+  // socket: Socket;
 }
 
 const UserInfo: React.FC<UserInfoProps> = ({
@@ -27,7 +27,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
   user,
   grabProfileData,
   grabFriendsList,
-  socket,
+  // socket,
 }) => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState<boolean>(false);
   return (
@@ -61,9 +61,9 @@ const UserInfo: React.FC<UserInfoProps> = ({
           <h2
             className={userInfoStyles.userInfo__name}
           >{`${profileData.firstName} ${profileData.lastName}`}</h2>
-          <p
-            className={userInfoStyles.userInfo__friendsCount}
-          >{`${profileData.friends.length} friends`}</p>
+          <p className={userInfoStyles.userInfo__friendsCount}>{`${
+            profileData.friends.length
+          } ${profileData.friends.length > 1 ? 'friends' : 'friend'}`}</p>
         </div>
       </div>
       <div className={userInfoStyles.userInfo__locationAndJob}>
@@ -85,7 +85,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
           grabProfileData={grabProfileData}
           profileData={profileData}
           grabFriendsList={grabFriendsList}
-          socket={socket}
+          // socket={socket}
         />
       )}
       <UploadProfilePicModal

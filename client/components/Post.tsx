@@ -43,7 +43,7 @@ const Post: React.FC<PostProps> = ({
   userPicturePath,
   grabFeedPosts,
   grabProfileFeedPosts,
-  socket,
+  // socket,
   fromNotification,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
@@ -223,7 +223,7 @@ const Post: React.FC<PostProps> = ({
           grabPostLikedList={grabPostLikedList}
           type={'post'}
           likedList={likedList}
-          socket={socket}
+          // socket={socket}
         />
         <p
           className={postStyles.post__comments}
@@ -261,7 +261,7 @@ const Post: React.FC<PostProps> = ({
                 } else if (grabFeedPosts) {
                   pressLikeButton(_id, grabFeedPosts, user);
                 }
-                handleNotifications(socket, user, userID, 'like', _id);
+                handleNotifications(user, userID, 'like', _id);
               }}
             ></ThumbUpOffAltOutlinedIcon>
           )}
@@ -292,7 +292,7 @@ const Post: React.FC<PostProps> = ({
         grabComments={grabComments}
         grabFeedPosts={grabFeedPosts}
         grabProfileFeedPosts={grabProfileFeedPosts}
-        socket={socket}
+        // socket={socket}
       />
     </div>
   );

@@ -26,7 +26,7 @@ import { verifyToken } from './middleware/auth.js';
 
 //exported functions
 import { connectDB } from './config/database.js';
-import { addNewUser, removeUser, getUser } from './socket/onlineUsers.js';
+// import { addNewUser, removeUser, getUser } from './socket/onlineUsers.js';
 
 // MIDDLEWARE CONFIGURATIONS
 
@@ -76,60 +76,60 @@ connectDB();
 
 //socket functions
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
-  },
-});
-let onlineUsers = [];
+// const io = new Server(server, {
+//   cors: {
+//     origin: '*',
+//     methods: ['GET', 'POST'],
+//   },
+// });
+// let onlineUsers = [];
 
-io.on('connection', (socket) => {
-  console.log(`a user connected ${onlineUsers}`);
+// io.on('connection', (socket) => {
+//   console.log(`a user connected ${onlineUsers}`);
 
-  // handle socket events here
-  socket.on('newUser', (userID) => {
-    addNewUser(userID, socket.id, onlineUsers);
-    console.log('new user');
-  });
+//   // handle socket events here
+//   socket.on('newUser', (userID) => {
+//     addNewUser(userID, socket.id, onlineUsers);
+//     console.log('new user');
+//   });
 
-  socket.on(
-    'sendNotification',
-    ({
-      senderName,
-      senderID,
-      senderPicturePath,
-      comment,
-      receiverID,
-      postID,
-      type,
-      createdAt,
-    }) => {
-      const receiver = getUser(receiverID, onlineUsers);
-      if (receiver) {
-        io.to(receiver.socketID).emit('getNotification', {
-          senderName,
-          senderID,
-          senderPicturePath,
-          comment,
-          postID,
-          type,
-          createdAt,
-        });
-      }
-    }
-  );
+//   socket.on(
+//     'sendNotification',
+//     ({
+//       senderName,
+//       senderID,
+//       senderPicturePath,
+//       comment,
+//       receiverID,
+//       postID,
+//       type,
+//       createdAt,
+//     }) => {
+//       const receiver = getUser(receiverID, onlineUsers);
+//       if (receiver) {
+//         io.to(receiver.socketID).emit('getNotification', {
+//           senderName,
+//           senderID,
+//           senderPicturePath,
+//           comment,
+//           postID,
+//           type,
+//           createdAt,
+//         });
+//       }
+//     }
+//   );
 
-  socket.on('logout', () => {
-    removeUser(socket.id, onlineUsers);
-    console.log('a user logged out', onlineUsers);
-  });
+//   socket.on('logout', () => {
+//     removeUser(socket.id, onlineUsers);
+//     console.log('a user logged out', onlineUsers);
+//   });
 
-  socket.on('disconnect', () => {
-    removeUser(socket.id, onlineUsers);
-    console.log('a user disconnected');
-  });
-});
+//   socket.on('disconnect', () => {
+//     removeUser(socket.id, onlineUsers);
+//     console.log('a user disconnected');
+//   });
+// });
 server.listen(PORT, () => {
   console.log(`Server Port: ${PORT}`);
 });
