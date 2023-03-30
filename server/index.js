@@ -76,6 +76,10 @@ connectDB();
 
 //socket functions
 const server = http.createServer(app);
+server.listen(PORT, () => {
+  console.log(`Server Port: ${PORT}`);
+});
+
 // const io = new Server(server, {
 //   cors: {
 //     origin: '*',
@@ -130,6 +134,3 @@ const server = http.createServer(app);
 //     console.log('a user disconnected');
 //   });
 // });
-server.listen(PORT, () => {
-  console.log(`Server Port: ${PORT}`);
-});
