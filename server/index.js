@@ -117,6 +117,7 @@ io.on('connection', (socket) => {
           createdAt,
         });
       }
+      console.log('notification sent');
     }
   );
 
