@@ -13,7 +13,7 @@ JackyBook is currently deployed under branch: main-without-socket as real time n
   * Socket.io
   * Axios
  
-<b>Back-End</b<
+<b>Back-End</b>
  * NodeJS
  * ExpressJS
  * CORS
