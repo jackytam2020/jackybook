@@ -114,7 +114,7 @@ const Form: React.FC<Props> = ({ page }) => {
     formData.append('firstName', registerValues.firstName);
     formData.append('lastName', registerValues.lastName);
     formData.append('password', registerValues.password);
-    formData.append('email', registerValues.email);
+    formData.append('email', registerValues.email.toLowerCase());
     formData.append('location', registerValues.location);
     formData.append('occupation', registerValues.occupation);
 
@@ -139,7 +139,7 @@ const Form: React.FC<Props> = ({ page }) => {
   const loginUser = async () => {
     try {
       const { data } = await axios.post(`${process.env.HOST}/auth/login`, {
-        email: loginValues.email,
+        email: loginValues.email.toLowerCase(),
         password: loginValues.password,
       });
 
