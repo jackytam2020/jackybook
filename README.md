@@ -4,6 +4,8 @@
 JackyBook is currently deployed under branch: main-without-socket as real time notifications is still being implemented 
 
 ### Tech Stack
+* Back-End
+
 * Front-End
   * React/NextJS
   * Material UI
@@ -11,8 +13,6 @@ JackyBook is currently deployed under branch: main-without-socket as real time n
   * TypeScript
   * SCSS
   * Socket.io
-*Back-End
- *nilyn
 ### Testing Instructions
 
 ### Installation 
