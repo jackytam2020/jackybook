@@ -31,7 +31,7 @@ If you would like to run the application locally, follow installation instructio
 cd client
 npm install
 ```
-Add a .env.local file so the front end can be connected to the backend and paste the following code:
+Add a .env.local file inside the client folder so the front end can be connected to the backend and paste the following code:
 ```
 SERVER=https://jackybook-api.onrender.com
 IMAGE_SERVER=jackybook-api.onrender.com
