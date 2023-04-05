@@ -21,7 +21,7 @@ JackyBook is currently deployed under branch: main-without-socket as real time n
  * MongoDB Atlas
 
 ### Testing Instructions
-* To test the full capabilities of the app, I recommend to log in with the following test accounts:
+To test the full capabilities of the app, I recommend to log in with the following test accounts:
 
 If you would like to run the application locally, follow installation instructions bellow
 
