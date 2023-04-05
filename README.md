@@ -5,6 +5,11 @@ JackyBook is currently deployed under branch: main-without-socket as real time n
 
 ![Untitled](https://user-images.githubusercontent.com/43556396/230228037-5269abb3-c918-467e-aa67-5a364c97441a.png)
 
+### Testing Instructions
+To test the full capabilities of the app, I recommend to log in with the following test accounts:
+
+If you would like to run the application locally, follow installation instructions bellow
+
 
 ### Tech Stack
 <b>Front-End</b>
@@ -22,11 +27,6 @@ JackyBook is currently deployed under branch: main-without-socket as real time n
  * CORS
  * JavaScript
  * MongoDB Atlas
-
-### Testing Instructions
-To test the full capabilities of the app, I recommend to log in with the following test accounts:
-
-If you would like to run the application locally, follow installation instructions bellow
 
 ### Installation 
 
