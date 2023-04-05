@@ -108,8 +108,6 @@ const Comment = ({
 
   dayjs.extend(relativeTime);
 
-  console.log(process.env.HOST);
-
   return (
     <div
       className={commentStyles.commentContainer}
