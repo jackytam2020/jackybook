@@ -18,6 +18,7 @@ interface NotificationRowProp {
   comment: string;
   createdAt: string;
   postID: string;
+  _id: string;
   setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
   mode: string;
 }
@@ -32,6 +33,7 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
   postID,
   setIsNotificationOpened,
   mode,
+  _id,
 }) => {
   const [notificationType, setNotificationType] = useState('');
   const router = useRouter();
@@ -71,7 +73,7 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
           type === 'comment' ||
           type === 'likedComment'
         ) {
-          router.push(`/fromNotifications/${postID}`);
+          router.push(`/fromNotifications/${postID}?_id=${_id}`);
         }
         setIsNotificationOpened(false);
       }}

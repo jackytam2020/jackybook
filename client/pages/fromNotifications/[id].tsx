@@ -18,11 +18,13 @@ import Post from '../../components/Post';
 
 interface fromNotificationsProps {
   serverSelectedPost: PostProps;
+  notificationID: string;
   // socket: Socket;
 }
 
 const FromNotifications: React.FC<fromNotificationsProps> = ({
   serverSelectedPost,
+  notificationID,
   // socket,
 }) => {
   const router = useRouter();
@@ -38,6 +40,10 @@ const FromNotifications: React.FC<fromNotificationsProps> = ({
 
     setSelectedPost(data);
   };
+
+  useEffect(() => {
+    grabSinglePost();
+  }, [router.asPath, notificationID]);
 
   return (
     <>
@@ -94,12 +100,20 @@ export const getServerSideProps = async (
   try {
     if (context.params) {
       const post = await axios.get(
-        `${process.env.HOST}/posts/${context.params.id}/grabSinglePost`
+        `${process.env.HOST}/posts/${context.params.id}/grabSinglePost`,
+        {
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        }
       );
+
+      const notificationID = context.query._id;
 
       return {
         props: {
           serverSelectedPost: post.data,
+          notificationID: notificationID,
         },
       };
     }
