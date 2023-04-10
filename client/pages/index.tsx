@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 
 const Login = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <>
@@ -21,7 +21,7 @@ const Login = () => {
               <Form page={'login'} setLoading={setLoading} />
               <Link href={'/Register'} className={styles.login__registerLink}>
                 Don't have an account? Sign up here
-              </Link>{' '}
+              </Link>
             </>
           ) : (
             <h3 className={styles.login__loading}>Loading...</h3>
