@@ -43,7 +43,7 @@ interface LoginValues {
 
 interface Props {
   page: string;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoading?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface File {
@@ -144,7 +144,7 @@ const Form: React.FC<Props> = ({ page, setLoading }) => {
         password: loginValues.password,
       });
 
-      setLoading(true);
+      if (setLoading) setLoading(true);
 
       dispatch(
         setLogin({
