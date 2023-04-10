@@ -43,13 +43,14 @@ interface LoginValues {
 
 interface Props {
   page: string;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface File {
   append: Function;
 }
 
-const Form: React.FC<Props> = ({ page }) => {
+const Form: React.FC<Props> = ({ page, setLoading }) => {
   const [registerValues, setRegisterValues] = useState<RegisterValues>({
     email: '',
     password: '',
@@ -143,6 +144,8 @@ const Form: React.FC<Props> = ({ page }) => {
         password: loginValues.password,
       });
 
+      setLoading(true);
+
       dispatch(
         setLogin({
           user: data.user,
@@ -150,6 +153,7 @@ const Form: React.FC<Props> = ({ page }) => {
         })
       );
 
+      setLoading(false);
       router.push('/home');
     } catch {
       loginError();

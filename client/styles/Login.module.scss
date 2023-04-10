@@ -28,6 +28,9 @@
     color: rgb(24, 118, 210);
     text-decoration: underline;
   }
+  &__loading {
+    padding-top: 2rem;
+  }
 }
 
 @include small() {
