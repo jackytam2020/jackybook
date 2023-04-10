@@ -153,7 +153,6 @@ const Form: React.FC<Props> = ({ page, setLoading }) => {
         })
       );
 
-      setLoading(false);
       router.push('/home');
     } catch {
       loginError();
