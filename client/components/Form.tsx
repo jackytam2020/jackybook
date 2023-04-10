@@ -149,6 +149,7 @@ const Form: React.FC<Props> = ({ page }) => {
           token: data.token,
         })
       );
+
       router.push('/home');
     } catch {
       loginError();

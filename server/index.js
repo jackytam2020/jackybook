@@ -63,10 +63,6 @@ app.patch(
   addNewProfilePicture
 );
 
-app.get('/toHome', (_req, res) => {
-  res.redirect('https://ea-hackathon-api.onrender.com/home');
-});
-
 //ROUTES
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
