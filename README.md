@@ -7,6 +7,14 @@ JackyBook is currently deployed under branch: main-without-socket as real time n
 
 ### Testing Instructions
 To test the full capabilities of the app, I recommend to log in with the following test accounts:
+Email: sarah.chan@example.com
+Password: F&dgT#22
+
+Email: marcus.lee@example.com
+Password: H2*er@W7
+
+Email: aisha.patel@example.com
+Password: Gp!5fJk8
 
 If you would like to run the application locally, follow installation instructions bellow
 
