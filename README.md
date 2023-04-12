@@ -3,7 +3,7 @@
 [JackyBook](https://jackybook.vercel.app/) is a full stack social media application with full CRUD operations of posts, comments, likes, and friends. It also includes notifications of any interactions your friends have with you!
 JackyBook is currently deployed under branch: main-without-socket as real time notifications is still being implemented 
 
-![Untitled](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGQ3MGEyNDk2ZTM2YmNiNGY5ZWRmZDk0MjYxODJkMmU5NGZjYmQyNyZjdD1n/8uSGadO3TsRx2p20FL/giphy.gif)d
+![Untitled](https://gifyu.com/image/SdWbu)
 
 ### Testing Instructions
 To test the full capabilities of the app, I recommend to log in with the following test accounts:
