@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Socket } from 'socket.io-client';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setLogout } from '../state';
+import { setLogout, setMode } from '../state';
 import { NotificationProp } from '../utils/interfaces/notifications';
 import {
   UserRootState,
@@ -79,7 +79,11 @@ const NavPopOut: React.FC<NavPopOutProps> = ({
         <div className={navPopOutStyles.navPopOut__ModeToggle}>
           <ModeToggle mobile={true} />
         </div>
-        <h3>{`${mode.charAt(0).toUpperCase() + mode.slice(1)} mode`}</h3>
+        <h3
+          onClick={() => {
+            dispatch(setMode());
+          }}
+        >{`${mode.charAt(0).toUpperCase() + mode.slice(1)} mode`}</h3>
       </div>
       <Link href={'/'}>
         <Button

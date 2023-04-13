@@ -27,7 +27,6 @@ import EditModal from './EditModal';
 import DeleteModal from './DeleteModal';
 import { handleNotifications } from '../utils/notifications/handleNotification';
 import { pressLikeButton } from '../utils/likes/pressLikeButton';
-import { deletePost } from '../utils/posts/deletePost';
 
 const Post: React.FC<PostProps> = ({
   _id,
@@ -45,6 +44,7 @@ const Post: React.FC<PostProps> = ({
   grabProfileFeedPosts,
   socket,
   fromNotification,
+  grabSinglePost,
 }) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [isLikedModalOpen, setIsLikedModalOpen] = useState<boolean>(false);
@@ -89,6 +89,20 @@ const Post: React.FC<PostProps> = ({
       grabFeedPosts();
     } else if (grabProfileFeedPosts) {
       grabProfileFeedPosts();
+    } else if (grabSinglePost) {
+      grabSinglePost();
+    }
+  };
+
+  const deletePost = async (postID: string, grabFeedPosts?: () => void) => {
+    await axios.delete(`${process.env.HOST}/posts/${postID}/deletePost`);
+
+    if (typeof grabFeedPosts === 'function') {
+      grabFeedPosts();
+    } else {
+      if (router.asPath.includes('fromNotifications')) {
+        router.push('/home');
+      }
     }
   };
 
@@ -243,9 +257,11 @@ const Post: React.FC<PostProps> = ({
               color="primary"
               onClick={() => {
                 if (grabProfileFeedPosts) {
-                  pressLikeButton(_id, grabProfileFeedPosts, user);
+                  pressLikeButton(_id, user, grabProfileFeedPosts);
                 } else if (grabFeedPosts) {
-                  pressLikeButton(_id, grabFeedPosts, user);
+                  pressLikeButton(_id, user, grabFeedPosts);
+                } else if (grabSinglePost) {
+                  pressLikeButton(_id, user, grabSinglePost);
                 }
               }}
             ></ThumbUpAltIcon>
@@ -257,9 +273,11 @@ const Post: React.FC<PostProps> = ({
               }}
               onClick={() => {
                 if (grabProfileFeedPosts) {
-                  pressLikeButton(_id, grabProfileFeedPosts, user);
+                  pressLikeButton(_id, user, grabProfileFeedPosts);
                 } else if (grabFeedPosts) {
-                  pressLikeButton(_id, grabFeedPosts, user);
+                  pressLikeButton(_id, user, grabFeedPosts);
+                } else if (grabSinglePost) {
+                  pressLikeButton(_id, user, grabSinglePost);
                 }
                 handleNotifications(socket, user, userID, 'like', _id);
               }}
@@ -293,6 +311,7 @@ const Post: React.FC<PostProps> = ({
         grabFeedPosts={grabFeedPosts}
         grabProfileFeedPosts={grabProfileFeedPosts}
         socket={socket}
+        grabSinglePost={grabSinglePost}
       />
     </div>
   );

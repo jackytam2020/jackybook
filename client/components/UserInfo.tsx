@@ -61,9 +61,9 @@ const UserInfo: React.FC<UserInfoProps> = ({
           <h2
             className={userInfoStyles.userInfo__name}
           >{`${profileData.firstName} ${profileData.lastName}`}</h2>
-          <p
-            className={userInfoStyles.userInfo__friendsCount}
-          >{`${profileData.friends.length} friends`}</p>
+          <p className={userInfoStyles.userInfo__friendsCount}>{`${
+            profileData.friends.length
+          } ${profileData.friends.length > 1 ? 'friends' : 'friend'}`}</p>
         </div>
       </div>
       <div className={userInfoStyles.userInfo__locationAndJob}>

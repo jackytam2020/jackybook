@@ -81,6 +81,7 @@ const Layout: React.FunctionComponent<LayoutProps> = ({ children, socket }) => {
           setIsNotificationOpened={setIsNotificationOpened}
           setMobileSearchIsOpen={setMobileSearchIsOpen}
           setIsNavPopOutOpen={setIsNavPopOutOpen}
+          getNotifications={getNotifications}
         />
       </div>
 

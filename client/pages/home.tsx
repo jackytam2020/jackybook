@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import homeStyles from '../styles/Home.module.scss';
 import axios from 'axios';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPosts } from '../state/index';
 import { User, setAllUsers } from '../state';
@@ -25,6 +26,7 @@ const home: React.FC<HomeProp> = ({ socket, users }) => {
   const posts = useSelector((state: PostRootState) => state.posts);
   const mode = useSelector((state: ModeRootState) => state.mode);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const grabFeedPosts = async () => {
     const { data } = await axios.get(
@@ -38,6 +40,11 @@ const home: React.FC<HomeProp> = ({ socket, users }) => {
   };
 
   useEffect(() => {
+    //if user is not logged in, redirect to login page
+    if (!user) {
+      router.push('/');
+      return;
+    }
     grabFeedPosts();
 
     //grab all users from database and assign it to redux state

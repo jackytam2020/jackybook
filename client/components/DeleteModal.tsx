@@ -1,5 +1,6 @@
 import React from 'react';
 import deleteModalStyles from '../styles/DeleteModal.module.scss';
+import { useRouter } from 'next/router';
 
 import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 
@@ -13,7 +14,7 @@ interface DeleteModalProps {
   type: string;
   grabFeedPosts?: () => void | null;
   grabProfileFeedPosts?: () => void | null;
-  deletePost?: (postID: string, grabPosts: () => void) => void;
+  deletePost?: (postID: string, grabPosts?: () => void) => void;
   commentID?: string;
   postID?: string;
   deleteComment?: (commentID: string) => void;
@@ -33,6 +34,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   const isMobile = useMediaQuery('(max-width:500px)');
 
   const mode = useSelector((state: ModeRootState) => state.mode);
+  const router = useRouter();
 
   const style = {
     position: 'absolute' as 'absolute',
@@ -99,6 +101,9 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
                     deletePost(postID, grabFeedPosts);
                   } else if (grabProfileFeedPosts) {
                     deletePost(postID, grabProfileFeedPosts);
+                  } //deleting post in FromNotifications comp
+                  else {
+                    deletePost(postID);
                   }
                 } else if (type === 'comment' && deleteComment && commentID) {
                   deleteComment(commentID);

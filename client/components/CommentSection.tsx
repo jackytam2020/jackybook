@@ -22,6 +22,7 @@ interface CommentSectionProps {
   grabFeedPosts?: () => void;
   grabProfileFeedPosts?: () => void;
   socket: Socket;
+  grabSinglePost?: () => void;
 }
 
 interface Comment {
@@ -45,6 +46,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   grabFeedPosts,
   grabProfileFeedPosts,
   socket,
+  grabSinglePost,
 }) => {
   const [newCommentValue, setNewCommentValue] = useState('');
   const user = useSelector((state: UserRootState) => state.user);
@@ -75,6 +77,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       grabFeedPosts();
     } else if (grabProfileFeedPosts) {
       grabProfileFeedPosts();
+    } else if (grabSinglePost) {
+      grabSinglePost();
     }
   };
 
@@ -106,6 +110,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       grabFeedPosts();
     } else if (grabProfileFeedPosts) {
       grabProfileFeedPosts();
+    } else if (grabSinglePost) {
+      grabSinglePost();
     }
   };
   return (

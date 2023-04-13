@@ -32,6 +32,7 @@ export interface PostProps {
   grabProfileFeedPosts?: () => void;
   socket: Socket;
   fromNotification?: boolean;
+  grabSinglePost?: () => void;
 }
 
 export interface PostsArray {

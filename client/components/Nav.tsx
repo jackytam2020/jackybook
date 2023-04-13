@@ -45,6 +45,7 @@ interface NavProp {
   setIsNotificationOpened: React.Dispatch<React.SetStateAction<boolean>>;
   setMobileSearchIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsNavPopOutOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  getNotifications: () => void;
 }
 
 const Search = styled('div')(({ theme }) => ({
@@ -95,6 +96,7 @@ const Nav: React.FC<NavProp> = ({
   setIsNotificationOpened,
   setMobileSearchIsOpen,
   setIsNavPopOutOpen,
+  getNotifications,
 }) => {
   const user = useSelector((state: UserRootState) => state.user);
   let users = useSelector((state: UsersRootState) => state.users);
@@ -181,6 +183,7 @@ const Nav: React.FC<NavProp> = ({
                 color="inherit"
                 onClick={() => {
                   setIsNotificationOpened(true);
+                  getNotifications();
                 }}
               >
                 <Badge badgeContent={notifications.length} color="error">

@@ -1,29 +1,65 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import fromNotificationsStyles from '../../styles/FromNotifications.module.scss';
 import axios from 'axios';
 import { Socket } from 'socket.io-client';
 import Head from 'next/head';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { GetServerSidePropsContext } from 'next';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { PostProps } from '../../state';
-import { ModeRootState } from '../../utils/interfaces/ReduxStateProps';
+import {
+  ModeRootState,
+  UserRootState,
+} from '../../utils/interfaces/ReduxStateProps';
 
 import Post from '../../components/Post';
 
 interface fromNotificationsProps {
-  selectedPost: PostProps;
   socket: Socket;
+  serverSelectedPost: PostProps;
+  notificationID: string;
 }
 
-const fromNotifications: React.FC<fromNotificationsProps> = ({
-  selectedPost,
+const FromNotifications: React.FC<fromNotificationsProps> = ({
+  serverSelectedPost,
+  notificationID,
   socket,
 }) => {
   const router = useRouter();
   const mode = useSelector((state: ModeRootState) => state.mode);
+  const user = useSelector((state: UserRootState) => state.user);
+
+  const [selectedPost, setSelectedPost] = useState(serverSelectedPost);
+
+  const unavailablePost = () =>
+    toast.error('Post is no longer available', {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      draggable: true,
+      theme: 'colored',
+    });
+
+  const grabSinglePost = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.HOST}/posts/${router.query.id}/grabSinglePost`
+      );
+
+      setSelectedPost(data);
+    } catch {
+      unavailablePost();
+    }
+  };
+
+  useEffect(() => {
+    grabSinglePost();
+  }, [router.asPath, notificationID]);
 
   return (
     <>
@@ -41,7 +77,17 @@ const fromNotifications: React.FC<fromNotificationsProps> = ({
           <h3 className={fromNotificationsStyles.fromNotifications__header}>
             From Notifications
           </h3>
-          <Post {...selectedPost} fromNotification={true} socket={socket} />
+          {selectedPost ? (
+            <Post
+              {...selectedPost}
+              fromNotification={true}
+              grabSinglePost={grabSinglePost}
+              loggedInUser={user._id}
+              socket={socket}
+            />
+          ) : (
+            <p>Post is no longer available</p>
+          )}
           <div
             className={fromNotificationsStyles.fromNotifications__backOption}
           >
@@ -58,6 +104,7 @@ const fromNotifications: React.FC<fromNotificationsProps> = ({
               Go back
             </p>
           </div>
+          <ToastContainer />
         </main>
       </div>
     </>
@@ -67,17 +114,33 @@ const fromNotifications: React.FC<fromNotificationsProps> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  if (context.params) {
-    const post = await axios.get(
-      `${process.env.HOST}/posts/${context.params.id}/grabSinglePost`
-    );
+  try {
+    if (context.params) {
+      const post = await axios.get(
+        `${process.env.HOST}/posts/${context.params.id}/grabSinglePost`,
+        {
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        }
+      );
 
+      const notificationID = context.query._id;
+
+      return {
+        props: {
+          serverSelectedPost: post.data,
+          notificationID: notificationID,
+        },
+      };
+    }
+  } catch {
     return {
       props: {
-        selectedPost: post.data,
+        serverSelectedPost: null,
       },
     };
   }
 };
 
-export default fromNotifications;
+export default FromNotifications;

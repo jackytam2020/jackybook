@@ -43,13 +43,14 @@ interface LoginValues {
 
 interface Props {
   page: string;
+  setLoading?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface File {
   append: Function;
 }
 
-const Form: React.FC<Props> = ({ page }) => {
+const Form: React.FC<Props> = ({ page, setLoading }) => {
   const [registerValues, setRegisterValues] = useState<RegisterValues>({
     email: '',
     password: '',
@@ -114,7 +115,7 @@ const Form: React.FC<Props> = ({ page }) => {
     formData.append('firstName', registerValues.firstName);
     formData.append('lastName', registerValues.lastName);
     formData.append('password', registerValues.password);
-    formData.append('email', registerValues.email);
+    formData.append('email', registerValues.email.toLowerCase());
     formData.append('location', registerValues.location);
     formData.append('occupation', registerValues.occupation);
 
@@ -139,9 +140,11 @@ const Form: React.FC<Props> = ({ page }) => {
   const loginUser = async () => {
     try {
       const { data } = await axios.post(`${process.env.HOST}/auth/login`, {
-        email: loginValues.email,
+        email: loginValues.email.toLowerCase(),
         password: loginValues.password,
       });
+
+      if (setLoading) setLoading(true);
 
       dispatch(
         setLogin({
@@ -149,6 +152,7 @@ const Form: React.FC<Props> = ({ page }) => {
           token: data.token,
         })
       );
+
       router.push('/home');
     } catch {
       loginError();

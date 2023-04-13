@@ -64,8 +64,14 @@ export const acceptFriendRequest = async (
     if (grabProfileData) grabProfileData();
     if (grabFriendsList) grabFriendsList();
   } catch {
+    removeFriendRequest(
+      receiverID,
+      senderID,
+      dispatch,
+      grabFriendRequests,
+      grabFriendsList
+    );
     if (acceptFriendRequestError) acceptFriendRequestError();
-    removeFriendRequest(receiverID, senderID, dispatch);
   }
 };
 
@@ -73,7 +79,8 @@ export const removeFriendRequest = async (
   receiverID: string,
   senderID: string,
   dispatch?: Function,
-  grabFriendRequests?: () => void
+  grabFriendRequests?: () => void,
+  grabFriendsList?: () => void
 ) => {
   await axios.delete(
     `${process.env.HOST}/users/${receiverID}/removeFriendRequest/${senderID}`
@@ -87,4 +94,5 @@ export const removeFriendRequest = async (
     );
   }
   if (grabFriendRequests) grabFriendRequests();
+  if (grabFriendsList) grabFriendsList();
 };
