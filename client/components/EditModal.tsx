@@ -5,6 +5,7 @@ import { ModeRootState } from '../utils/interfaces/ReduxStateProps';
 import { Button, Box, Modal, useMediaQuery } from '@mui/material';
 import { useSelector } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
+import Microlink from '@microlink/react';
 
 interface EditModalProps {
   open: boolean;
@@ -31,6 +32,7 @@ const EditModal: React.FC<EditModalProps> = ({
 }) => {
   const [editValue, setEditValue] = useState<string>(value);
   const isMobile = useMediaQuery('(max-width:500px)');
+  const [isLinkPreviewOpen, setIsLinkPreviewOpen] = useState<boolean>(false);
 
   const mode = useSelector((state: ModeRootState) => state.mode);
 
@@ -45,6 +47,18 @@ const EditModal: React.FC<EditModalProps> = ({
     borderRadius: 2,
     p: 2,
   };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const pastedContent = e.clipboardData.getData('text');
+    const linkRegex = /https?:\/\/\S+/;
+    if (linkRegex.test(pastedContent)) {
+      setIsLinkPreviewOpen(true);
+    }
+  };
+
+  const urlMatch = editValue.match(/https?:\/\/\S+/);
+  const videoLinkPreview = ['image', 'logo', 'video'];
+  const nonVideoPreview = ['image', 'logo'];
 
   return (
     <div className={editModalStyles.editModal}>
@@ -75,13 +89,33 @@ const EditModal: React.FC<EditModalProps> = ({
             autoFocus={true}
             onChange={(e) => {
               setEditValue(e.target.value);
+              const linkRegex = /https?:\/\/\S+/;
+              if (linkRegex.test(e.target.value)) {
+                setIsLinkPreviewOpen(true);
+              }
+              if (e.target.value === '') {
+                setIsLinkPreviewOpen(false);
+              }
             }}
+            onPaste={handlePaste}
             className={
               mode === 'light'
                 ? editModalStyles.editModal__textField
                 : editModalStyles.editModal__textFieldDark
             }
           ></textarea>
+          {isLinkPreviewOpen && editValue !== '' && urlMatch !== null && (
+            <div className={editModalStyles.editModal__linkPreview}>
+              <Microlink
+                url={urlMatch[0]}
+                media={
+                  urlMatch[0].includes('youtube')
+                    ? videoLinkPreview
+                    : nonVideoPreview
+                }
+              />
+            </div>
+          )}
           {editValue === '' || editValue === value ? (
             <span
               style={{

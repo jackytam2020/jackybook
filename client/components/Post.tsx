@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpOffAltOutlinedIcon from '@mui/icons-material/ThumbUpOffAltOutlined';
 import InsertCommentOutlinedIcon from '@mui/icons-material/InsertCommentOutlined';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import Microlink from '@microlink/react';
 
 import axios from 'axios';
 import Link from 'next/link';
@@ -136,6 +137,13 @@ const Post: React.FC<PostProps> = ({
 
   dayjs.extend(relativeTime);
 
+  const urlMatch = description.match(/https?:\/\/\S+/);
+  const urlExtensionMatch = description.match(
+    /\b\w+\.(com|org|net|gov|edu|biz|info|ca|uk|au)\b/i
+  );
+  const videoLinkPreview = ['image', 'logo', 'video'];
+  const nonVideoPreview = ['image', 'logo'];
+
   return (
     <div className={postStyles.post} style={{ backgroundColor }}>
       <div className={postStyles.post__topButtons}>
@@ -206,9 +214,36 @@ const Post: React.FC<PostProps> = ({
         </div>
       </div>
 
-      <p className={postStyles.post__caption} style={{ color: textColor }}>
-        {description}
-      </p>
+      {/* detect if a text string includes a clickable http or https link */}
+      {urlMatch !== null ? (
+        <p className={postStyles.post__caption} style={{ color: textColor }}>
+          {description.replace(/https?:\/\/\S+/gi, '')}
+          <a href={urlMatch[0]} target="_blank" style={{ color: 'blue' }}>
+            {`${urlMatch[0]}`}
+          </a>
+        </p>
+      ) : //detect if a text string contains a website URL based on the presence of a domain extension
+      urlExtensionMatch !== null ? (
+        <>
+          <p className={postStyles.post__caption} style={{ color: textColor }}>
+            {description.replace(
+              /\b\w+\.(com|org|net|gov|edu|biz|info|ca|uk|au)\b/i,
+              ''
+            )}
+            <a
+              href={`https://www.${urlExtensionMatch[0]}`}
+              target="_blank"
+              style={{ color: 'blue' }}
+            >
+              {urlExtensionMatch[0]}
+            </a>
+          </p>
+        </>
+      ) : (
+        <p className={postStyles.post__caption} style={{ color: textColor }}>
+          {description}
+        </p>
+      )}
       {picturePath && (
         <>
           <Image
@@ -221,6 +256,18 @@ const Post: React.FC<PostProps> = ({
             height="0"
           />
         </>
+      )}
+      {urlMatch !== null && (
+        <div className={postStyles.post__linkPreview}>
+          <Microlink
+            url={urlMatch[0]}
+            media={
+              urlMatch[0].includes('youtube')
+                ? videoLinkPreview
+                : nonVideoPreview
+            }
+          />
+        </div>
       )}
 
       <div className={postStyles.post__postStats}>

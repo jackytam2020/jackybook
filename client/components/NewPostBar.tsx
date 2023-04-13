@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
 import Image from 'next/image';
+import Microlink from '@microlink/react';
 
 import { useSelector } from 'react-redux';
 import {
@@ -51,6 +52,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
   });
   const [post, setPost] = useState<string>('');
   const [previewImage, setPreviewImage] = useState<string>('');
+  const [isLinkPreviewOpen, setIsLinkPreviewOpen] = useState<boolean>(false);
 
   const user = useSelector((state: UserRootState) => state.user);
   const token = useSelector((state: TokenRootState) => state.token);
@@ -80,6 +82,7 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
       type: '',
       webkitRelativePath: '',
     });
+    setIsLinkPreviewOpen(false);
 
     if (grabFeedPosts) {
       grabFeedPosts();
@@ -87,6 +90,18 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
       grabProfileFeedPosts();
     }
   };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedContent = e.clipboardData.getData('text');
+    const linkRegex = /https?:\/\/\S+/;
+    if (linkRegex.test(pastedContent)) {
+      setIsLinkPreviewOpen(true);
+    }
+  };
+
+  const urlMatch = post.match(/https?:\/\/\S+/);
+  const videoLinkPreview = ['image', 'logo', 'video'];
+  const nonVideoPreview = ['image', 'logo'];
 
   return (
     <div
@@ -114,7 +129,15 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
             }
             onChange={(e) => {
               setPost(e.target.value);
+              const linkRegex = /https?:\/\/\S+/;
+              if (linkRegex.test(e.target.value)) {
+                setIsLinkPreviewOpen(true);
+              }
+              if (e.target.value === '') {
+                setIsLinkPreviewOpen(false);
+              }
             }}
+            onPaste={handlePaste}
             type="text"
             placeholder={`What's on your mind?`}
             value={post}
@@ -157,6 +180,18 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
             />
           </div>
         )}
+        <div className={newPostStyles.newPostBar__linkPreview}>
+          {isLinkPreviewOpen && post !== '' && urlMatch !== null && (
+            <Microlink
+              url={urlMatch[0]}
+              media={
+                urlMatch[0].includes('youtube')
+                  ? videoLinkPreview
+                  : nonVideoPreview
+              }
+            />
+          )}
+        </div>
         <div className={newPostStyles.newPostBar__addMedia}>
           <Dropzone
             multiple={false}
