@@ -3,6 +3,8 @@
   border-radius: 10px;
   padding: 1rem 1rem;
   transition: 1s;
+  overflow-wrap: break-word;
+
   p {
     margin: 0;
     transition: 1s;
@@ -67,5 +69,9 @@
   &__actionButton {
     display: flex;
     column-gap: 1rem;
+  }
+  &__linkPreview {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 }
