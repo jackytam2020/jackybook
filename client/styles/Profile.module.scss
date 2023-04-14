@@ -73,10 +73,17 @@
 @include medium() {
   .profile {
     &__profileContainer {
-      display: grid;
-      padding-left: 5%;
-      padding-right: 5%;
-      grid-template-columns: 1.5fr 2fr 1.5fr;
+      width: 50%;
+    }
+    &__left {
+      order: 0;
+    }
+
+    &__feed {
+      order: 2;
+    }
+    &__friendRequests {
+      order: 1;
     }
   }
 }
