@@ -117,7 +117,7 @@ const Profile: React.FC<ProfileProps> = ({
       >
         {profileData && user && (
           <div className={ProfileStyles.profile__profileContainer}>
-            <section className={ProfileStyles.profile__left}>
+            {/* <section className={ProfileStyles.profile__left}>
               <UserInfo
                 mode={mode}
                 profileData={profileData}
@@ -127,7 +127,7 @@ const Profile: React.FC<ProfileProps> = ({
                 // socket={socket}
               />
               <FriendsList friendsList={friendsList} mode={mode} />
-            </section>
+            </section> */}
 
             <main className={ProfileStyles.profile__feed}>
               {user._id === profileData._id && (
@@ -169,7 +169,7 @@ const Profile: React.FC<ProfileProps> = ({
               </section>
             </main>
 
-            {user._id === profileData._id && (
+            {/* {user._id === profileData._id && (
               <FriendRequests
                 friendRequests={friendRequests}
                 // socket={socket}
@@ -179,7 +179,7 @@ const Profile: React.FC<ProfileProps> = ({
                 grabFriendsList={grabFriendsList}
                 grabFriendRequests={grabFriendRequests}
               />
-            )}
+            )} */}
             <ToastContainer />
           </div>
         )}

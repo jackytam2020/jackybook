@@ -15,8 +15,7 @@
   }
 
   &__profileContainer {
-    display: grid;
-    column-gap: 2rem;
+    position: relative;
     max-width: 1920px;
   }
 
@@ -48,9 +47,7 @@
 @include small() {
   .profile {
     &__profileContainer {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-      grid-template-columns: 1fr;
+      width: 90%;
     }
 
     &__left {
@@ -72,18 +69,14 @@
 @include medium() {
   .profile {
     &__profileContainer {
-      padding-left: 5%;
-      padding-right: 5%;
-      grid-template-columns: 1.5fr 3fr 1.5fr;
+      width: 50%;
     }
   }
 }
 @include large() {
   .profile {
     &__profileContainer {
-      padding-left: 15%;
-      padding-right: 15%;
-      grid-template-columns: 1.5fr 3fr 1.5fr;
+      width: 35%;
     }
   }
 }
