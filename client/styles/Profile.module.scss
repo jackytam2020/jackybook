@@ -16,7 +16,7 @@
   }
 
   &__profileContainer {
-    display: grid;
+    // display: grid;
     position: relative;
     column-gap: 2rem;
     max-width: 1920px;
@@ -73,6 +73,7 @@
 @include medium() {
   .profile {
     &__profileContainer {
+      display: grid;
       padding-left: 5%;
       padding-right: 5%;
       grid-template-columns: 1.5fr 2fr 1.5fr;
@@ -82,6 +83,7 @@
 @include large() {
   .profile {
     &__profileContainer {
+      display: grid;
       padding-left: 15%;
       padding-right: 15%;
       grid-template-columns: 1.5fr 3fr 1.5fr;
