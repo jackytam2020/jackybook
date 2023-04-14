@@ -37,10 +37,6 @@
     &__container {
       width: 50%;
     }
-
-    &__postsSection {
-      row-gap: 4rem;
-    }
   }
 }
 @include large() {
