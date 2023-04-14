@@ -17,6 +17,7 @@
   &__profileContainer {
     position: relative;
     max-width: 1920px;
+    display: flex;
   }
 
   &__left,
@@ -47,7 +48,13 @@
 @include small() {
   .profile {
     &__profileContainer {
-      width: 90%;
+      padding: 0 1.5rem;
+      flex-wrap: wrap;
+    }
+    &__left,
+    &__right,
+    &__feed {
+      width: 100%;
     }
 
     &__left {
@@ -69,14 +76,28 @@
 @include medium() {
   .profile {
     &__profileContainer {
-      width: 50%;
+      column-gap: 1rem;
+    }
+    &__left,
+    &__right {
+      width: 30%;
+    }
+    &__feed {
+      width: 40%;
     }
   }
 }
 @include large() {
   .profile {
     &__profileContainer {
-      width: 35%;
+      column-gap: 2rem;
+    }
+    &__left,
+    &__right {
+      width: 25%;
+    }
+    &__feed {
+      width: 50%;
     }
   }
 }
