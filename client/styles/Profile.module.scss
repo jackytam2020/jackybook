@@ -16,7 +16,6 @@
   }
 
   &__profileContainer {
-    // display: grid;
     position: relative;
     column-gap: 2rem;
     max-width: 1920px;
@@ -25,7 +24,6 @@
   &__left,
   &__feed {
     margin-top: 2rem;
-    // overflow-block: auto;
   }
   &__feedHeader {
     transition: 1s;
@@ -88,6 +86,10 @@
     }
     &__friendRequests {
       order: 1;
+    }
+    &__friendRequestsEmpty {
+      background-color: white;
+      height: 100px;
     }
   }
 }
