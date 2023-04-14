@@ -64,10 +64,6 @@
     &__friendRequests {
       order: 1;
     }
-    &__friendRequestsEmpty {
-      background-color: white;
-      height: 100px;
-    }
   }
 }
 @include medium() {
@@ -86,10 +82,6 @@
     }
     &__friendRequests {
       order: 1;
-    }
-    &__friendRequestsEmpty {
-      background-color: white;
-      height: 100px;
     }
   }
 }

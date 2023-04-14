@@ -40,3 +40,9 @@
     height: 100px;
   }
 }
+
+@include medium() {
+  .friendRequestsEmpty {
+    height: 100px;
+  }
+}
