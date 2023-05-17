@@ -150,9 +150,9 @@ const Post: React.FC<PostProps> = ({
         <Link href={`/profile/${userID}`}>
           <div className={postStyles.post__topButtonsLeft}>
             <Image
-              src={`${process.env.HOST}/assets/${userPicturePath}`}
+              src={`${process.env.HOST}/assets/${user.picturePath}`}
               className={postStyles.post__profilePic}
-              alt={userPicturePath}
+              alt={user.picturePath}
               width="40"
               height="40"
             />
