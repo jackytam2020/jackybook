@@ -44,24 +44,27 @@ app.use(cors());
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 
 // FILE STORAGE
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/assets');
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'public/assets');
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
-app.post('/auth/register', upload.single('picture'), register);
-app.post('/posts', verifyToken, upload.single('picture'), newPost);
-app.patch(
-  '/:id/addNewProfilePicture',
-  upload.single('picture'),
-  addNewProfilePicture
-);
+// app.post('/auth/register', upload.single('picture'), register);
+app.post('/auth/register', register);
+// app.post('/posts', verifyToken, upload.single('picture'), newPost);
+app.post('/posts', verifyToken, newPost);
+// app.patch(
+//   '/:id/addNewProfilePicture',
+//   upload.single('picture'),
+//   addNewProfilePicture
+// );
+app.patch('/:id/addNewProfilePicture', addNewProfilePicture);
 
 //ROUTES
 app.use('/auth', authRoutes);

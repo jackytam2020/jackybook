@@ -116,13 +116,15 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       }
     >
       <div className={commentStyles.commentSection__newComment}>
-        <Image
-          className={commentStyles.commentSection__profilePic}
-          src={`${process.env.HOST}/assets/${user.picturePath}`}
-          alt={user.picturePath}
-          width="40"
-          height="40"
-        />
+        {user && (
+          <Image
+            className={commentStyles.commentSection__profilePic}
+            src={user.picturePath}
+            alt={user.picturePath}
+            width="40"
+            height="40"
+          />
+        )}
         <div className={commentStyles.commentSection__inputHolder}>
           <input
             className={

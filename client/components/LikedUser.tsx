@@ -60,13 +60,15 @@ const LikedUser: React.FC<LikedUserProps> = ({
     <div className={likedUserListStyles.likedUser}>
       <Link href={`/profile/${likedUserID}`}>
         <div className={likedUserListStyles.likedUser__user}>
-          <Image
-            className={likedUserListStyles.likedUser__profilePic}
-            src={`${process.env.HOST}/assets/${picturePath}`}
-            alt={picturePath}
-            width="30"
-            height="30"
-          />
+          {picturePath && (
+            <Image
+              className={likedUserListStyles.likedUser__profilePic}
+              src={picturePath}
+              alt={picturePath}
+              width="30"
+              height="30"
+            />
+          )}
           <p
             style={{
               color: mode === 'light' ? 'black' : 'white',

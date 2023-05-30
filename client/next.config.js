@@ -8,16 +8,18 @@ const nextConfig = {
   },
   env: {
     HOST: process.env.SERVER,
+    KEY: process.env.API_KEY,
   },
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: process.env.IMAGE_SERVER,
-        port: '',
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080',
         pathname: '/assets/**',
       },
     ],
+    domains: ['i.ibb.co'],
   },
 };
 

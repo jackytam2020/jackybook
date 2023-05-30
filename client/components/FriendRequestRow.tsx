@@ -42,13 +42,15 @@ const FriendRequestRow: React.FC<FriendRequestProps> = ({
     <div className={friendRequestRowStyles.requestRow}>
       <Link href={`/profile/${userID}`}>
         <div className={friendRequestRowStyles.requestRow__requestUser}>
-          <Image
-            src={`${process.env.HOST}/assets/${picturePath}`}
-            className={friendRequestRowStyles.requestRow__requestPic}
-            alt={picturePath}
-            width="30"
-            height="30"
-          />
+          {picturePath && (
+            <Image
+              src={picturePath}
+              className={friendRequestRowStyles.requestRow__requestPic}
+              alt={picturePath}
+              width="30"
+              height="30"
+            />
+          )}
 
           <p
             style={{
