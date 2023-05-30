@@ -78,13 +78,15 @@ const NotificationRow: React.FC<NotificationRowProp> = ({
         setIsNotificationOpened(false);
       }}
     >
-      <Image
-        className={notificationRowStyles.notificationRow__profilePic}
-        src={`${process.env.HOST}/assets/${senderPicturePath}`}
-        alt={senderName}
-        width="50"
-        height="50"
-      />
+      {senderPicturePath && (
+        <Image
+          className={notificationRowStyles.notificationRow__profilePic}
+          src={senderPicturePath}
+          alt={senderName}
+          width="50"
+          height="50"
+        />
+      )}
       <div className={notificationRowStyles.notificationRow__notification}>
         <p>{notificationType}</p>
         <p className={notificationRowStyles.notificationRow__Date}>

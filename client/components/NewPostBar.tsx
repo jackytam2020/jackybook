@@ -59,17 +59,40 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
   const mode = useSelector((state: ModeRootState) => state.mode);
 
   const submitPost = async () => {
-    const formData: File = new FormData();
-    formData.append('userID', user._id);
-    formData.append('description', post);
-    formData.append('picturePath', mediaFile.name);
-    formData.append('picture', mediaFile);
+    let picturePath = '';
 
-    await axios.post(`${process.env.HOST}/posts`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    if (mediaFile.name !== '') {
+      const hostData: File = new FormData();
+      hostData.append('image', mediaFile);
+
+      await axios
+        .post(
+          `https://api.imgbb.com/1/upload?key=${process.env.KEY}`,
+          hostData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+        .then((response) => {
+          picturePath = response.data.data.display_url;
+        });
+    }
+
+    await axios.post(
+      `${process.env.HOST}/posts`,
+      {
+        userID: user._id,
+        description: post,
+        picturePath: picturePath,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     setPost('');
     setPreviewImage('');
@@ -113,13 +136,15 @@ const NewPostBar: React.FC<NewPostBarProps> = ({
     >
       {
         <div className={newPostStyles.newPostBar__top}>
-          <Image
-            className={newPostStyles.newPostBar__profilePic}
-            src={`${process.env.HOST}/assets/${user && user.picturePath}`}
-            alt={user && user.picturePath}
-            width="50"
-            height="50"
-          />
+          {user && (
+            <Image
+              className={newPostStyles.newPostBar__profilePic}
+              src={user.picturePath}
+              alt={user.picturePath}
+              width="50"
+              height="50"
+            />
+          )}
 
           <input
             className={

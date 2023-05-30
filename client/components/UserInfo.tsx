@@ -38,14 +38,16 @@ const UserInfo: React.FC<UserInfoProps> = ({
     >
       <div className={userInfoStyles.userInfo__user}>
         <div className={userInfoStyles.userInfo__profilePicContainer}>
-          <Image
-            src={`${process.env.HOST}/assets/${profileData.picturePath}`}
-            className={userInfoStyles.userInfo__profilePic}
-            alt={profileData.picturePath}
-            width="150"
-            height="150"
-            priority={true}
-          />
+          {profileData.picturePath && (
+            <Image
+              src={profileData.picturePath}
+              className={userInfoStyles.userInfo__profilePic}
+              alt={profileData.picturePath}
+              width="150"
+              height="150"
+              priority={true}
+            />
+          )}
           {profileData._id === user._id && (
             <div className={userInfoStyles.userInfo__iconContainer}>
               <AddAPhotoIcon

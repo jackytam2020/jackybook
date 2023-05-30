@@ -33,13 +33,15 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
           }
         }}
       >
-        <Image
-          className={searchResultRowStyles.searchResultRow__profilePic}
-          src={`${process.env.HOST}/assets/${picturePath}`}
-          alt={picturePath}
-          width="50"
-          height="50"
-        />
+        {picturePath && (
+          <Image
+            className={searchResultRowStyles.searchResultRow__profilePic}
+            src={picturePath}
+            alt={picturePath}
+            width="50"
+            height="50"
+          />
+        )}
         <p
           style={{
             color: mode === 'light' ? 'black' : 'white',

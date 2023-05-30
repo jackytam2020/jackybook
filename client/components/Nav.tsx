@@ -195,13 +195,15 @@ const Nav: React.FC<NavProp> = ({
                 href={`/profile/${user._id}`}
                 className={navStyles.nav__profilePicHolder}
               >
-                <Image
-                  className={navStyles.nav__profilePic}
-                  src={`${process.env.HOST}/assets/${user.picturePath}`}
-                  alt={user.picturePath}
-                  height="32"
-                  width="32"
-                />
+                {user && (
+                  <Image
+                    className={navStyles.nav__profilePic}
+                    src={user.picturePath}
+                    alt={user.picturePath}
+                    height="32"
+                    width="32"
+                  />
+                )}
               </Link>
               <Link href={'/'} className={navStyles.nav__logoutButton}>
                 <Button

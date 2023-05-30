@@ -119,13 +119,15 @@ const Comment = ({
       }}
     >
       <Link href={`/profile/${userID}`}>
-        <Image
-          className={commentStyles.commentContainer__profilePic}
-          src={`${process.env.HOST}/assets/${userPicturePath}`}
-          alt={userPicturePath}
-          width="40"
-          height="40"
-        />
+        {userPicturePath && (
+          <Image
+            className={commentStyles.commentContainer__profilePic}
+            src={userPicturePath}
+            alt={userPicturePath}
+            width="40"
+            height="40"
+          />
+        )}
       </Link>
       <div className={commentStyles.commentContainer__right}>
         <div className={commentStyles.commentContainer__rightRow}>

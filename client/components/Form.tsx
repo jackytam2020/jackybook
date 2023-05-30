@@ -110,24 +110,37 @@ const Form: React.FC<Props> = ({ page, setLoading }) => {
 
   const registerUser = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const formData: File = new FormData();
-
-    formData.append('firstName', registerValues.firstName);
-    formData.append('lastName', registerValues.lastName);
-    formData.append('password', registerValues.password);
-    formData.append('email', registerValues.email.toLowerCase());
-    formData.append('location', registerValues.location);
-    formData.append('occupation', registerValues.occupation);
-
+    let picturePath = '';
     if (registerValues.picture.path) {
-      formData.append('picture', registerValues.picture);
-      formData.append('picturePath', registerValues.picture.name);
+      const hostData: File = new FormData();
+      hostData.append('image', registerValues.picture);
+      await axios
+        .post(
+          `https://api.imgbb.com/1/upload?key=${process.env.KEY}`,
+          hostData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+        .then((response) => {
+          picturePath = response.data.data.display_url;
+        });
     } else {
-      formData.append('picturePath', 'default-profilepic.jpg');
+      picturePath = 'https://i.ibb.co/wNcp79t/default-profilepic.png';
     }
 
     try {
-      await axios.post(`${process.env.HOST}/auth/register`, formData);
+      await axios.post(`${process.env.HOST}/auth/register`, {
+        firstName: registerValues.firstName,
+        lastName: registerValues.lastName,
+        email: registerValues.email.toLowerCase(),
+        password: registerValues.password,
+        picturePath: picturePath,
+        location: registerValues.location,
+        occupation: registerValues.occupation,
+      });
       successfulSignUp();
       setTimeout(() => {
         router.push('/');

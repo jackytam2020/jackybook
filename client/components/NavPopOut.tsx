@@ -55,13 +55,15 @@ const NavPopOut: React.FC<NavPopOutProps> = ({
             }}
           >
             <div className={navPopOutStyles.navPopOut__profileHolder}>
-              <Image
-                className={navPopOutStyles.navPopOut__profilePic}
-                src={`${process.env.HOST}/assets/${user.picturePath}`}
-                alt={user.picturePath}
-                width="64"
-                height="64"
-              />
+              {user && (
+                <Image
+                  className={navPopOutStyles.navPopOut__profilePic}
+                  src={user.picturePath}
+                  alt={user.picturePath}
+                  width="64"
+                  height="64"
+                />
+              )}
               <div>
                 <h3>{`${user.firstName} ${user.lastName}`}</h3>
                 <p>View your profile</p>

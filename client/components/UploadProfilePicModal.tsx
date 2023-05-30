@@ -68,14 +68,26 @@ const UploadProfilePicModal: React.FC<UploadProfilePicModalProps> = ({
   };
 
   const uploadProfilePicture = async () => {
-    const formData: File = new FormData();
-    formData.append('picturePath', mediaFile.name);
-    formData.append('picture', mediaFile);
-
-    await axios.patch(
-      `${process.env.HOST}/${user._id}/addNewProfilePicture`,
-      formData
+    const hostData: File = new FormData();
+    hostData.append('image', mediaFile);
+    const { data } = await axios.post(
+      `https://api.imgbb.com/1/upload?key=${process.env.KEY}`,
+      hostData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
     );
+
+    // const formData: File = new FormData();
+    // formData.append('picturePath', data.data.display_url);
+    // formData.append('picture', mediaFile);
+
+    await axios.patch(`${process.env.HOST}/${user._id}/addNewProfilePicture`, {
+      picturePath: data.data.display_url,
+    });
+
     grabProfileData();
     updateLoggedInUser(user._id, dispatch);
   };

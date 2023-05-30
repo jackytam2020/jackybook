@@ -149,13 +149,15 @@ const Post: React.FC<PostProps> = ({
       <div className={postStyles.post__topButtons}>
         <Link href={`/profile/${userID}`}>
           <div className={postStyles.post__topButtonsLeft}>
-            <Image
-              src={`${process.env.HOST}/assets/${user.picturePath}`}
-              className={postStyles.post__profilePic}
-              alt={user.picturePath}
-              width="40"
-              height="40"
-            />
+            {user && (
+              <Image
+                src={user.picturePath}
+                className={postStyles.post__profilePic}
+                alt={user.picturePath}
+                width="40"
+                height="40"
+              />
+            )}
             <div>
               <p
                 className={postStyles.post__user}
@@ -248,7 +250,7 @@ const Post: React.FC<PostProps> = ({
         <>
           <Image
             className={postStyles.post__image}
-            src={`${process.env.HOST}/assets/${picturePath}`}
+            src={picturePath}
             alt={picturePath}
             sizes="100vw"
             style={{ width: '100%', height: 'auto' }}
