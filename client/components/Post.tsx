@@ -151,9 +151,9 @@ const Post: React.FC<PostProps> = ({
           <div className={postStyles.post__topButtonsLeft}>
             {user && (
               <Image
-                src={user.picturePath}
+                src={userPicturePath}
                 className={postStyles.post__profilePic}
-                alt={user.picturePath}
+                alt={userPicturePath}
                 width="40"
                 height="40"
               />
